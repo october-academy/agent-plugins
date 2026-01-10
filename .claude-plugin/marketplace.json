@@ -1,0 +1,22 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "zettalyst-plugins",
+  "version": "1.0.0",
+  "description": "Custom plugins for Claude Code by zettalyst",
+  "owner": {
+    "name": "zettalyst",
+    "email": "yuhogyun@gmail.com"
+  },
+  "plugins": [
+    {
+      "name": "clarify-ralph",
+      "description": "Iterative requirement clarification using AskUserQuestion in a Ralph Wiggum-style loop. Transforms vague requirements into precise specifications through structured questioning.",
+      "version": "1.0.0",
+      "author": {
+        "name": "yuhogyun"
+      },
+      "source": "./plugins/clarify-ralph",
+      "category": "productivity"
+    }
+  ]
+}

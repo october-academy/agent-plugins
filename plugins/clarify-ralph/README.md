@@ -7,13 +7,14 @@ Transform vague requirements into precise, actionable specifications through str
 ## Installation
 
 ```bash
-claude plugin add yuhogyun/claude-plugins --subdir plugins/clarify-ralph
-```
+# 1. Add marketplace (first time only)
+/plugin marketplace add zettalyst/claude-plugins
 
-Or install from local directory:
+# 2. Update marketplace
+/plugin marketplace update
 
-```bash
-claude plugin add ./plugins/clarify-ralph
+# 3. Install plugin
+/plugin install clarify-ralph@zettalyst-plugins
 ```
 
 ## Quick Start
@@ -111,14 +112,6 @@ Max Questions: 10
   3. Invitation-only registration
   4. Clarification complete
 
-[You]: Yes, self-signup with email verification
-
-[Claude]: What session duration is appropriate?
-  1. 24 hours
-  2. 7 days with "remember me" option
-  3. Until browser close
-  4. Clarification complete
-
 [You]: Clarification complete
 
 ---
@@ -130,16 +123,11 @@ Max Questions: 10
 
 ### After (Clarified)
 **Goal**: Add username/password login with self-registration
-**Reason**: Allow users to create accounts and access the system
-**Scope**: Login, logout, registration with email verification
-**Constraints**: Username/password auth, self-signup enabled
-**Success Criteria**: Users can register, verify email, login, logout
-
+**Scope**: Login, logout, registration
 **Decisions Made**:
 | Question | Decision |
 |----------|----------|
 | Auth method | Username/Password |
-| Registration | Yes, self-signup with email verification |
 
 <promise>CLARIFICATION COMPLETE</promise>
 ```
@@ -166,36 +154,6 @@ The loop ends when:
 2. **Max iterations**: Reach `--max-iterations` limit
 3. **Manual cancel**: Run `/cancel-clarify`
 
-## Philosophy
-
-Inspired by:
-- **Clarify skill**: Structured requirement refinement
-- **Ralph Wiggum technique**: Persistent iteration loops
-
-Key principles:
-- **One question at a time**: Focused, not overwhelming
-- **Options over open-ended**: Recognition beats recall
-- **User controls completion**: Loop until YOU decide it's done
-- **Safety limit**: Max iterations prevents infinite loops
-
-## File Structure
-
-```
-plugins/clarify-ralph/
-├── .claude-plugin/
-│   └── plugin.json          # Plugin metadata
-├── commands/
-│   ├── clarify-ralph.md     # Main command
-│   ├── cancel-clarify.md    # Cancel loop
-│   └── help.md              # Help documentation
-├── hooks/
-│   ├── hooks.json           # Hook configuration
-│   └── stop-hook.sh         # Loop continuation logic
-├── scripts/
-│   └── setup-clarify-ralph.sh  # Setup script
-└── README.md
-```
-
 ## Troubleshooting
 
 ### Loop doesn't continue
@@ -211,10 +169,10 @@ cat .claude/clarify-ralph.local.md
 rm .claude/clarify-ralph.local.md
 ```
 
-### Check current iteration
-```bash
-grep '^iteration:' .claude/clarify-ralph.local.md
-```
+## Inspired By
+
+- **Clarify skill**: Structured requirement refinement
+- **Ralph Wiggum technique**: Persistent iteration loops
 
 ## License
 
