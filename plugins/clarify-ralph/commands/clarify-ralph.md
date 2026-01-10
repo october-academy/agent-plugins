@@ -1,16 +1,100 @@
 ---
 description: "Start iterative requirement clarification loop"
 argument-hint: "REQUIREMENT [--max-iterations N]"
-allowed-tools: ["Bash(${CLAUDE_PLUGIN_ROOT}/scripts/setup-clarify-ralph.sh:*)", "AskUserQuestion", "Write", "Read"]
+allowed-tools: ["Bash", "AskUserQuestion", "Write", "Read"]
 hide-from-slash-command-tool: "true"
 ---
 
 # Clarify Ralph Command
 
-Execute the setup script to initialize the clarification loop:
+Initialize the clarification loop:
 
 ```!
-"${CLAUDE_PLUGIN_ROOT}/scripts/setup-clarify-ralph.sh" $ARGUMENTS
+set -euo pipefail
+
+# Parse arguments
+REQUIREMENT_PARTS=()
+MAX_ITERATIONS=10
+ARGS=($ARGUMENTS)
+
+i=0
+while [[ $i -lt ${#ARGS[@]} ]]; do
+  case "${ARGS[$i]}" in
+    -h|--help)
+      cat << 'HELP_EOF'
+Clarify Ralph - Iterative requirement clarification
+
+USAGE:
+  /clarify-ralph [REQUIREMENT...] [OPTIONS]
+
+ARGUMENTS:
+  REQUIREMENT...    The vague requirement to clarify (can be multiple words)
+
+OPTIONS:
+  --max-iterations <n>    Maximum questions before auto-stop (default: 10)
+  -h, --help              Show this help message
+
+EXAMPLES:
+  /clarify-ralph Add a login feature
+  /clarify-ralph Build a REST API --max-iterations 15
+HELP_EOF
+      exit 0
+      ;;
+    --max-iterations)
+      ((i++))
+      if [[ $i -ge ${#ARGS[@]} ]]; then
+        echo "Error: --max-iterations requires a number" >&2
+        exit 1
+      fi
+      MAX_ITERATIONS="${ARGS[$i]}"
+      ;;
+    *)
+      REQUIREMENT_PARTS+=("${ARGS[$i]}")
+      ;;
+  esac
+  ((i++))
+done
+
+REQUIREMENT="${REQUIREMENT_PARTS[*]}"
+
+if [[ -z "$REQUIREMENT" ]]; then
+  echo "Error: No requirement provided" >&2
+  echo "Usage: /clarify-ralph <requirement> [--max-iterations N]" >&2
+  exit 1
+fi
+
+mkdir -p .claude
+
+cat > .claude/clarify-ralph.local.md <<EOF
+---
+active: true
+iteration: 1
+max_iterations: $MAX_ITERATIONS
+original_requirement: "$REQUIREMENT"
+started_at: "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+---
+
+## Original Requirement
+"$REQUIREMENT"
+
+## Clarification Progress
+(Decisions will be recorded as the loop progresses)
+
+EOF
+
+cat <<EOF
+Clarify Ralph loop activated!
+
+Original Requirement: "$REQUIREMENT"
+Max Questions: $MAX_ITERATIONS
+
+To cancel: /cancel-clarify
+
+---
+
+## Requirement to Clarify
+"$REQUIREMENT"
+EOF
 ```
 
 You are now in a **Clarify Ralph Loop**. Your goal is to transform the vague requirement above into a precise, actionable specification through iterative questioning.
