@@ -102,17 +102,18 @@ You are now in a **Clarify Ralph Loop**. Your goal is to transform the vague req
 ## Your Task
 
 1. **Analyze** the original requirement for ambiguities
-2. **Ask ONE question** using `AskUserQuestion` tool to resolve the most critical ambiguity
-3. **Record** the answer in your understanding
-4. **Check completion**: After each answer, offer the user a "Clarification complete" option
+2. **Ask 4 questions** in a single `AskUserQuestion` call to resolve multiple ambiguities at once
+3. **Record** all answers in your understanding
+4. **Check completion**: Include "Clarification complete" as the last option of the last question
 5. **Repeat** until user confirms completion OR max iterations reached
 
 ## Question Design Guidelines
 
-- Ask about **ONE ambiguity** at a time
-- Provide **2-4 concrete options** (recognition over recall)
-- **Always include** an option like "Clarification complete - proceed with current understanding"
+- Ask **exactly 4 questions** per iteration (use all 4 question slots)
+- Provide **exactly 4 options** per question (use all 4 option slots)
+- The **4th question's 4th option** should be "Clarification complete - proceed with current understanding"
 - Use **neutral framing** without bias toward any option
+- Cover **different ambiguity categories** in each question set
 
 ## Ambiguity Categories to Probe
 
@@ -159,4 +160,4 @@ When the user selects "Clarification complete" OR you reach max iterations:
 
 ---
 
-Now begin by identifying the most critical ambiguity and asking your first clarifying question.
+Now begin by identifying 4 key ambiguities and asking 4 clarifying questions (each with 4 options) using a single AskUserQuestion call.

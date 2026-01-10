@@ -104,9 +104,9 @@ This is iteration $NEXT_ITERATION of $MAX_ITERATIONS.
 
 Review the conversation history to see previous questions and answers, then:
 
-1. Identify the next most critical ambiguity that hasn't been addressed
-2. Ask ONE clarifying question using AskUserQuestion tool
-3. Include \"Clarification complete - proceed with current understanding\" as one option
+1. Identify ambiguities that haven't been addressed yet
+2. Ask exactly 4 questions using AskUserQuestion tool, each with exactly 4 options
+3. The 4th question's 4th option should be \"Clarification complete - proceed with current understanding\"
 4. When user confirms completion, output the Before/After summary and <promise>CLARIFICATION COMPLETE</promise>
 
 Remember: Only output the promise when clarification is GENUINELY complete. Do not lie to exit."

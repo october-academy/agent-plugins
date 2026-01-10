@@ -45,9 +45,9 @@ Cancel the active loop immediately.
 ## How It Works
 
 1. **Start**: Run `/clarify-ralph` with your vague requirement
-2. **Question**: Claude asks ONE clarifying question using AskUserQuestion
-3. **Answer**: You select an option or provide custom input
-4. **Check**: Claude offers "Clarification complete" option each round
+2. **Questions**: Claude asks 4 clarifying questions at once, each with 4 options
+3. **Answer**: You select options or provide custom input for each question
+4. **Check**: The 4th question's 4th option is always "Clarification complete"
 5. **Repeat**: Loop continues until completion or max iterations
 6. **Output**: Final Before/After comparison of the requirement
 
