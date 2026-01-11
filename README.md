@@ -4,54 +4,90 @@ Claude Code용 커스텀 플러그인 마켓플레이스입니다.
 
 ## 설치 방법
 
-### 1. 마켓플레이스 추가 (터미널)
-
 ```bash
-claude plugin marketplace add zettalyst/claude-plugins
-```
+# 1. 마켓플레이스 추가
+claude plugin marketplace add october/claude-plugins
 
-### 2. 마켓플레이스 업데이트 (터미널)
-
-```bash
+# 2. 마켓플레이스 업데이트
 claude plugin marketplace update
+
+# 3. 플러그인 설치
+claude plugin install <plugin-name>@october-plugins
+
+# 4. Claude Code 재시작
 ```
-
-### 3. 플러그인 설치 (터미널)
-
-```bash
-claude plugin install clarify-ralph@zettalyst-plugins
-```
-
-### 4. Claude Code 재시작
-
-플러그인을 로드하려면 Claude Code를 재시작하세요.
 
 ## 사용 가능한 플러그인
 
-### [clarify-ralph](./plugins/clarify-ralph)
-
-Ralph Wiggum 스타일 루프를 사용한 반복적 요구사항 명확화 도구입니다.
-
-**사용법 (Claude Code 내부):**
-```
-/clarify-ralph "로그인 기능 추가" --max-iterations 5
-```
+### [clarify](./plugins/clarify)
 
 모호한 요구사항을 구조화된 질문을 통해 정확한 명세로 변환합니다.
 
+```bash
+claude plugin install clarify@october-plugins
+```
+
+**사용법:**
+```
+/clarify "로그인 기능 추가"
+/clarify "REST API 구축" --max-iterations 5
+```
+
 **특징:**
-- 반복당 4개 질문 × 4개 옵션 (AskUserQuestion 사용)
-- "Clarification complete" 옵션으로 사용자 제어 완료
-- 최대 반복 횟수 안전 제한
+- 반복당 4개 질문 × 4개 옵션
+- 기본 3회 반복 (--max-iterations로 조정)
 - Before/After 요구사항 요약 출력
 
-**작동 방식:**
-1. `/clarify-ralph`로 모호한 요구사항 입력
-2. Claude가 한 번에 4개 질문 (각 4개 옵션)
-3. 각 질문에 옵션 선택 또는 커스텀 입력
-4. 4번째 질문의 4번째 옵션이 항상 "Clarification complete"
-5. 완료 또는 최대 반복까지 루프 계속
-6. 최종 Before/After 비교 출력
+---
+
+### [feature-dev](./plugins/feature-dev)
+
+7단계 체계적 기능 개발 워크플로우입니다.
+
+```bash
+claude plugin install feature-dev@october-plugins
+```
+
+**사용법:**
+```
+/feature-dev OAuth 인증 추가
+```
+
+**7단계 워크플로우:**
+1. Discovery - 요구사항 이해
+2. Codebase Exploration - 기존 패턴 분석
+3. Clarifying Questions - 모호함 해소
+4. Architecture Design - 구현 방식 설계
+5. Implementation - 구현
+6. Quality Review - 코드 리뷰
+7. Summary - 결과 문서화
+
+**에이전트:**
+- `code-explorer`: 코드베이스 분석
+- `code-architect`: 아키텍처 설계
+- `code-reviewer`: 코드 리뷰
+
+---
+
+### [wrap](./plugins/wrap)
+
+세션 마무리 워크플로우입니다. 멀티 에이전트 분석으로 문서화, 자동화, 학습 포인트, 후속 작업을 제안합니다.
+
+```bash
+claude plugin install wrap@october-plugins
+```
+
+**사용법:**
+```
+/wrap                     # 인터랙티브 세션 마무리
+/wrap README 오타 수정     # 빠른 커밋
+```
+
+**2-Phase 아키텍처:**
+- Phase 1 (병렬): doc-updater, automation-scout, learning-extractor, followup-suggester
+- Phase 2 (순차): duplicate-checker
+
+---
 
 ## 빠른 참조
 
@@ -59,41 +95,34 @@ Ralph Wiggum 스타일 루프를 사용한 반복적 요구사항 명확화 도�
 
 | 명령어 | 설명 |
 |--------|------|
-| `claude plugin marketplace add zettalyst/claude-plugins` | 마켓플레이스 추가 |
-| `claude plugin marketplace update` | 마켓플레이스 캐시 업데이트 |
-| `claude plugin install clarify-ralph@zettalyst-plugins` | clarify-ralph 설치 |
-| `claude plugin uninstall clarify-ralph` | 플러그인 제거 |
+| `claude plugin marketplace add october/claude-plugins` | 마켓플레이스 추가 |
+| `claude plugin marketplace update` | 마켓플레이스 업데이트 |
+| `claude plugin install clarify@october-plugins` | clarify 설치 |
+| `claude plugin install feature-dev@october-plugins` | feature-dev 설치 |
+| `claude plugin install wrap@october-plugins` | wrap 설치 |
+| `claude plugin uninstall <name>` | 플러그인 제거 |
 
 ### 슬래시 명령어 (Claude Code 내부)
 
 | 명령어 | 설명 |
 |--------|------|
-| `/clarify-ralph "<요구사항>"` | 명확화 루프 시작 |
-| `/cancel-clarify` | 활성 루프 취소 |
-| `/help` | 플러그인 도움말 표시 |
+| `/clarify "<요구사항>"` | 요구사항 명확화 루프 시작 |
+| `/cancel` | clarify 루프 취소 |
+| `/feature-dev <기능>` | 7단계 기능 개발 시작 |
+| `/wrap` | 세션 마무리 분석 |
 
 ## 마켓플레이스 구조
 
 ```
 claude-plugins/
 ├── .claude-plugin/
-│   └── marketplace.json    # 마켓플레이스 매니페스트
+│   └── marketplace.json
 ├── plugins/
-│   └── clarify-ralph/      # 플러그인 디렉토리
-│       ├── .claude-plugin/
-│       │   └── plugin.json
-│       ├── commands/
-│       ├── hooks/
-│       └── README.md
+│   ├── clarify/
+│   ├── feature-dev/
+│   └── wrap/
 └── README.md
 ```
-
-## 기여하기
-
-1. 이 저장소를 포크하세요
-2. `plugins/<your-plugin-name>/`에 플러그인을 생성하세요
-3. `.claude-plugin/marketplace.json`에 항목을 추가하세요
-4. Pull Request를 제출하세요
 
 ## 라이선스
 

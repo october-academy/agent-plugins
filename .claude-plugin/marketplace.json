@@ -1,21 +1,41 @@
 {
   "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
-  "name": "zettalyst-plugins",
+  "name": "october-plugins",
   "version": "1.0.0",
-  "description": "Custom plugins for Claude Code by zettalyst",
+  "description": "Custom plugins for Claude Code",
   "owner": {
-    "name": "zettalyst",
+    "name": "october",
     "email": "yuhogyun@gmail.com"
   },
   "plugins": [
     {
-      "name": "clarify-ralph",
-      "description": "Iterative requirement clarification using AskUserQuestion in a Ralph Wiggum-style loop. Transforms vague requirements into precise specifications through structured questioning.",
+      "name": "clarify",
+      "description": "Transform vague requirements into precise specifications through structured questioning.",
       "version": "1.0.0",
       "author": {
         "name": "yuhogyun"
       },
-      "source": "./plugins/clarify-ralph",
+      "source": "./plugins/clarify",
+      "category": "productivity"
+    },
+    {
+      "name": "feature-dev",
+      "description": "Comprehensive 7-phase feature development workflow with specialized agents for codebase exploration, architecture design, and quality review.",
+      "version": "1.0.0",
+      "author": {
+        "name": "Sid Bidasaria"
+      },
+      "source": "./plugins/feature-dev",
+      "category": "development"
+    },
+    {
+      "name": "wrap",
+      "description": "Session wrap-up workflow with multi-agent analysis for documentation, automation, learning, and follow-up suggestions.",
+      "version": "1.0.0",
+      "author": {
+        "name": "Team Attention"
+      },
+      "source": "./plugins/wrap",
       "category": "productivity"
     }
   ]
