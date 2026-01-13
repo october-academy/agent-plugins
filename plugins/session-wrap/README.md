@@ -1,11 +1,11 @@
-# Wrap Plugin
+# Session-Wrap Plugin
 
 Session wrap-up workflow with multi-agent analysis for documentation, automation, learning, and follow-up suggestions.
 
 ## Installation
 
 ```bash
-claude plugin install wrap@october-plugins
+claude plugin install session-wrap@october-plugins
 ```
 
 ## Usage

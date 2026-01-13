@@ -69,12 +69,12 @@ claude plugin install feature-dev@october-plugins
 
 ---
 
-### [wrap](./plugins/wrap)
+### [session-wrap](./plugins/session-wrap)
 
 세션 마무리 워크플로우입니다. 멀티 에이전트 분석으로 문서화, 자동화, 학습 포인트, 후속 작업을 제안합니다.
 
 ```bash
-claude plugin install wrap@october-plugins
+claude plugin install session-wrap@october-plugins
 ```
 
 **사용법:**
@@ -174,7 +174,7 @@ claude plugin install linear@october-plugins
 | `claude plugin marketplace update` | 마켓플레이스 업데이트 |
 | `claude plugin install clarify@october-plugins` | clarify 설치 |
 | `claude plugin install feature-dev@october-plugins` | feature-dev 설치 |
-| `claude plugin install wrap@october-plugins` | wrap 설치 |
+| `claude plugin install session-wrap@october-plugins` | session-wrap 설치 |
 | `claude plugin install frontend-design@october-plugins` | frontend-design 설치 |
 | `claude plugin install code-simplifier@october-plugins` | code-simplifier 설치 |
 | `claude plugin install typescript-lsp@october-plugins` | typescript-lsp 설치 |
@@ -203,7 +203,7 @@ claude-plugins/
 │   ├── frontend-design/
 │   ├── linear/
 │   ├── typescript-lsp/
-│   └── wrap/
+│   └── session-wrap/
 └── README.md
 ```
 
