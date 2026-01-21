@@ -164,6 +164,49 @@ claude plugin install linear@october-plugins
 
 ---
 
+### [push](./plugins/push)
+
+Git 커밋 및 푸시 자동화 워크플로우입니다.
+
+```bash
+claude plugin install push@october-plugins
+```
+
+**사용법:**
+```
+/push                                    # 자동 메시지 생성 후 main에 push
+/push "fix: correct auth header"         # 지정된 메시지로 main에 push
+/push "feat(ui): add toggle" --branch feature/dark-mode  # 특정 브랜치에 push
+```
+
+**특징:**
+- Conventional Commits 형식 자동 생성
+- `--branch <name>`으로 대상 브랜치 지정
+- 브랜치 자동 전환/생성
+
+---
+
+### [interview-prompt-builder](./plugins/interview-prompt-builder)
+
+Claude가 작업 전 요구사항을 수집하도록 하는 인터뷰 프롬프트를 생성합니다.
+
+```bash
+claude plugin install interview-prompt-builder@october-plugins
+```
+
+**트리거:**
+- "Help me write a prompt for..."
+- "Make an interview prompt"
+- "I'm not sure what I want yet"
+
+**워크플로우:**
+1. 대상 작업 파악
+2. 인터뷰 차원 식별 (Audience, Scope, Format, Constraints, Quality, Context)
+3. 인터뷰 행동 정의
+4. 구조화된 프롬프트 생성
+
+---
+
 ## 빠른 참조
 
 ### 터미널 명령어 (CLI)
@@ -179,6 +222,8 @@ claude plugin install linear@october-plugins
 | `claude plugin install code-simplifier@october-plugins` | code-simplifier 설치 |
 | `claude plugin install typescript-lsp@october-plugins` | typescript-lsp 설치 |
 | `claude plugin install linear@october-plugins` | linear 설치 |
+| `claude plugin install push@october-plugins` | push 설치 |
+| `claude plugin install interview-prompt-builder@october-plugins` | interview-prompt-builder 설치 |
 | `claude plugin uninstall <name>` | 플러그인 제거 |
 
 ### 슬래시 명령어 (Claude Code 내부)
@@ -189,6 +234,7 @@ claude plugin install linear@october-plugins
 | `/cancel` | clarify 루프 취소 |
 | `/feature-dev <기능>` | 7단계 기능 개발 시작 |
 | `/wrap` | 세션 마무리 분석 |
+| `/push [message] [--branch <name>]` | Git 커밋 및 푸시 |
 
 ## 마켓플레이스 구조
 
@@ -201,9 +247,11 @@ claude-plugins/
 │   ├── code-simplifier/
 │   ├── feature-dev/
 │   ├── frontend-design/
+│   ├── interview-prompt-builder/
 │   ├── linear/
-│   ├── typescript-lsp/
-│   └── session-wrap/
+│   ├── push/
+│   ├── session-wrap/
+│   └── typescript-lsp/
 └── README.md
 ```
 
