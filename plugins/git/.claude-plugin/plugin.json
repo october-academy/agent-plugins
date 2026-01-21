@@ -1,5 +1,5 @@
 {
-  "name": "push",
+  "name": "git",
   "version": "1.0.0",
   "description": "Git commit and push workflow with automatic Conventional Commits message generation",
   "author": {

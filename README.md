@@ -164,25 +164,32 @@ claude plugin install linear@october-plugins
 
 ---
 
-### [push](./plugins/push)
+### [git](./plugins/git)
 
-Git 커밋 및 푸시 자동화 워크플로우입니다.
+Git 커밋, 푸시, PR 생성 자동화 워크플로우입니다.
 
 ```bash
-claude plugin install push@october-plugins
+claude plugin install git@october-plugins
 ```
 
 **사용법:**
 ```
-/push                                    # 자동 메시지 생성 후 main에 push
-/push "fix: correct auth header"         # 지정된 메시지로 main에 push
-/push "feat(ui): add toggle" --branch feature/dark-mode  # 특정 브랜치에 push
+# push 명령어
+/git:push                                    # 자동 메시지 생성 후 main에 push
+/git:push "fix: correct auth header"         # 지정된 메시지로 main에 push
+/git:push "feat(ui): add toggle" --branch feature/dark-mode  # 특정 브랜치에 push
+
+# push-pr 명령어
+/git:push-pr                                         # 자동 메시지 생성, main 기준 PR 생성
+/git:push-pr "fix: correct auth header"              # 지정된 메시지로 PR 생성
+/git:push-pr "feat(ui): add DarkModeToggle" --base develop  # develop 기준 PR 생성
 ```
 
 **특징:**
 - Conventional Commits 형식 자동 생성
-- `--branch <name>`으로 대상 브랜치 지정
-- 브랜치 자동 전환/생성
+- `--branch <name>`으로 대상 브랜치 지정 (push)
+- `--base <branch>`로 PR base 브랜치 지정 (push-pr)
+- PR 본문 자동 생성 (Summary, Changes, Test plan)
 
 ---
 
@@ -222,7 +229,7 @@ claude plugin install interview-prompt-builder@october-plugins
 | `claude plugin install code-simplifier@october-plugins` | code-simplifier 설치 |
 | `claude plugin install typescript-lsp@october-plugins` | typescript-lsp 설치 |
 | `claude plugin install linear@october-plugins` | linear 설치 |
-| `claude plugin install push@october-plugins` | push 설치 |
+| `claude plugin install git@october-plugins` | git 설치 |
 | `claude plugin install interview-prompt-builder@october-plugins` | interview-prompt-builder 설치 |
 | `claude plugin uninstall <name>` | 플러그인 제거 |
 
@@ -234,7 +241,8 @@ claude plugin install interview-prompt-builder@october-plugins
 | `/cancel` | clarify 루프 취소 |
 | `/feature-dev <기능>` | 7단계 기능 개발 시작 |
 | `/wrap` | 세션 마무리 분석 |
-| `/push [message] [--branch <name>]` | Git 커밋 및 푸시 |
+| `/git:push [message] [--branch <name>]` | Git 커밋 및 푸시 |
+| `/git:push-pr [message] [--base <branch>]` | Git 커밋, 푸시 및 PR 생성 |
 
 ## 마켓플레이스 구조
 
@@ -249,7 +257,7 @@ claude-plugins/
 │   ├── frontend-design/
 │   ├── interview-prompt-builder/
 │   ├── linear/
-│   ├── push/
+│   ├── git/
 │   ├── session-wrap/
 │   └── typescript-lsp/
 └── README.md

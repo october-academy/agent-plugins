@@ -80,6 +80,16 @@
       },
       "source": "./plugins/linear",
       "category": "productivity"
+    },
+    {
+      "name": "git",
+      "description": "Git commit and push workflow with automatic Conventional Commits message generation.",
+      "version": "1.0.0",
+      "author": {
+        "name": "Yu Ho Gyun"
+      },
+      "source": "./plugins/git",
+      "category": "development"
     }
   ]
 }
