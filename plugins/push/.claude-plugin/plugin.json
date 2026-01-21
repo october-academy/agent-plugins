@@ -1,0 +1,8 @@
+{
+  "name": "push",
+  "version": "1.0.0",
+  "description": "Git commit and push workflow with automatic Conventional Commits message generation",
+  "author": {
+    "name": "Yu Ho Gyun"
+  }
+}
