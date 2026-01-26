@@ -2,6 +2,21 @@
 
 Git 변경사항을 스테이징하고 Conventional Commits 형식의 커밋 메시지를 생성한 뒤 원격 저장소에 푸시하는 워크플로우를 제공합니다. PR 생성까지 한 번에 처리할 수도 있습니다.
 
+## Installation
+
+```bash
+# 1. Add marketplace (first time only)
+claude plugin marketplace add october/claude-plugins
+
+# 2. Update marketplace
+claude plugin marketplace update
+
+# 3. Install plugin
+claude plugin install git@october-plugins
+
+# 4. Restart Claude Code
+```
+
 ## Overview
 
 Git Plugin은 일상적인 Git 커밋 및 푸시 작업을 간소화합니다. 변경사항을 분석하여 의미 있는 커밋 메시지를 자동 생성하고, 지정된 브랜치로 푸시합니다.

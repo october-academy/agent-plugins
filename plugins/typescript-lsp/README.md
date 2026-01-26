@@ -21,7 +21,7 @@ A TypeScript/JavaScript language server that provides code intelligence features
 
 ## Installation
 
-Install the TypeScript language server globally:
+### 1. Install TypeScript Language Server
 
 ```bash
 npm install -g typescript-language-server typescript
@@ -31,6 +31,21 @@ Or using yarn:
 
 ```bash
 yarn global add typescript-language-server typescript
+```
+
+### 2. Install Claude Plugin
+
+```bash
+# Add marketplace (first time only)
+claude plugin marketplace add october/claude-plugins
+
+# Update marketplace
+claude plugin marketplace update
+
+# Install plugin
+claude plugin install typescript-lsp@october-plugins
+
+# Restart Claude Code
 ```
 
 ## Resources

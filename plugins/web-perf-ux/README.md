@@ -48,5 +48,18 @@
 ## 설치
 
 ```bash
-claude plugin install october-academy/claude-plugins --plugin web-perf-ux
+# 1. 마켓플레이스 추가 (최초 1회)
+claude plugin marketplace add october/claude-plugins
+
+# 2. 마켓플레이스 업데이트
+claude plugin marketplace update
+
+# 3. 플러그인 설치
+claude plugin install web-perf-ux@october-plugins
+
+# 4. Claude Code 재시작
 ```
+
+## License
+
+MIT

@@ -2,6 +2,21 @@
 
 A comprehensive, structured workflow for feature development with specialized agents for codebase exploration, architecture design, and quality review.
 
+## Installation
+
+```bash
+# 1. Add marketplace (first time only)
+claude plugin marketplace add october/claude-plugins
+
+# 2. Update marketplace
+claude plugin marketplace update
+
+# 3. Install plugin
+claude plugin install feature-dev@october-plugins
+
+# 4. Restart Claude Code
+```
+
 ## Overview
 
 The Feature Development Plugin provides a systematic 7-phase approach to building new features. Instead of jumping straight into code, it guides you through understanding the codebase, asking clarifying questions, designing architecture, and ensuring quality—resulting in better-designed features that integrate seamlessly with your existing code.

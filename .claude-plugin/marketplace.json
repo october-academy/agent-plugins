@@ -29,13 +29,23 @@
       "category": "development"
     },
     {
-      "name": "wrap",
+      "name": "session-wrap",
       "description": "Session wrap-up workflow with multi-agent analysis for documentation, automation, learning, and follow-up suggestions.",
       "version": "1.0.0",
       "author": {
         "name": "Team Attention"
       },
-      "source": "./plugins/wrap",
+      "source": "./plugins/session-wrap",
+      "category": "productivity"
+    },
+    {
+      "name": "interview-prompt-builder",
+      "description": "Build interview prompts that instruct Claude to gather requirements before executing tasks.",
+      "version": "1.0.0",
+      "author": {
+        "name": "Yu Ho Gyun"
+      },
+      "source": "./plugins/interview-prompt-builder",
       "category": "productivity"
     },
     {

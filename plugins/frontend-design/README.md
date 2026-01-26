@@ -2,6 +2,21 @@
 
 Generate distinctive, production-grade frontend interfaces with high design quality.
 
+## Installation
+
+```bash
+# 1. Add marketplace (first time only)
+claude plugin marketplace add october/claude-plugins
+
+# 2. Update marketplace
+claude plugin marketplace update
+
+# 3. Install plugin
+claude plugin install frontend-design@october-plugins
+
+# 4. Restart Claude Code
+```
+
 ## Overview
 
 This plugin provides Claude with specialized knowledge for creating visually striking web interfaces that avoid generic AI aesthetics.

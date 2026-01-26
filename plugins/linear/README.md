@@ -5,7 +5,16 @@ Linear issue tracking integration via MCP (Model Context Protocol).
 ## Installation
 
 ```bash
+# 1. Add marketplace (first time only)
+claude plugin marketplace add october/claude-plugins
+
+# 2. Update marketplace
+claude plugin marketplace update
+
+# 3. Install plugin
 claude plugin install linear@october-plugins
+
+# 4. Restart Claude Code
 ```
 
 ## Setup
