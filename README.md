@@ -214,6 +214,29 @@ claude plugin install interview-prompt-builder@october-plugins
 
 ---
 
+### [web-perf-ux](./plugins/web-perf-ux)
+
+웹 애플리케이션의 성능과 UX를 자동화된 분석으로 최적화합니다.
+
+```bash
+claude plugin install web-perf-ux@october-plugins
+```
+
+**워크플로우:**
+```
+측정 (Measure) → 분석 (Analyze) → 설명 (Explain) → 계획 (Plan)
+```
+
+**특징:**
+- Lighthouse 기반 성능 측정
+- Core Web Vitals (LCP, CLS, INP) 분석
+- UX 이슈 탐지 및 근본 원인 진단
+- 코드 레벨의 구체적인 수정 제안
+
+**자동 적용:** "성능 분석", "페이지가 느려요", "CLS 문제", "Lighthouse 실행" 등의 요청 시 자동 사용
+
+---
+
 ## 빠른 참조
 
 ### 터미널 명령어 (CLI)
@@ -231,6 +254,7 @@ claude plugin install interview-prompt-builder@october-plugins
 | `claude plugin install linear@october-plugins` | linear 설치 |
 | `claude plugin install git@october-plugins` | git 설치 |
 | `claude plugin install interview-prompt-builder@october-plugins` | interview-prompt-builder 설치 |
+| `claude plugin install web-perf-ux@october-plugins` | web-perf-ux 설치 |
 | `claude plugin uninstall <name>` | 플러그인 제거 |
 
 ### 슬래시 명령어 (Claude Code 내부)
@@ -259,7 +283,8 @@ claude-plugins/
 │   ├── linear/
 │   ├── git/
 │   ├── session-wrap/
-│   └── typescript-lsp/
+│   ├── typescript-lsp/
+│   └── web-perf-ux/
 └── README.md
 ```
 

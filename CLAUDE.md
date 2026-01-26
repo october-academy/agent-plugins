@@ -76,8 +76,12 @@ allowed-tools: Bash(git:*), Read, Edit  # optional tool restrictions
 ## Existing Plugins Reference
 
 - **clarify**: 요구사항 명확화 (skills, hooks 사용)
-- **feature-dev**: 7단계 기능 개발 워크플로우 (commands, agents 사용)
-- **session-wrap**: 세션 마무리 분석 (commands, skills, agents 사용)
-- **git**: Git commit & push 자동화 (commands 사용)
-- **frontend-design**: 프론트엔드 UI 생성 (skills 사용)
 - **code-simplifier**: 코드 단순화 (agents 사용)
+- **feature-dev**: 7단계 기능 개발 워크플로우 (commands, agents 사용)
+- **frontend-design**: 프론트엔드 UI 생성 (skills 사용)
+- **git**: Git commit & push 자동화 (commands 사용)
+- **interview-prompt-builder**: 인터뷰 프롬프트 생성 (skills 사용)
+- **linear**: Linear 이슈 트래킹 통합 (mcp 사용)
+- **session-wrap**: 세션 마무리 분석 (commands, skills, agents 사용)
+- **typescript-lsp**: TypeScript/JavaScript LSP 설정 (mcp 사용)
+- **web-perf-ux**: 웹 성능 및 UX 최적화 (skills, scripts 사용)
