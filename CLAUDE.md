@@ -4,55 +4,57 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Repository Purpose
 
-Claude Code 플러그인 마켓플레이스. 각 플러그인은 `/plugins/<plugin-name>/`에 위치.
+Claude Code plugin marketplace. Each plugin lives in `plugins/<plugin-name>/`.
+
+## Commands
+
+```bash
+# Validate all plugins
+./scripts/validate-plugins.sh
+
+# Check JSON syntax
+cat plugins/<name>/.claude-plugin/plugin.json | jq .
+
+# Verify version consistency
+grep -r '"version"' plugins/*/.claude-plugin/plugin.json .claude-plugin/marketplace.json
+```
 
 ## Plugin Structure
 
 ```
 plugins/<plugin-name>/
 ├── .claude-plugin/
-│   └── plugin.json          # 필수: 메타데이터
-├── README.md                # 필수: 문서
-├── commands/<cmd>.md        # 슬래시 커맨드 (/plugin:cmd)
-├── skills/<skill>/SKILL.md  # 스킬 (자동 또는 /plugin:skill)
-├── agents/<agent>.md        # 에이전트 (Task tool로 호출)
-├── hooks/hooks.json         # 훅 정의
-└── .mcp.json                # MCP 서버 설정
+│   └── plugin.json          # Required: metadata
+├── README.md                 # Required: documentation
+├── commands/<cmd>.md         # Slash commands (/plugin:cmd)
+├── skills/<skill>/SKILL.md   # Skills (auto or /skill)
+├── agents/<agent>.md         # Agents (Task tool subagent_type)
+├── hooks/hooks.json          # Event hooks (Stop, PreToolUse, PostToolUse)
+└── .mcp.json                 # MCP server config
 ```
 
-## Creating a New Plugin
+## Creating a Plugin
 
-1. `plugins/<name>/` 디렉토리 생성
-2. `.claude-plugin/plugin.json` 작성
-3. `README.md` 작성
-4. commands/, skills/, agents/ 중 필요한 것 추가
-5. `.claude-plugin/marketplace.json`에 등록
+1. Create `plugins/<name>/.claude-plugin/plugin.json`
+2. Create `plugins/<name>/README.md` with Installation section
+3. Add commands/, skills/, agents/, or hooks/ as needed
+4. Register in `.claude-plugin/marketplace.json`
+5. Run `./scripts/validate-plugins.sh` to verify
 
-### plugin.json
+See [PLUGIN_DEVELOPMENT.md](./PLUGIN_DEVELOPMENT.md) for detailed templates and best practices.
+
+## File Formats
+
+### plugin.json (Required)
 
 ```json
 {
   "name": "plugin-name",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Plugin description",
   "author": { "name": "Author Name" }
 }
 ```
-
-### marketplace.json 등록
-
-```json
-{
-  "name": "plugin-name",
-  "description": "Plugin description",
-  "version": "1.0.0",
-  "author": { "name": "Author Name" },
-  "source": "./plugins/plugin-name",
-  "category": "productivity"
-}
-```
-
-## File Formats
 
 ### commands/<cmd>.md
 
@@ -63,19 +65,19 @@ argument-hint: [optional arguments]
 allowed-tools: Bash(git:*), Read, Edit
 ---
 
-# Command instructions...
+# Instructions...
 ```
 
 ### skills/<skill>/SKILL.md
 
 ```markdown
 ---
+name: skill-name
 description: Skill description
 user-invocable: true
-argument-hint: [optional arguments]
 ---
 
-# Skill instructions...
+# Instructions...
 ```
 
 ### agents/<agent>.md
@@ -84,23 +86,41 @@ argument-hint: [optional arguments]
 ---
 name: agent-name
 description: Agent description
-model: opus  # or sonnet, haiku
+model: haiku  # haiku | sonnet | opus
 ---
 
-# Agent instructions...
+# Instructions...
+```
+
+### hooks/hooks.json
+
+```json
+{
+  "hooks": {
+    "Stop": [{ "hooks": [{ "type": "command", "command": "${CLAUDE_PLUGIN_ROOT}/hooks/stop-hook.sh" }] }]
+  }
+}
 ```
 
 ## Existing Plugins
 
-| 플러그인 | 타입 | 트리거 |
-|---------|------|--------|
+| Plugin | Type | Trigger |
+|--------|------|---------|
 | clarify | skills, hooks | `/clarify` |
-| feature-dev | commands, agents | `/feature-dev` |
-| frontend-design | skills | 자동 |
+| feature-dev | commands, agents, hooks | `/feature-dev` |
+| frontend-design | skills | auto |
 | git | commands | `/git:push`, `/git:push-pr` |
-| interview-prompt-builder | skills | 자동 |
+| interview-prompt-builder | skills | auto |
 | linear | mcp | - |
-| simplify | skills, agents | `/simplify` |
+| simplify | skills, agents, hooks | `/simplify` |
 | typescript-lsp | mcp | - |
-| web-perf-ux | skills | 자동 |
-| wrap | commands, skills, agents | `/wrap` |
+| web-perf-ux | skills | auto |
+| wrap | commands, skills, agents, hooks | `/wrap` |
+
+## Key Conventions
+
+- **Naming**: Short, action-oriented (`wrap` not `session-wrap`)
+- **Versioning**: Keep plugin.json and marketplace.json versions in sync
+- **README**: Always include standardized Installation section
+- **Hooks**: Make scripts executable (`chmod +x`)
+- **Agent models**: haiku (validation), sonnet (analysis), opus (architecture)

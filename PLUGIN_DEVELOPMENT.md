@@ -367,17 +367,67 @@ chmod +x plugins/<name>/hooks/*.sh
 
 ## Testing
 
-1. **Syntax Check**: Validate JSON files
-   ```bash
-   cat plugins/<name>/.claude-plugin/plugin.json | jq .
-   ```
+### 1. Comprehensive Validation
 
-2. **Integration Test**: Install and run the plugin
-   ```bash
-   claude plugin install <name>
-   ```
+Run the complete plugin validation script:
 
-3. **Hook Test**: Verify hooks trigger correctly
+```bash
+./scripts/validate-plugins.sh
+```
+
+This validates:
+- **JSON syntax** for all plugin files (plugin.json, marketplace.json, hooks.json, .mcp.json)
+- **Required fields** (name, version, description, author)
+- **README.md** exists with Installation section
+- **YAML frontmatter** in commands, skills, and agents
+- **Cross-reference consistency** between marketplace and plugin directories
+- **Version consistency** between plugin.json and marketplace.json
+
+Example output:
+```
+=== Validating plugins ===
+--- Checking: wrap ---
+OK: plugin.json is valid JSON
+OK: README.md exists
+OK: README.md has Installation section
+OK: commands/wrap.md has frontmatter
+OK: skills/wrap/SKILL.md has frontmatter
+OK: agents/doc-updater.md has frontmatter
+OK: hooks/hooks.json is valid JSON
+
+=== Version consistency ===
+OK: wrap version match: 1.1.0
+
+==========================================
+Errors:   0
+Warnings: 0
+Validation PASSED
+```
+
+### 2. Quick Syntax Check
+
+Validate individual JSON files:
+
+```bash
+cat plugins/<name>/.claude-plugin/plugin.json | jq .
+cat .claude-plugin/marketplace.json | jq .
+```
+
+### 3. Integration Test
+
+Install and run the plugin locally:
+
+```bash
+claude plugin install <name>
+```
+
+### 4. Hook Test
+
+Verify hooks trigger correctly:
+
+1. Ensure scripts are executable: `chmod +x plugins/<name>/hooks/*.sh`
+2. Test hook behavior in Claude Code
+3. Check for execution errors in hook output
 
 ## Contributing
 
