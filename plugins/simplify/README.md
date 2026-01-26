@@ -1,23 +1,32 @@
 # Simplify
 
-코드를 명확성, 일관성, 유지보수성을 위해 단순화하고 정제합니다. 기능은 그대로 유지합니다.
+Simplifies and refines code for clarity, consistency, and maintainability while preserving all functionality.
 
-## 설치
+## Installation
 
 ```bash
+# 1. Add marketplace (first time only)
+claude plugin marketplace add october-academy/claude-plugins
+
+# 2. Update marketplace
+claude plugin marketplace update
+
+# 3. Install plugin
 claude plugin install simplify@october-plugins
+
+# 4. Restart Claude Code
 ```
 
-## 사용법
+## Usage
 
 ```bash
-/simplify                 # 최근 수정된 코드 단순화
-/simplify src/utils.ts    # 특정 파일 단순화
+/simplify                 # Simplify recently modified code
+/simplify src/utils.ts    # Simplify specific file
 ```
 
-## 아키텍처
+## Architecture
 
-멀티-에이전트 병렬 분석 및 개선 워크플로우:
+Multi-agent parallel analysis and improvement workflow:
 
 ```
 ┌─────────────────────────────────────────────────────────┐
@@ -45,35 +54,35 @@ claude plugin install simplify@october-plugins
 └─────────────────────────────────────────────────────────┘
 ```
 
-## Phase 1 에이전트
+## Phase 1 Agents
 
-| 에이전트 | 역할 |
-|---------|------|
-| **complexity-analyzer** | 중첩 삼항, 깊은 중첩, 과도한 추상화 탐지 |
-| **pattern-checker** | 프로젝트 표준 위반, 일관성 문제 탐지 |
-| **naming-reviewer** | 변수/함수명 개선점, 명확성 문제 탐지 |
-| **readability-analyzer** | 가독성 문제, 불필요한 주석, 구조 개선점 탐지 |
+| Agent | Role |
+|-------|------|
+| **complexity-analyzer** | Detect nested ternaries, deep nesting, over-abstraction |
+| **pattern-checker** | Detect project standard violations, inconsistency issues |
+| **naming-reviewer** | Detect variable/function naming improvements, clarity issues |
+| **readability-analyzer** | Detect readability issues, unnecessary comments, structural improvements |
 
 ## Phase 2
 
-Phase 1에서 발견된 각 이슈에 대해 **issue-simplifier** 에이전트가 병렬로 실행되어 구체적인 코드 변경안을 생성합니다.
+For each issue found in Phase 1, an **issue-simplifier** agent runs in parallel to generate specific code changes.
 
-## 원칙
+## Principles
 
-1. **명확성 > 간결성**: 한 줄 코드보다 읽기 쉬운 코드 선호
-2. **중첩 삼항 금지**: switch문이나 if/else 체인 사용
-3. **복잡도 감소**: 불필요한 중첩과 추상화 제거
-4. **기능 보존**: 코드 동작은 절대 변경하지 않음
+1. **Clarity > Brevity**: Prefer readable code over one-liners
+2. **No Nested Ternaries**: Use switch statements or if/else chains
+3. **Reduce Complexity**: Remove unnecessary nesting and abstraction
+4. **Preserve Functionality**: Never change code behavior
 
-## 개선 대상
+## Improvement Targets
 
-- 불필요한 복잡성과 깊은 중첩
-- 중복 코드와 과도한 추상화
-- 불명확한 변수/함수명
-- 프로젝트 표준 위반
-- 가독성을 희생한 밀집된 코드
+- Unnecessary complexity and deep nesting
+- Duplicate code and over-abstraction
+- Unclear variable/function names
+- Project standard violations
+- Dense code that sacrifices readability
 
-## 예시
+## Example
 
 **Before:**
 ```javascript
@@ -95,3 +104,7 @@ function getItemValue(items, defaultValue) {
   return firstItem.fallback ?? null;
 }
 ```
+
+## License
+
+MIT

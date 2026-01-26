@@ -1,24 +1,33 @@
 # Wrap
 
-세션 마무리 워크플로우입니다. 멀티 에이전트 분석으로 문서화, 자동화, 학습 포인트, 후속 작업을 제안합니다.
+Session wrap-up workflow with multi-agent analysis for documentation, automation, learning points, and follow-up suggestions.
 
-## 설치
+## Installation
 
 ```bash
+# 1. Add marketplace (first time only)
+claude plugin marketplace add october-academy/claude-plugins
+
+# 2. Update marketplace
+claude plugin marketplace update
+
+# 3. Install plugin
 claude plugin install wrap@october-plugins
+
+# 4. Restart Claude Code
 ```
 
-## 사용법
+## Usage
 
 ```bash
-/wrap                    # 인터랙티브 세션 마무리
-/wrap fix typo in README # 빠른 커밋 메시지 지정
+/wrap                    # Interactive session wrap-up
+/wrap fix typo in README # Quick commit with provided message
 ```
 
-## 아키텍처
+## Architecture
 
 ```
-Phase 1: 분석 (병렬)
+Phase 1: Analysis (Parallel)
 ┌──────────────┬──────────────┬──────────────┬──────────────┐
 │ doc-updater  │ automation-  │ learning-    │ followup-    │
 │              │ scout        │ extractor    │ suggester    │
@@ -26,40 +35,45 @@ Phase 1: 분석 (병렬)
        └──────────────┴──────────────┴──────────────┘
                            │
                            ▼
-Phase 2: 검증 (순차)
+Phase 2: Validation (Sequential)
 ┌─────────────────────────────────────────────────────────────┐
 │                    duplicate-checker                         │
 └─────────────────────────────────────────────────────────────┘
                            │
                            ▼
-                   사용자 선택
+                   User Selection
 ```
 
-## 에이전트
+## Agents
 
-| 에이전트 | 모델 | 역할 |
-|----------|------|------|
-| `doc-updater` | sonnet | 문서 업데이트 필요성 분석 |
-| `automation-scout` | sonnet | 자동화 기회 탐지 |
-| `learning-extractor` | sonnet | 학습 포인트 및 실수 추출 |
-| `followup-suggester` | sonnet | 후속 작업 제안 |
-| `duplicate-checker` | haiku | 제안 중복 검증 |
+| Agent | Model | Role |
+|-------|-------|------|
+| `doc-updater` | sonnet | Analyze documentation update needs |
+| `automation-scout` | sonnet | Detect automation opportunities |
+| `learning-extractor` | sonnet | Extract learning points and mistakes |
+| `followup-suggester` | sonnet | Suggest follow-up tasks |
+| `duplicate-checker` | haiku | Validate proposal duplicates |
 
-## 워크플로우
+## Workflow
 
-1. Git 상태 확인
-2. Phase 1: 4개 분석 에이전트 병렬 실행
-3. Phase 2: 제안 중복 검증
-4. 결과 제시 및 액션 선택
-5. 선택된 액션 실행
+1. Check git status
+2. Phase 1: Run 4 analysis agents in parallel
+3. Phase 2: Validate proposal duplicates
+4. Present results and action options
+5. Execute selected actions
 
-## 언제 사용하나요?
+## When to Use
 
-**사용:**
-- 작업 세션 종료 시
-- 다른 프로젝트로 전환 전
-- 기능 개발 또는 버그 수정 완료 후
+**Use:**
+- At the end of a work session
+- Before switching to another project
+- After completing a feature or bug fix
 
-**생략:**
-- 간단한 변경만 있는 짧은 세션
-- 코드 읽기/탐색만 한 경우
+**Skip:**
+- Short sessions with trivial changes
+- Code reading/exploration only
+- Quick one-off questions
+
+## License
+
+MIT

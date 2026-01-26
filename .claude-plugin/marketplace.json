@@ -11,7 +11,7 @@
     {
       "name": "clarify",
       "description": "Transform vague requirements into precise specifications through structured questioning.",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "author": {
         "name": "yuhogyun"
       },
@@ -21,7 +21,7 @@
     {
       "name": "feature-dev",
       "description": "Comprehensive 7-phase feature development workflow with specialized agents for codebase exploration, architecture design, and quality review.",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "author": {
         "name": "Sid Bidasaria"
       },
@@ -31,7 +31,7 @@
     {
       "name": "wrap",
       "description": "Session wrap-up workflow with multi-agent analysis for documentation, automation, learning, and follow-up suggestions.",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "author": {
         "name": "Team Attention"
       },
@@ -41,7 +41,7 @@
     {
       "name": "interview-prompt-builder",
       "description": "Build interview prompts that instruct Claude to gather requirements before executing tasks.",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "author": {
         "name": "Yu Ho Gyun"
       },
@@ -51,7 +51,7 @@
     {
       "name": "frontend-design",
       "description": "Frontend design skill for creating distinctive, production-grade UI/UX implementations with high design quality.",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "author": {
         "name": "Anthropic",
         "email": "support@anthropic.com"
@@ -62,7 +62,7 @@
     {
       "name": "simplify",
       "description": "Simplifies and refines code for clarity, consistency, and maintainability while preserving functionality.",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "author": {
         "name": "Anthropic",
         "email": "support@anthropic.com"
@@ -73,7 +73,7 @@
     {
       "name": "typescript-lsp",
       "description": "TypeScript/JavaScript language server setup guide for code intelligence features.",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "author": {
         "name": "Anthropic",
         "email": "support@anthropic.com"
@@ -84,7 +84,7 @@
     {
       "name": "linear",
       "description": "Linear issue tracking integration. Create issues, manage projects, update statuses, and search across workspaces.",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "author": {
         "name": "Linear"
       },
@@ -104,7 +104,7 @@
     {
       "name": "web-perf-ux",
       "description": "Web performance and UX optimization through Lighthouse and Core Web Vitals analysis with actionable improvement plans.",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "author": {
         "name": "Yu Ho Gyun"
       },
