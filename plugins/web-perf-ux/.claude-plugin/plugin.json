@@ -1,0 +1,8 @@
+{
+  "name": "web-perf-ux",
+  "description": "Web performance and UX optimization through Lighthouse and Core Web Vitals analysis",
+  "author": {
+    "name": "Yu Ho Gyun",
+    "email": "yuhogyun@gmail.com"
+  }
+}

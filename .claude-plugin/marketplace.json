@@ -90,6 +90,16 @@
       },
       "source": "./plugins/git",
       "category": "development"
+    },
+    {
+      "name": "web-perf-ux",
+      "description": "Web performance and UX optimization through Lighthouse and Core Web Vitals analysis with actionable improvement plans.",
+      "version": "1.0.0",
+      "author": {
+        "name": "Yu Ho Gyun"
+      },
+      "source": "./plugins/web-perf-ux",
+      "category": "development"
     }
   ]
 }
