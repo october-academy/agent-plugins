@@ -6,7 +6,7 @@ Generate distinctive, production-grade frontend interfaces with high design qual
 
 ```bash
 # 1. Add marketplace (first time only)
-claude plugin marketplace add october/claude-plugins
+claude plugin marketplace add october-academy/claude-plugins
 
 # 2. Update marketplace
 claude plugin marketplace update

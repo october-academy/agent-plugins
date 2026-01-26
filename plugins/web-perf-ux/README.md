@@ -49,7 +49,7 @@
 
 ```bash
 # 1. 마켓플레이스 추가 (최초 1회)
-claude plugin marketplace add october/claude-plugins
+claude plugin marketplace add october-academy/claude-plugins
 
 # 2. 마켓플레이스 업데이트
 claude plugin marketplace update

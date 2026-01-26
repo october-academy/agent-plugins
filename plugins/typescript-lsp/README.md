@@ -37,7 +37,7 @@ yarn global add typescript-language-server typescript
 
 ```bash
 # Add marketplace (first time only)
-claude plugin marketplace add october/claude-plugins
+claude plugin marketplace add october-academy/claude-plugins
 
 # Update marketplace
 claude plugin marketplace update

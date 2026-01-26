@@ -29,13 +29,13 @@
       "category": "development"
     },
     {
-      "name": "session-wrap",
+      "name": "wrap",
       "description": "Session wrap-up workflow with multi-agent analysis for documentation, automation, learning, and follow-up suggestions.",
       "version": "1.0.0",
       "author": {
         "name": "Team Attention"
       },
-      "source": "./plugins/session-wrap",
+      "source": "./plugins/wrap",
       "category": "productivity"
     },
     {
@@ -60,14 +60,14 @@
       "category": "development"
     },
     {
-      "name": "code-simplifier",
+      "name": "simplify",
       "description": "Simplifies and refines code for clarity, consistency, and maintainability while preserving functionality.",
       "version": "1.0.0",
       "author": {
         "name": "Anthropic",
         "email": "support@anthropic.com"
       },
-      "source": "./plugins/code-simplifier",
+      "source": "./plugins/simplify",
       "category": "development"
     },
     {
