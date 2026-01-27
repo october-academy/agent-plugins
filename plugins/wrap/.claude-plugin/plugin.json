@@ -1,6 +1,6 @@
 {
   "name": "wrap",
-  "version": "1.4.2",
+  "version": "1.4.3",
   "description": "문서화, 자동화, 학습, 후속 작업 제안을 위한 멀티 에이전트 분석 파이프라인이 포함된 세션 마무리 워크플로우",
   "author": {
     "name": "Team Attention",
@@ -16,6 +16,6 @@
     "multi-agent"
   ],
   "commands": [
-    "./skills/wrap/"
+    "./skills/wrap/wrap.md"
   ]
 }

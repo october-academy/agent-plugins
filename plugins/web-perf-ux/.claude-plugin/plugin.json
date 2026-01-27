@@ -1,12 +1,12 @@
 {
   "name": "web-perf-ux",
-  "version": "1.5.2",
+  "version": "1.5.3",
   "description": "Lighthouse와 Core Web Vitals 분석을 통한 웹 성능 및 UX 최적화",
   "author": {
     "name": "Yu Ho Gyun",
     "email": "yuhogyun@gmail.com"
   },
   "commands": [
-    "./skills/web-perf-ux/"
+    "./skills/web-perf-ux/web-perf-ux.md"
   ]
 }
