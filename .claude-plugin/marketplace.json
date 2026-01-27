@@ -21,7 +21,7 @@
     {
       "name": "feature-dev",
       "description": "Comprehensive 7-phase feature development workflow with specialized agents for codebase exploration, architecture design, and quality review.",
-      "version": "1.4.0",
+      "version": "1.5.0",
       "author": {
         "name": "Sid Bidasaria"
       },
@@ -51,7 +51,7 @@
     {
       "name": "frontend-design",
       "description": "Frontend design skill for creating distinctive, production-grade UI/UX implementations with high design quality.",
-      "version": "1.4.0",
+      "version": "1.5.0",
       "author": {
         "name": "Anthropic",
         "email": "support@anthropic.com"
@@ -104,7 +104,7 @@
     {
       "name": "web-perf-ux",
       "description": "Web performance and UX optimization through Lighthouse and Core Web Vitals analysis with actionable improvement plans.",
-      "version": "1.4.0",
+      "version": "1.5.0",
       "author": {
         "name": "Yu Ho Gyun"
       },
