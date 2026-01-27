@@ -1,6 +1,6 @@
 {
   "name": "web-perf-ux",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "description": "Web performance and UX optimization through Lighthouse and Core Web Vitals analysis",
   "author": {
     "name": "Yu Ho Gyun",
