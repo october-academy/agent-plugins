@@ -2,6 +2,7 @@
 name: wrap
 description: Session wrap-up workflow. Use when user asks to "wrap up session", "end session", "/wrap", or wants to analyze completed work before ending.
 user-invocable: true
+disable-model-invocation: true
 argument-hint: [notes]
 version: 1.0.0
 ---
