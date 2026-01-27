@@ -39,13 +39,13 @@
       "category": "productivity"
     },
     {
-      "name": "interview-prompt-builder",
-      "description": "Build interview prompts that instruct Claude to gather requirements before executing tasks.",
-      "version": "1.4.0",
+      "name": "interview-spec",
+      "description": "Start iterative requirement clarification loop. Transforms unclear requirements into precise, actionable specifications.",
+      "version": "1.5.0",
       "author": {
         "name": "Yu Ho Gyun"
       },
-      "source": "./plugins/interview-prompt-builder",
+      "source": "./plugins/interview-spec",
       "category": "productivity"
     },
     {

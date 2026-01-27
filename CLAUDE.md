@@ -110,7 +110,7 @@ model: haiku  # haiku | sonnet | opus
 | feature-dev | skills, agents, hooks | `/feature-dev` |
 | frontend-design | skills | `/frontend-design` (auto) |
 | git | skills | `/git:push`, `/git:push-pr` |
-| interview-prompt-builder | skills | `/interview-prompt-builder` (auto) |
+| interview-spec | skills | `/interview-spec` (auto) |
 | linear | mcp | - |
 | simplify | skills, agents, hooks | `/simplify` |
 | typescript-lsp | mcp | - |
