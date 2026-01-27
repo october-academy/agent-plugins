@@ -20,8 +20,8 @@ claude plugin install simplify@october-plugins
 ## Usage
 
 ```bash
-/simplify                 # Simplify recently modified code
-/simplify src/utils.ts    # Simplify specific file
+/simplify:run                 # Simplify recently modified code
+/simplify:run src/utils.ts    # Simplify specific file
 ```
 
 ## Architecture

@@ -1,9 +1,15 @@
 {
   "name": "clarify",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Transform vague requirements into precise specifications through structured questioning.",
   "author": {
     "name": "yuhogyun"
   },
-  "keywords": ["clarify", "requirements", "ralph", "loop", "iteration"]
+  "keywords": [
+    "clarify",
+    "requirements",
+    "ralph",
+    "loop",
+    "iteration"
+  ]
 }

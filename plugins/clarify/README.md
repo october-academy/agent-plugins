@@ -20,22 +20,22 @@ claude plugin install clarify@october-plugins
 ## Usage
 
 ```bash
-/clarify "Add a login feature"
-/clarify "Build a REST API" --max-iterations 5
+/clarify:start "Add a login feature"
+/clarify:start "Build a REST API" --max-iterations 5
 ```
 
 ### Commands
 
 | Command | Description |
 |---------|-------------|
-| `/clarify` | Start clarification loop (default: 3 iterations) |
-| `/cancel` | Cancel active loop |
+| `/clarify:start` | Start clarification loop (default: 3 iterations) |
+| `/clarify:cancel` | Cancel active loop |
 
 ## How It Works
 
 ```
 ┌─────────────────────────────────────────────────────┐
-│  /clarify "Add a login feature"                     │
+│  /clarify:start "Add a login feature"               │
 └──────────────────────┬──────────────────────────────┘
                        │
                        ▼
@@ -65,7 +65,7 @@ claude plugin install clarify@october-plugins
 ## Example
 
 ```
-> /clarify Add a login feature
+> /clarify:start Add a login feature
 
 Clarify loop activated!
 Original Requirement: "Add a login feature"
