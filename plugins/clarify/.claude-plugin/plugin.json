@@ -1,6 +1,6 @@
 {
   "name": "clarify",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "description": "Transform vague requirements into precise specifications through structured questioning.",
   "author": {
     "name": "yuhogyun"
@@ -11,5 +11,8 @@
     "ralph",
     "loop",
     "iteration"
+  ],
+  "commands": [
+    "./skills/clarify/"
   ]
 }

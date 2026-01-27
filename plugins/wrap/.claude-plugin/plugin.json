@@ -1,6 +1,6 @@
 {
   "name": "wrap",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "description": "Session wrap-up workflow with multi-agent analysis pipeline for documentation, automation, learning, and follow-up suggestions",
   "author": {
     "name": "Team Attention",
@@ -14,5 +14,8 @@
     "documentation",
     "automation",
     "multi-agent"
+  ],
+  "commands": [
+    "./skills/wrap/"
   ]
 }

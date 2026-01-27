@@ -1,9 +1,12 @@
 {
   "name": "frontend-design",
-  "version": "1.5.0",
+  "version": "1.5.1",
   "description": "Frontend design skill for UI/UX implementation",
   "author": {
     "name": "Anthropic",
     "email": "support@anthropic.com"
-  }
+  },
+  "commands": [
+    "./skills/frontend-design/"
+  ]
 }
