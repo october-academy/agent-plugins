@@ -106,16 +106,16 @@ model: haiku  # haiku | sonnet | opus
 
 | Plugin | Type | Trigger |
 |--------|------|---------|
-| clarify | skills, hooks | `/clarify:start`, `/clarify:cancel` |
-| feature-dev | commands, agents, hooks | `/feature-dev:start` |
-| frontend-design | skills | `/frontend-design:create` (auto) |
+| clarify | skills, hooks | `/clarify` |
+| feature-dev | skills, agents, hooks | `/feature-dev` |
+| frontend-design | skills | `/frontend-design` (auto) |
 | git | commands | `/git:push`, `/git:push-pr` |
-| interview-prompt-builder | skills | `/interview-prompt-builder:build` (auto) |
+| interview-prompt-builder | skills | `/interview-prompt-builder` (auto) |
 | linear | mcp | - |
-| simplify | skills, agents, hooks | `/simplify:run` |
+| simplify | skills, agents, hooks | `/simplify` |
 | typescript-lsp | mcp | - |
-| web-perf-ux | skills | `/web-perf-ux:analyze` (auto) |
-| wrap | skills, agents, hooks | `/wrap:session` |
+| web-perf-ux | skills | `/web-perf-ux` (auto) |
+| wrap | skills, agents, hooks | `/wrap` |
 
 ## Key Conventions
 

@@ -29,20 +29,20 @@ Building features requires more than just writing code. You need to:
 - **Design thoughtfully** before implementing
 - **Review for quality** after building
 
-This plugin embeds these practices into a structured workflow that runs automatically when you use the `/feature-dev:start` command.
+This plugin embeds these practices into a structured workflow that runs automatically when you use the `/feature-dev` command.
 
-## Command: `/feature-dev:start`
+## Command: `/feature-dev`
 
 Launches a guided feature development workflow with 7 distinct phases.
 
 **Usage:**
 ```bash
-/feature-dev:start Add user authentication with OAuth
+/feature-dev Add user authentication with OAuth
 ```
 
 Or simply:
 ```bash
-/feature-dev:start
+/feature-dev
 ```
 
 The command will guide you through the entire process interactively.
@@ -61,7 +61,7 @@ The command will guide you through the entire process interactively.
 
 **Example:**
 ```
-You: /feature-dev:start Add caching
+You: /feature-dev Add caching
 Claude: Let me understand what you need...
         - What should be cached? (API responses, computed values, etc.)
         - What are your performance requirements?
@@ -331,7 +331,7 @@ Suggested next steps:
 
 ### Full workflow (recommended for new features):
 ```bash
-/feature-dev:start Add rate limiting to API endpoints
+/feature-dev Add rate limiting to API endpoints
 ```
 
 Let the workflow guide you through all 7 phases.

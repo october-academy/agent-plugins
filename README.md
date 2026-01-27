@@ -13,32 +13,33 @@ claude plugin install <plugin-name>@october-plugins
 
 ## 호출 방식
 
-플러그인 스킬/명령어는 **`/플러그인:스킬`** 형식으로 호출합니다.
+플러그인 스킬은 **단축형** `/플러그인명`으로 호출합니다.
 
 ```bash
-/git:push              # git 플러그인의 push 명령어
-/simplify:run          # simplify 플러그인의 run 스킬
-/wrap:session          # wrap 플러그인의 session 스킬
+/clarify               # 요구사항 명확화
+/simplify              # 코드 단순화
+/wrap                  # 세션 마무리
+/feature-dev           # 기능 개발 워크플로우
+/git:push              # git push (다중 명령어 플러그인)
 ```
 
-> **왜 이런 형식인가요?**
-> 플러그인 스킬은 다른 레벨(개인/프로젝트)의 스킬과 충돌을 방지하기 위해 `플러그인:스킬` 네임스페이스를 사용합니다.
-> 자동 트리거 스킬은 Claude가 상황에 맞게 자동으로 호출합니다.
+> **단축형 조건**: 플러그인에 스킬이 1개이고, 스킬 이름 = 플러그인 이름이면 단축형 사용 가능
+> git 플러그인은 2개 명령어(push, push-pr)가 있어 `/git:명령어` 형식 사용
 
 ## 플러그인 목록
 
 | 플러그인 | 설명 | 호출 방식 |
 |---------|------|----------|
-| [clarify](./plugins/clarify) | 모호한 요구사항을 명확한 명세로 변환 | `/clarify:start`, `/clarify:cancel` |
-| [feature-dev](./plugins/feature-dev) | 7단계 체계적 기능 개발 워크플로우 | `/feature-dev:start` |
-| [frontend-design](./plugins/frontend-design) | 고품질 프론트엔드 인터페이스 생성 | `/frontend-design:create` (자동) |
+| [clarify](./plugins/clarify) | 모호한 요구사항을 명확한 명세로 변환 | `/clarify` |
+| [feature-dev](./plugins/feature-dev) | 7단계 체계적 기능 개발 워크플로우 | `/feature-dev` |
+| [frontend-design](./plugins/frontend-design) | 고품질 프론트엔드 인터페이스 생성 | `/frontend-design` (자동) |
 | [git](./plugins/git) | Git 커밋, 푸시, PR 자동화 | `/git:push`, `/git:push-pr` |
-| [interview-prompt-builder](./plugins/interview-prompt-builder) | 요구사항 수집용 인터뷰 프롬프트 생성 | `/interview-prompt-builder:build` (자동) |
+| [interview-prompt-builder](./plugins/interview-prompt-builder) | 요구사항 수집용 인터뷰 프롬프트 생성 | `/interview-prompt-builder` (자동) |
 | [linear](./plugins/linear) | Linear 이슈 트래킹 통합 (MCP) | - |
-| [simplify](./plugins/simplify) | 코드 단순화 및 정제 | `/simplify:run` |
+| [simplify](./plugins/simplify) | 코드 단순화 및 정제 | `/simplify` |
 | [typescript-lsp](./plugins/typescript-lsp) | TypeScript/JS 언어 서버 (MCP) | - |
-| [web-perf-ux](./plugins/web-perf-ux) | 웹 성능 및 UX 최적화 분석 | `/web-perf-ux:analyze` (자동) |
-| [wrap](./plugins/wrap) | 세션 마무리 및 문서화 | `/wrap:session` |
+| [web-perf-ux](./plugins/web-perf-ux) | 웹 성능 및 UX 최적화 분석 | `/web-perf-ux` (자동) |
+| [wrap](./plugins/wrap) | 세션 마무리 및 문서화 | `/wrap` |
 
 ---
 
@@ -49,9 +50,8 @@ claude plugin install <plugin-name>@october-plugins
 모호한 요구사항을 구조화된 질문으로 명확화합니다.
 
 ```
-/clarify:start "로그인 기능 추가"
-/clarify:start "REST API 구축" --max-iterations 5
-/clarify:cancel                    # 진행 중인 루프 취소
+/clarify "로그인 기능 추가"
+/clarify "REST API 구축" --max-iterations 5
 ```
 
 - 반복당 4개 질문 × 4개 옵션
@@ -64,7 +64,7 @@ claude plugin install <plugin-name>@october-plugins
 7단계 기능 개발: Discovery → Codebase Exploration → Clarifying Questions → Architecture Design → Implementation → Quality Review → Summary
 
 ```
-/feature-dev:start OAuth 인증 추가
+/feature-dev OAuth 인증 추가
 ```
 
 에이전트: `code-explorer`, `code-architect`, `code-reviewer`
@@ -113,8 +113,8 @@ Linear 이슈 트래킹 MCP 통합. 이슈 생성/관리, 상태 업데이트, �
 코드 단순화. 기능은 유지하고 구현만 개선.
 
 ```
-/simplify:run                 # 최근 수정 코드
-/simplify:run src/utils.ts    # 특정 파일
+/simplify                 # 최근 수정 코드
+/simplify src/utils.ts    # 특정 파일
 ```
 
 원칙: 명확성 > 간결성, 중첩 삼항 금지, Opus 모델
@@ -144,8 +144,8 @@ npm install -g typescript-language-server typescript
 세션 마무리. 멀티 에이전트로 문서화, 자동화, 학습 포인트 분석.
 
 ```
-/wrap:session                     # 인터랙티브 마무리
-/wrap:session README 오타 수정     # 빠른 커밋
+/wrap                     # 인터랙티브 마무리
+/wrap README 오타 수정     # 빠른 커밋
 ```
 
 ---
@@ -156,16 +156,15 @@ npm install -g typescript-language-server typescript
 
 | 명령어 | 설명 |
 |--------|------|
-| `/clarify:start "<요구사항>"` | 요구사항 명확화 |
-| `/clarify:cancel` | 진행 중인 clarify 루프 취소 |
-| `/feature-dev:start <기능>` | 7단계 기능 개발 |
-| `/frontend-design:create` | 프론트엔드 UI 생성 |
+| `/clarify "<요구사항>"` | 요구사항 명확화 |
+| `/feature-dev <기능>` | 7단계 기능 개발 |
+| `/frontend-design` | 프론트엔드 UI 생성 |
 | `/git:push [msg] [--branch]` | 커밋 및 푸시 |
 | `/git:push-pr [msg] [--base]` | 커밋, 푸시, PR |
-| `/interview-prompt-builder:build` | 인터뷰 프롬프트 생성 |
-| `/simplify:run [file]` | 코드 단순화 |
-| `/web-perf-ux:analyze` | 웹 성능 분석 |
-| `/wrap:session [msg]` | 세션 마무리 |
+| `/interview-prompt-builder` | 인터뷰 프롬프트 생성 |
+| `/simplify [file]` | 코드 단순화 |
+| `/web-perf-ux` | 웹 성능 분석 |
+| `/wrap [msg]` | 세션 마무리 |
 
 ### 설치 명령어
 
@@ -192,36 +191,36 @@ claude-plugins/
 │   ├── clarify/
 │   │   ├── .claude-plugin/plugin.json
 │   │   ├── hooks/hooks.json
-│   │   └── skills/{start,cancel}/
+│   │   └── skills/clarify/SKILL.md
 │   ├── feature-dev/
 │   │   ├── .claude-plugin/plugin.json
 │   │   ├── agents/{code-explorer,code-architect,code-reviewer}.md
-│   │   └── commands/start.md
+│   │   └── skills/feature-dev/SKILL.md
 │   ├── frontend-design/
 │   │   ├── .claude-plugin/plugin.json
-│   │   └── skills/create/
+│   │   └── skills/frontend-design/SKILL.md
 │   ├── git/
 │   │   ├── .claude-plugin/plugin.json
 │   │   └── commands/{push,push-pr}.md
 │   ├── interview-prompt-builder/
 │   │   ├── .claude-plugin/plugin.json
-│   │   └── skills/build/
+│   │   └── skills/interview-prompt-builder/SKILL.md
 │   ├── linear/
 │   │   ├── .claude-plugin/plugin.json
 │   │   └── .mcp.json
 │   ├── simplify/
 │   │   ├── .claude-plugin/plugin.json
 │   │   ├── agents/{complexity-analyzer,pattern-checker,readability-analyzer,naming-reviewer,issue-simplifier}.md
-│   │   └── skills/run/
+│   │   └── skills/simplify/SKILL.md
 │   ├── typescript-lsp/
 │   │   └── .claude-plugin/plugin.json
 │   ├── web-perf-ux/
 │   │   ├── .claude-plugin/plugin.json
-│   │   └── skills/analyze/
+│   │   └── skills/web-perf-ux/SKILL.md
 │   └── wrap/
 │       ├── .claude-plugin/plugin.json
 │       ├── agents/{doc-updater,automation-scout,learning-extractor,followup-suggester,duplicate-checker}.md
-│       └── skills/session/
+│       └── skills/wrap/SKILL.md
 └── README.md
 ```
 

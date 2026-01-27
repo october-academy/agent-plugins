@@ -1,5 +1,5 @@
 ---
-name: build
+name: interview-prompt-builder
 description: Build effective interview prompts for Claude Code when users have incomplete or unclear requirements. Use when users want to create prompts that instruct Claude to interview them before executing a task. Triggers include requests like "help me write a prompt", "make an interview prompt", "I'm not sure what I want yet", or when a user's request is vague and would benefit from structured clarification.
 ---
 

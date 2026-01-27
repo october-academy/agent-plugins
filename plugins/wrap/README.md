@@ -20,8 +20,8 @@ claude plugin install wrap@october-plugins
 ## Usage
 
 ```bash
-/wrap:session                    # Interactive session wrap-up
-/wrap:session fix typo in README # Quick commit with provided message
+/wrap                    # Interactive session wrap-up
+/wrap fix typo in README # Quick commit with provided message
 ```
 
 ## Architecture
