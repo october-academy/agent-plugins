@@ -41,7 +41,7 @@
     {
       "name": "interview-spec",
       "description": "Start iterative requirement clarification loop. Transforms unclear requirements into precise, actionable specifications.",
-      "version": "1.5.0",
+      "version": "1.5.1",
       "author": {
         "name": "Yu Ho Gyun"
       },
