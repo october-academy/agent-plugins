@@ -1,7 +1,7 @@
 {
   "name": "typescript-lsp",
   "version": "1.1.0",
-  "description": "TypeScript/JavaScript language server providing go-to-definition, find references, and error checking",
+  "description": "TypeScript/JavaScript 언어 서버. 정의로 이동, 참조 찾기, 오류 검사 기능 제공",
   "author": {
     "name": "october",
     "email": "yuhogyun@gmail.com"

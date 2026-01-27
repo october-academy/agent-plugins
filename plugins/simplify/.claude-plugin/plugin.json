@@ -1,7 +1,7 @@
 {
   "name": "simplify",
   "version": "1.4.1",
-  "description": "Simplifies and refines code for clarity, consistency, and maintainability while preserving functionality",
+  "description": "기능을 유지하면서 코드의 명확성, 일관성, 유지보수성을 개선",
   "author": {
     "name": "Anthropic",
     "email": "support@anthropic.com"

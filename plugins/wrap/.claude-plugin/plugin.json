@@ -1,7 +1,7 @@
 {
   "name": "wrap",
   "version": "1.4.1",
-  "description": "Session wrap-up workflow with multi-agent analysis pipeline for documentation, automation, learning, and follow-up suggestions",
+  "description": "문서화, 자동화, 학습, 후속 작업 제안을 위한 멀티 에이전트 분석 파이프라인이 포함된 세션 마무리 워크플로우",
   "author": {
     "name": "Team Attention",
     "url": "https://github.com/team-attention"

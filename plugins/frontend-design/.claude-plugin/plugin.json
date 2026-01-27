@@ -1,7 +1,7 @@
 {
   "name": "frontend-design",
   "version": "1.5.1",
-  "description": "Frontend design skill for UI/UX implementation",
+  "description": "UI/UX 구현을 위한 프론트엔드 디자인 스킬",
   "author": {
     "name": "Anthropic",
     "email": "support@anthropic.com"
