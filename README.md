@@ -201,7 +201,7 @@ claude-plugins/
 │   │   └── skills/frontend-design/SKILL.md
 │   ├── git/
 │   │   ├── .claude-plugin/plugin.json
-│   │   └── commands/{push,push-pr}.md
+│   │   └── skills/{push,push-pr}/SKILL.md
 │   ├── interview-prompt-builder/
 │   │   ├── .claude-plugin/plugin.json
 │   │   └── skills/interview-prompt-builder/SKILL.md

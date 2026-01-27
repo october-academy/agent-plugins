@@ -1,10 +1,11 @@
 ---
-allowed-tools: Bash(git status:*), Bash(git diff:*), Bash(git add:*), Bash(git reset:*), Bash(git commit:*), Bash(git branch:*), Bash(git log:*), Bash(git push:*), Bash(git switch:*), Bash(git fetch:*), Bash(git rev-parse:*)
-argument-hint: [message] [--branch <name>]
+name: push
 description: 변경사항을 스테이징하고 Conventional Commits 메시지로 커밋한 뒤 기본적으로 origin main으로 push합니다. 메시지를 생략하면 자동 생성하며, --branch로 대상 브랜치를 지정할 수 있습니다.
+argument-hint: [message] [--branch <name>]
+allowed-tools: Bash(git status:*), Bash(git diff:*), Bash(git add:*), Bash(git reset:*), Bash(git commit:*), Bash(git branch:*), Bash(git log:*), Bash(git push:*), Bash(git switch:*), Bash(git fetch:*), Bash(git rev-parse:*)
 ---
 
-# /push — Git Commit & Push (Custom Slash Command)
+# /git:push — Git Commit & Push
 
 변경사항을 분석해 의미 있는 커밋 메시지를 생성(또는 전달받은 메시지 사용)하고, 기본값으로 `origin main`에 push합니다. 필요 시 `--branch <name>`로 대상을 지정할 수 있습니다. 이 커맨드는 Claude Code의 Custom Slash Command 형식을 따릅니다. 참조: [Anthropic: Custom slash commands](https://docs.anthropic.com/en/docs/claude-code/slash-commands#custom-slash-commands)
 

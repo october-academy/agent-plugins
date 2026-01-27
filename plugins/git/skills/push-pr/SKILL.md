@@ -1,10 +1,11 @@
 ---
-allowed-tools: Bash(git status:*), Bash(git diff:*), Bash(git add:*), Bash(git reset:*), Bash(git commit:*), Bash(git branch:*), Bash(git log:*), Bash(git push:*), Bash(git switch:*), Bash(git fetch:*), Bash(git rev-parse:*), Bash(gh pr create:*), Bash(gh pr list:*)
-argument-hint: [message] [--base <branch>]
+name: push-pr
 description: 변경사항을 커밋하고 push한 뒤 GitHub PR을 자동 생성합니다. 메시지를 생략하면 자동 생성하며, --base로 base 브랜치를 지정할 수 있습니다.
+argument-hint: [message] [--base <branch>]
+allowed-tools: Bash(git status:*), Bash(git diff:*), Bash(git add:*), Bash(git reset:*), Bash(git commit:*), Bash(git branch:*), Bash(git log:*), Bash(git push:*), Bash(git switch:*), Bash(git fetch:*), Bash(git rev-parse:*), Bash(gh pr create:*), Bash(gh pr list:*)
 ---
 
-# /push-pr — Git Commit, Push & Create PR (Custom Slash Command)
+# /git:push-pr — Git Commit, Push & Create PR
 
 변경사항을 분석해 의미 있는 커밋 메시지를 생성(또는 전달받은 메시지 사용)하고, 현재 브랜치에 push한 뒤 GitHub Pull Request를 자동 생성합니다. 기본 base 브랜치는 `main`이며, `--base <branch>`로 변경할 수 있습니다. 참조: [Anthropic: Custom slash commands](https://docs.anthropic.com/en/docs/claude-code/slash-commands#custom-slash-commands)
 

@@ -94,7 +94,7 @@
     {
       "name": "git",
       "description": "Git commit and push workflow with automatic Conventional Commits message generation.",
-      "version": "1.1.0",
+      "version": "1.2.0",
       "author": {
         "name": "Yu Ho Gyun"
       },

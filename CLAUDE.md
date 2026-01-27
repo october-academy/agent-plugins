@@ -109,7 +109,7 @@ model: haiku  # haiku | sonnet | opus
 | clarify | skills, hooks | `/clarify` |
 | feature-dev | skills, agents, hooks | `/feature-dev` |
 | frontend-design | skills | `/frontend-design` (auto) |
-| git | commands | `/git:push`, `/git:push-pr` |
+| git | skills | `/git:push`, `/git:push-pr` |
 | interview-prompt-builder | skills | `/interview-prompt-builder` (auto) |
 | linear | mcp | - |
 | simplify | skills, agents, hooks | `/simplify` |
