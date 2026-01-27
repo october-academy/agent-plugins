@@ -1,6 +1,7 @@
 ---
 name: feature-dev
 description: Guided feature development with codebase understanding and architecture focus
+user-invocable: true
 argument-hint: Optional feature description
 ---
 
