@@ -1,4 +1,5 @@
 ---
+name: clarify
 description: Start iterative requirement clarification loop. Use this skill when the user has a vague requirement and wants to clarify it through structured questioning. Transforms unclear requirements into precise, actionable specifications.
 user-invocable: true
 argument-hint: [requirement]

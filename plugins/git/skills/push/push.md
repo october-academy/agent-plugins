@@ -1,4 +1,5 @@
 ---
+name: push
 description: 변경사항을 스테이징하고 Conventional Commits 메시지로 커밋한 뒤 기본적으로 origin main으로 push합니다. 메시지를 생략하면 자동 생성하며, --branch로 대상 브랜치를 지정할 수 있습니다.
 user-invocable: true
 disable-model-invocation: true

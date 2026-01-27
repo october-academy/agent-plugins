@@ -1,4 +1,5 @@
 ---
+name: simplify
 description: Simplify and refine code for clarity, consistency, and maintainability
 user-invocable: true
 argument-hint: [file or scope]
