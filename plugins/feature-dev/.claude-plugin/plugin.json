@@ -1,6 +1,6 @@
 {
   "name": "feature-dev",
-  "version": "1.5.1",
+  "version": "1.5.2",
   "description": "코드베이스 탐색, 아키텍처 설계, 품질 리뷰를 위한 전문 에이전트가 포함된 종합 기능 개발 워크플로우",
   "author": {
     "name": "Sid Bidasaria",

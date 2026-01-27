@@ -1,6 +1,6 @@
 {
   "name": "interview-spec",
-  "version": "1.5.1",
+  "version": "1.5.2",
   "description": "반복적 요구사항 명확화 루프 시작. 불명확한 요구사항을 정확하고 실행 가능한 스펙으로 변환",
   "author": {
     "name": "yuhogyun"

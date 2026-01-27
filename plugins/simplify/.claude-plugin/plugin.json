@@ -1,6 +1,6 @@
 {
   "name": "simplify",
-  "version": "1.4.1",
+  "version": "1.4.2",
   "description": "기능을 유지하면서 코드의 명확성, 일관성, 유지보수성을 개선",
   "author": {
     "name": "Anthropic",

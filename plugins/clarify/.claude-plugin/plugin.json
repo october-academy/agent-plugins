@@ -1,6 +1,6 @@
 {
   "name": "clarify",
-  "version": "1.4.1",
+  "version": "1.4.2",
   "description": "구조화된 질문을 통해 모호한 요구사항을 명확한 스펙으로 변환",
   "author": {
     "name": "yuhogyun"
