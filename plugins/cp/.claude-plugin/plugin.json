@@ -1,0 +1,11 @@
+{
+  "name": "cp",
+  "version": "1.0.0",
+  "description": "커밋과 푸시를 한 번에 수행하는 단축 명령어",
+  "author": {
+    "name": "Yu Ho Gyun"
+  },
+  "commands": [
+    "./skills/cp/cp.md"
+  ]
+}

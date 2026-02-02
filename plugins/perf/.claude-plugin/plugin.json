@@ -1,0 +1,11 @@
+{
+  "name": "perf",
+  "version": "1.0.0",
+  "description": "주요 페이지 성능 일괄 측정 (Lighthouse/Core Web Vitals)",
+  "author": {
+    "name": "Yu Ho Gyun"
+  },
+  "commands": [
+    "./skills/perf/perf.md"
+  ]
+}

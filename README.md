@@ -31,12 +31,16 @@ claude plugin install <plugin-name>@october-plugins
 | 플러그인 | 설명 | 호출 방식 |
 |---------|------|----------|
 | [clarify](./plugins/clarify) | 모호한 요구사항을 명확한 명세로 변환 | `/clarify` |
+| [cp](./plugins/cp) | 커밋 & 푸시 한 번에 | `/cp` |
+| [deploy](./plugins/deploy) | Railway, Cloudflare 통합 배포 | `/deploy` |
 | [feature-dev](./plugins/feature-dev) | 7단계 체계적 기능 개발 워크플로우 | `/feature-dev` |
 | [frontend-design](./plugins/frontend-design) | 고품질 프론트엔드 인터페이스 생성 | `/frontend-design` (자동) |
 | [git](./plugins/git) | Git 커밋, 푸시, PR 자동화 | `/git:push`, `/git:push-pr` |
 | [interview-prompt-builder](./plugins/interview-prompt-builder) | 요구사항 수집용 인터뷰 프롬프트 생성 | `/interview-prompt-builder` (자동) |
 | [linear](./plugins/linear) | Linear 이슈 트래킹 통합 (MCP) | - |
+| [perf](./plugins/perf) | 성능 측정 (Lighthouse/Core Web Vitals) | `/perf` |
 | [simplify](./plugins/simplify) | 코드 단순화 및 정제 | `/simplify` |
+| [sync](./plugins/sync) | 원격 저장소 동기화 (git pull) | `/sync` |
 | [typescript-lsp](./plugins/typescript-lsp) | TypeScript/JS 언어 서버 (MCP) | - |
 | [web-perf-ux](./plugins/web-perf-ux) | 웹 성능 및 UX 최적화 분석 | `/web-perf-ux` (자동) |
 | [wrap](./plugins/wrap) | 세션 마무리 및 문서화 | `/wrap` |
@@ -56,6 +60,36 @@ claude plugin install <plugin-name>@october-plugins
 
 - 반복당 4개 질문 × 4개 옵션
 - Before/After 요구사항 요약
+
+---
+
+### cp
+
+커밋과 푸시를 한 번에 수행합니다.
+
+```
+/cp                        # 자동 커밋 메시지 생성
+/cp "fix: 버그 수정"        # 메시지 지정
+```
+
+- Conventional Commits 형식
+- 민감한 파일 자동 감지 (`.env` 등)
+- Co-Authored-By 자동 추가
+
+---
+
+### deploy
+
+Railway, Cloudflare Pages/Workers 통합 배포.
+
+```
+/deploy              # 전체 배포
+/deploy railway      # Railway만
+/deploy cf           # Cloudflare Workers만
+```
+
+- 사전 체크: 커밋되지 않은 변경사항 확인
+- 배포 후 상태 리포트
 
 ---
 
@@ -108,6 +142,21 @@ Linear 이슈 트래킹 MCP 통합. 이슈 생성/관리, 상태 업데이트, �
 
 ---
 
+### perf
+
+빠른 성능 측정. Lighthouse/Core Web Vitals 기반.
+
+```
+/perf                # 메인 페이지 측정
+/perf /about         # 특정 경로
+/perf --all          # 주요 페이지 일괄 측정
+```
+
+- LCP, CLS, INP 핵심 지표
+- `web-perf-ux`의 간소화 버전
+
+---
+
 ### simplify
 
 코드 단순화. 기능은 유지하고 구현만 개선.
@@ -118,6 +167,20 @@ Linear 이슈 트래킹 MCP 통합. 이슈 생성/관리, 상태 업데이트, �
 ```
 
 원칙: 명확성 > 간결성, 중첩 삼항 금지, Opus 모델
+
+---
+
+### sync
+
+원격 저장소 동기화 (git pull) 단축 명령어.
+
+```
+/sync              # origin main에서 pull
+/sync develop      # 특정 브랜치
+```
+
+- 작업 중인 변경사항 있으면 경고
+- 충돌 발생 시 해결 도움
 
 ---
 
@@ -157,12 +220,16 @@ npm install -g typescript-language-server typescript
 | 명령어 | 설명 |
 |--------|------|
 | `/clarify "<요구사항>"` | 요구사항 명확화 |
+| `/cp [msg]` | 커밋 & 푸시 |
+| `/deploy [target]` | 통합 배포 |
 | `/feature-dev <기능>` | 7단계 기능 개발 |
 | `/frontend-design` | 프론트엔드 UI 생성 |
 | `/git:push [msg] [--branch]` | 커밋 및 푸시 |
 | `/git:push-pr [msg] [--base]` | 커밋, 푸시, PR |
 | `/interview-prompt-builder` | 인터뷰 프롬프트 생성 |
+| `/perf [path]` | 성능 측정 |
 | `/simplify [file]` | 코드 단순화 |
+| `/sync [branch]` | 원격 동기화 |
 | `/web-perf-ux` | 웹 성능 분석 |
 | `/wrap [msg]` | 세션 마무리 |
 
@@ -170,12 +237,16 @@ npm install -g typescript-language-server typescript
 
 ```bash
 claude plugin install clarify@october-plugins
+claude plugin install cp@october-plugins
+claude plugin install deploy@october-plugins
 claude plugin install feature-dev@october-plugins
 claude plugin install frontend-design@october-plugins
 claude plugin install git@october-plugins
 claude plugin install interview-prompt-builder@october-plugins
 claude plugin install linear@october-plugins
+claude plugin install perf@october-plugins
 claude plugin install simplify@october-plugins
+claude plugin install sync@october-plugins
 claude plugin install typescript-lsp@october-plugins
 claude plugin install web-perf-ux@october-plugins
 claude plugin install wrap@october-plugins
@@ -192,6 +263,12 @@ claude-plugins/
 │   │   ├── .claude-plugin/plugin.json
 │   │   ├── hooks/hooks.json
 │   │   └── skills/clarify/SKILL.md
+│   ├── cp/
+│   │   ├── .claude-plugin/plugin.json
+│   │   └── skills/cp/SKILL.md
+│   ├── deploy/
+│   │   ├── .claude-plugin/plugin.json
+│   │   └── skills/deploy/SKILL.md
 │   ├── feature-dev/
 │   │   ├── .claude-plugin/plugin.json
 │   │   ├── agents/{code-explorer,code-architect,code-reviewer}.md
@@ -208,10 +285,16 @@ claude-plugins/
 │   ├── linear/
 │   │   ├── .claude-plugin/plugin.json
 │   │   └── .mcp.json
+│   ├── perf/
+│   │   ├── .claude-plugin/plugin.json
+│   │   └── skills/perf/SKILL.md
 │   ├── simplify/
 │   │   ├── .claude-plugin/plugin.json
 │   │   ├── agents/{complexity-analyzer,pattern-checker,readability-analyzer,naming-reviewer,issue-simplifier}.md
 │   │   └── skills/simplify/SKILL.md
+│   ├── sync/
+│   │   ├── .claude-plugin/plugin.json
+│   │   └── skills/sync/SKILL.md
 │   ├── typescript-lsp/
 │   │   └── .claude-plugin/plugin.json
 │   ├── web-perf-ux/

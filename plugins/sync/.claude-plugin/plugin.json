@@ -1,0 +1,11 @@
+{
+  "name": "sync",
+  "version": "1.0.0",
+  "description": "원격 저장소와 동기화하는 단축 명령어 (git pull)",
+  "author": {
+    "name": "Yu Ho Gyun"
+  },
+  "commands": [
+    "./skills/sync/sync.md"
+  ]
+}
