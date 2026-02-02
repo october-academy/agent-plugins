@@ -36,7 +36,7 @@ claude plugin install <plugin-name>@october-plugins
 | [feature-dev](./plugins/feature-dev) | 7단계 체계적 기능 개발 워크플로우 | `/feature-dev` |
 | [frontend-design](./plugins/frontend-design) | 고품질 프론트엔드 인터페이스 생성 | `/frontend-design` (자동) |
 | [git](./plugins/git) | Git 커밋, 푸시, PR 자동화 | `/git:push`, `/git:push-pr` |
-| [interview-prompt-builder](./plugins/interview-prompt-builder) | 요구사항 수집용 인터뷰 프롬프트 생성 | `/interview-prompt-builder` (자동) |
+| [interview-spec](./plugins/interview-spec) | 요구사항 수집용 인터뷰 프롬프트 생성 | `/interview-spec` (자동) |
 | [linear](./plugins/linear) | Linear 이슈 트래킹 통합 (MCP) | - |
 | [perf](./plugins/perf) | 성능 측정 (Lighthouse/Core Web Vitals) | `/perf` |
 | [simplify](./plugins/simplify) | 코드 단순화 및 정제 | `/simplify` |
@@ -128,7 +128,7 @@ Git 커밋/푸시/PR 자동화. Conventional Commits 형식.
 
 ---
 
-### interview-prompt-builder
+### interview-spec
 
 Claude가 작업 전 요구사항을 수집하도록 인터뷰 프롬프트 생성.
 
@@ -226,7 +226,7 @@ npm install -g typescript-language-server typescript
 | `/frontend-design` | 프론트엔드 UI 생성 |
 | `/git:push [msg] [--branch]` | 커밋 및 푸시 |
 | `/git:push-pr [msg] [--base]` | 커밋, 푸시, PR |
-| `/interview-prompt-builder` | 인터뷰 프롬프트 생성 |
+| `/interview-spec` | 인터뷰 프롬프트 생성 |
 | `/perf [path]` | 성능 측정 |
 | `/simplify [file]` | 코드 단순화 |
 | `/sync [branch]` | 원격 동기화 |
@@ -242,7 +242,7 @@ claude plugin install deploy@october-plugins
 claude plugin install feature-dev@october-plugins
 claude plugin install frontend-design@october-plugins
 claude plugin install git@october-plugins
-claude plugin install interview-prompt-builder@october-plugins
+claude plugin install interview-spec@october-plugins
 claude plugin install linear@october-plugins
 claude plugin install perf@october-plugins
 claude plugin install simplify@october-plugins
@@ -279,9 +279,9 @@ claude-plugins/
 │   ├── git/
 │   │   ├── .claude-plugin/plugin.json
 │   │   └── skills/{push,push-pr}/SKILL.md
-│   ├── interview-prompt-builder/
+│   ├── interview-spec/
 │   │   ├── .claude-plugin/plugin.json
-│   │   └── skills/interview-prompt-builder/SKILL.md
+│   │   └── skills/interview-spec/SKILL.md
 │   ├── linear/
 │   │   ├── .claude-plugin/plugin.json
 │   │   └── .mcp.json

@@ -12,8 +12,5 @@
     "requirements",
     "clarification",
     "specification"
-  ],
-  "commands": [
-    "./skills/interview-spec/interview-spec.md"
   ]
 }

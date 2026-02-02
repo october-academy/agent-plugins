@@ -4,8 +4,5 @@
   "description": "Railway, Cloudflare Pages/Workers 통합 배포 자동화",
   "author": {
     "name": "Yu Ho Gyun"
-  },
-  "commands": [
-    "./skills/deploy/deploy.md"
-  ]
+  }
 }

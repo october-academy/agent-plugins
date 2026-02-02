@@ -110,6 +110,46 @@
       },
       "source": "./plugins/web-perf-ux",
       "category": "development"
+    },
+    {
+      "name": "cp",
+      "description": "커밋과 푸시를 한 번에 수행하는 단축 명령어",
+      "version": "1.0.0",
+      "author": {
+        "name": "Yu Ho Gyun"
+      },
+      "source": "./plugins/cp",
+      "category": "development"
+    },
+    {
+      "name": "deploy",
+      "description": "Railway, Cloudflare Pages/Workers 통합 배포 자동화",
+      "version": "1.0.0",
+      "author": {
+        "name": "Yu Ho Gyun"
+      },
+      "source": "./plugins/deploy",
+      "category": "development"
+    },
+    {
+      "name": "sync",
+      "description": "원격 저장소와 동기화하는 단축 명령어 (git pull)",
+      "version": "1.0.0",
+      "author": {
+        "name": "Yu Ho Gyun"
+      },
+      "source": "./plugins/sync",
+      "category": "development"
+    },
+    {
+      "name": "perf",
+      "description": "주요 페이지 성능 일괄 측정 (Lighthouse/Core Web Vitals)",
+      "version": "1.0.0",
+      "author": {
+        "name": "Yu Ho Gyun"
+      },
+      "source": "./plugins/perf",
+      "category": "development"
     }
   ]
 }

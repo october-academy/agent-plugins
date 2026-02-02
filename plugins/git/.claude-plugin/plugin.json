@@ -4,9 +4,5 @@
   "description": "Conventional Commits 메시지 자동 생성이 포함된 Git 커밋 및 푸시 워크플로우",
   "author": {
     "name": "Yu Ho Gyun"
-  },
-  "commands": [
-    "./skills/push/push.md",
-    "./skills/push-pr/push-pr.md"
-  ]
+  }
 }

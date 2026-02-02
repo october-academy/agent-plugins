@@ -5,8 +5,5 @@
   "author": {
     "name": "Yu Ho Gyun",
     "email": "yuhogyun@gmail.com"
-  },
-  "commands": [
-    "./skills/web-perf-ux/web-perf-ux.md"
-  ]
+  }
 }

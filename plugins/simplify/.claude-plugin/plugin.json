@@ -5,8 +5,5 @@
   "author": {
     "name": "Anthropic",
     "email": "support@anthropic.com"
-  },
-  "commands": [
-    "./skills/simplify/simplify.md"
-  ]
+  }
 }
