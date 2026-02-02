@@ -12,7 +12,8 @@ Unified deployment automation for multi-service projects.
 | Platform | Command | Use Case |
 |----------|---------|----------|
 | Railway | `railway up` | Backend services, bots |
-| Cloudflare Pages | Git push (auto-deploy) | Static sites, SSR apps |
+| Cloudflare Pages | Git push (auto-deploy) | Static sites |
+| Cloudflare Pages (OpenNext) | `bunx @opennextjs/cloudflare build && bunx wrangler deploy` | Next.js SSR apps |
 | Cloudflare Workers | `wrangler deploy` | Edge functions |
 
 ## Usage
@@ -23,7 +24,9 @@ Unified deployment automation for multi-service projects.
 /deploy              # Deploy all services
 /deploy railway      # Railway only
 /deploy cf           # Cloudflare Workers only
-/deploy pages        # Remind about Pages auto-deploy
+/deploy web          # Next.js app via OpenNext
+/deploy opennext     # Same as /deploy web
+/deploy pages        # Static sites (git push auto-deploy)
 ```
 
 ### Korean Triggers
@@ -63,7 +66,7 @@ cd <project-root>/apps/workers && bunx wrangler deploy
 cd <project-root>/workers && npx wrangler deploy
 ```
 
-### 4. Cloudflare Pages
+### 4. Cloudflare Pages (Static)
 
 Pages auto-deploys on git push to main branch. Remind user:
 
@@ -72,6 +75,16 @@ git push origin main
 ```
 
 Check deployment status at: https://dash.cloudflare.com
+
+### 5. Cloudflare Pages (OpenNext for Next.js)
+
+For Next.js apps with SSR/API routes, use OpenNext:
+
+```bash
+cd <project-root>/apps/web && bunx @opennextjs/cloudflare build && bunx wrangler deploy
+```
+
+This builds the Next.js app for Cloudflare Workers runtime and deploys it.
 
 ## Post-deployment
 
