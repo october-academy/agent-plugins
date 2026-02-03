@@ -4,7 +4,6 @@ description: Session wrap-up workflow. Use when user asks to "wrap up session", 
 user-invocable: true
 disable-model-invocation: true
 argument-hint: [notes]
-version: 1.0.0
 ---
 
 # Wrap Skill

@@ -9,7 +9,7 @@ allowed-tools: Bash(git status:*), Bash(git diff:*), Bash(git add:*), Bash(git r
 
 # /git:push-pr — Git Commit, Push & Create PR
 
-변경사항을 분석해 의미 있는 커밋 메시지를 생성(또는 전달받은 메시지 사용)하고, 현재 브랜치에 push한 뒤 GitHub Pull Request를 자동 생성합니다. 기본 base 브랜치는 `main`이며, `--base <branch>`로 변경할 수 있습니다. 참조: [Anthropic: Custom slash commands](https://docs.anthropic.com/en/docs/claude-code/slash-commands#custom-slash-commands)
+변경사항을 분석해 의미 있는 커밋 메시지를 생성(또는 전달받은 메시지 사용)하고, 현재 브랜치에 push한 뒤 GitHub Pull Request를 자동 생성합니다. 기본 base 브랜치는 `main`이며, `--base <branch>`로 변경할 수 있습니다. 참조: [Claude Code: Skills](https://code.claude.com/docs/en/skills)
 
 ## 사용법
 
@@ -103,5 +103,5 @@ allowed-tools: Bash(git status:*), Bash(git diff:*), Bash(git add:*), Bash(git r
 
 ## 참고
 
-- Custom Slash Commands 사양: [Anthropic 문서](https://docs.anthropic.com/en/docs/claude-code/slash-commands#custom-slash-commands)
+- Skills 문서: [Claude Code Docs](https://code.claude.com/docs/en/skills)
 - GitHub CLI 문서: [GitHub CLI](https://cli.github.com/)
