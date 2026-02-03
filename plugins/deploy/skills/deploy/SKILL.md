@@ -1,6 +1,7 @@
 ---
 name: deploy
 description: Unified deployment for multiple platforms. Supports Railway, Cloudflare Pages, and Cloudflare Workers. Use when user says "/deploy", "배포", "deploy all", "railway 배포", "cloudflare 배포", or any deployment-related request. Supports selective deployment targets.
+user-invocable: true
 ---
 
 # Deploy Skill

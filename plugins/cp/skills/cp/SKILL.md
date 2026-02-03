@@ -1,6 +1,7 @@
 ---
 name: cp
 description: Commit and push in one step. Use when user says "/cp", "commit and push", "커밋하고 푸시", "커밋 푸시", or wants to stage, commit, and push changes in a single action. Optionally accepts a commit message as argument.
+user-invocable: true
 ---
 
 # Commit & Push Skill

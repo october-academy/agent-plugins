@@ -1,6 +1,7 @@
 ---
 name: sync
 description: Quick remote sync shortcut. Use when user says "/sync", "동기화", "pull", "git pull", or wants to pull latest changes from remote. Defaults to pulling from origin main.
+user-invocable: true
 ---
 
 # Sync Skill

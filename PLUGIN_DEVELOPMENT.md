@@ -111,9 +111,24 @@ mkdir -p plugins/<name>/.claude-plugin
   "author": {
     "name": "Your Name",
     "email": "your@email.com"
-  }
+  },
+  "keywords": ["productivity", "automation"],
+  "license": "MIT",
+  "repository": "https://github.com/user/repo"
 }
 ```
+
+#### plugin.json Fields
+
+| Field | Required | Description |
+|-------|----------|-------------|
+| `name` | Yes | Plugin identifier |
+| `version` | Yes | Semantic version (major.minor.patch) |
+| `description` | Yes | Brief description |
+| `author` | Yes | Object with `name` (required), `email` (optional) |
+| `keywords` | No | Array of tags for discoverability |
+| `license` | No | License type (e.g., "MIT") |
+| `repository` | No | URL to source repository |
 
 ### Step 3: Create README.md
 
@@ -184,6 +199,8 @@ name: skill-name
 description: Brief skill description
 user-invocable: true
 argument-hint: [optional arguments]
+allowed-tools: Bash(git:*), Read, Edit
+disable-model-invocation: false
 ---
 
 # Skill Name
@@ -206,6 +223,17 @@ Description of what the skill does.
 What the skill produces.
 ```
 
+#### Skill Frontmatter Fields
+
+| Field | Required | Default | Description |
+|-------|----------|---------|-------------|
+| `name` | Yes | - | Skill identifier |
+| `description` | Yes | - | What the skill does |
+| `user-invocable` | No | `true` | Whether to show in `/` menu |
+| `argument-hint` | No | - | Hint for optional arguments |
+| `allowed-tools` | No | - | Tools the skill can use |
+| `disable-model-invocation` | No | `false` | Prevent auto-triggering by model |
+
 ### Agent Template
 
 ```markdown
@@ -213,6 +241,8 @@ What the skill produces.
 name: agent-name
 description: Brief agent description
 model: haiku
+tools: ["Read", "Glob", "Grep"]
+color: blue
 ---
 
 # Agent Name
@@ -232,6 +262,16 @@ What the agent expects as input.
 
 What the agent returns.
 ```
+
+#### Agent Frontmatter Fields
+
+| Field | Required | Default | Description |
+|-------|----------|---------|-------------|
+| `name` | Yes | - | Agent identifier (used with `subagent_type`) |
+| `description` | Yes | - | What the agent specializes in |
+| `model` | No | - | Model to use: `haiku`, `sonnet`, `opus` |
+| `tools` | No | - | Array of tools the agent can use |
+| `color` | No | - | UI color hint (optional) |
 
 ### Hook Template (hooks.json)
 
