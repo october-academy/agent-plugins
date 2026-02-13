@@ -6,7 +6,7 @@ Session wrap-up workflow with multi-agent analysis for documentation, automation
 
 ```bash
 # 1. Add marketplace (first time only)
-claude plugin marketplace add october-academy/claude-plugins
+claude plugin marketplace add october-academy/agent-plugins
 
 # 2. Update marketplace
 claude plugin marketplace update

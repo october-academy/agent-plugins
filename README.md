@@ -1,12 +1,26 @@
-# Claude Plugins
+# Agent Plugins
 
-Claude Code용 커스텀 플러그인 마켓플레이스입니다.
+Claude Code/Codex에서 함께 사용할 수 있는 플러그인/스킬 저장소입니다.
 
 ## 설치
 
+### Skills (권장, Claude Code + Codex 공용)
+
+```bash
+# 모든 스킬 설치
+npx skills add october-academy/agent-plugins -a claude-code -a codex --skill '*' -y
+```
+
+```bash
+# 특정 스킬만 설치 (예: cp)
+npx skills add october-academy/agent-plugins -a claude-code -a codex --skill cp -y
+```
+
+### Claude Plugin Marketplace (Claude Code 전용)
+
 ```bash
 # 마켓플레이스 추가 및 플러그인 설치
-claude plugin marketplace add october-academy/claude-plugins
+claude plugin marketplace add october-academy/agent-plugins
 claude plugin marketplace update
 claude plugin install <plugin-name>@october-plugins
 ```
@@ -255,7 +269,7 @@ claude plugin install wrap@october-plugins
 ## 구조
 
 ```
-claude-plugins/
+agent-plugins/
 ├── .claude-plugin/
 │   └── marketplace.json
 ├── plugins/

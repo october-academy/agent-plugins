@@ -364,8 +364,13 @@ grep -r "version" plugins/<name>/.claude-plugin/ .claude-plugin/marketplace.json
 ## Installation
 
 \`\`\`bash
+# Recommended: install as Skills (Claude Code + Codex)
+npx skills add october-academy/agent-plugins -a claude-code -a codex --skill <plugin-name> -y
+\`\`\`
+
+\`\`\`bash
 # 1. Add marketplace (first time only)
-claude plugin marketplace add october-academy/claude-plugins
+claude plugin marketplace add october-academy/agent-plugins
 
 # 2. Update marketplace
 claude plugin marketplace update

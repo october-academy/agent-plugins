@@ -6,7 +6,7 @@ Git 변경사항을 스테이징하고 Conventional Commits 형식의 커밋 메
 
 ```bash
 # 1. Add marketplace (first time only)
-claude plugin marketplace add october-academy/claude-plugins
+claude plugin marketplace add october-academy/agent-plugins
 
 # 2. Update marketplace
 claude plugin marketplace update
