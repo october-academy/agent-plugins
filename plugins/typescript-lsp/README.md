@@ -43,7 +43,7 @@ claude plugin marketplace add october-academy/agent-plugins
 claude plugin marketplace update
 
 # Install plugin
-claude plugin install typescript-lsp@october-plugins
+claude plugin install typescript-lsp@agent-plugins
 
 # Restart Claude Code
 ```

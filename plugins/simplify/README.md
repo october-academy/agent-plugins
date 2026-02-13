@@ -12,7 +12,7 @@ claude plugin marketplace add october-academy/agent-plugins
 claude plugin marketplace update
 
 # 3. Install plugin
-claude plugin install simplify@october-plugins
+claude plugin install simplify@agent-plugins
 
 # 4. Restart Claude Code
 ```

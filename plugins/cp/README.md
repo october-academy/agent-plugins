@@ -12,7 +12,7 @@ claude plugin marketplace add october-academy/agent-plugins
 claude plugin marketplace update
 
 # 3. Install plugin
-claude plugin install cp@october-plugins
+claude plugin install cp@agent-plugins
 
 # 4. Restart Claude Code
 ```

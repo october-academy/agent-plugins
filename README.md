@@ -22,7 +22,18 @@ npx skills add october-academy/agent-plugins -a claude-code -a codex --skill cp 
 # 마켓플레이스 추가 및 플러그인 설치
 claude plugin marketplace add october-academy/agent-plugins
 claude plugin marketplace update
-claude plugin install <plugin-name>@october-plugins
+claude plugin install <plugin-name>@agent-plugins
+```
+
+### 기존 사용자 마이그레이션 (`@october-plugins` -> `@agent-plugins`)
+
+```bash
+# 1) 새 마켓플레이스 등록
+claude plugin marketplace add october-academy/agent-plugins
+claude plugin marketplace update
+
+# 2) 플러그인 재설치 (예: cp)
+claude plugin install cp@agent-plugins
 ```
 
 ## 호출 방식
@@ -250,20 +261,20 @@ npm install -g typescript-language-server typescript
 ### 설치 명령어
 
 ```bash
-claude plugin install clarify@october-plugins
-claude plugin install cp@october-plugins
-claude plugin install deploy@october-plugins
-claude plugin install feature-dev@october-plugins
-claude plugin install frontend-design@october-plugins
-claude plugin install git@october-plugins
-claude plugin install interview-spec@october-plugins
-claude plugin install linear@october-plugins
-claude plugin install perf@october-plugins
-claude plugin install simplify@october-plugins
-claude plugin install sync@october-plugins
-claude plugin install typescript-lsp@october-plugins
-claude plugin install web-perf-ux@october-plugins
-claude plugin install wrap@october-plugins
+claude plugin install clarify@agent-plugins
+claude plugin install cp@agent-plugins
+claude plugin install deploy@agent-plugins
+claude plugin install feature-dev@agent-plugins
+claude plugin install frontend-design@agent-plugins
+claude plugin install git@agent-plugins
+claude plugin install interview-spec@agent-plugins
+claude plugin install linear@agent-plugins
+claude plugin install perf@agent-plugins
+claude plugin install simplify@agent-plugins
+claude plugin install sync@agent-plugins
+claude plugin install typescript-lsp@agent-plugins
+claude plugin install web-perf-ux@agent-plugins
+claude plugin install wrap@agent-plugins
 ```
 
 ## 구조
