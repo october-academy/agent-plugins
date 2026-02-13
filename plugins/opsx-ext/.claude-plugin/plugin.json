@@ -1,0 +1,10 @@
+{
+  "name": "opsx-ext",
+  "version": "1.0.0",
+  "description": "OpenSpec 확장: team-orchestrated ship 워크플로우 (implement → verify → fix → archive)",
+  "author": {
+    "name": "Yu Ho Gyun"
+  },
+  "keywords": ["workflow", "ship", "openspec", "codex", "team"],
+  "license": "MIT"
+}
