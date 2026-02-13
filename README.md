@@ -38,10 +38,12 @@ claude plugin install cp@agent-plugins
 
 ## 호출 방식
 
-플러그인 스킬은 **단축형** `/플러그인명`으로 호출합니다.
+플러그인 스킬은 `/플러그인명` 또는 `/플러그인명:스킬명`으로 호출합니다.
 
 ```bash
-/clarify               # 요구사항 명확화
+/clarify:vague         # 요구사항 명확화
+/clarify:unknown       # 전략 맹점 4분면 분석
+/clarify:metamedium    # 내용 vs 형식 의사결정
 /simplify              # 코드 단순화
 /wrap                  # 세션 마무리
 /feature-dev           # 기능 개발 워크플로우
@@ -49,13 +51,13 @@ claude plugin install cp@agent-plugins
 ```
 
 > **단축형 조건**: 플러그인에 스킬이 1개이고, 스킬 이름 = 플러그인 이름이면 단축형 사용 가능
-> git 플러그인은 2개 명령어(push, push-pr)가 있어 `/git:명령어` 형식 사용
+> `clarify`는 3개 스킬(`vague`, `unknown`, `metamedium`)이 있어 `/clarify:스킬명` 형식 사용
 
 ## 플러그인 목록
 
 | 플러그인 | 설명 | 호출 방식 |
 |---------|------|----------|
-| [clarify](./plugins/clarify) | 모호한 요구사항을 명확한 명세로 변환 | `/clarify` |
+| [clarify](./plugins/clarify) | 3가지 렌즈로 요구사항/전략/형식 의사결정 명확화 | `/clarify:vague`, `/clarify:unknown`, `/clarify:metamedium` |
 | [cp](./plugins/cp) | 커밋 & 푸시 한 번에 | `/cp` |
 | [deploy](./plugins/deploy) | Railway, Cloudflare 통합 배포 | `/deploy` |
 | [feature-dev](./plugins/feature-dev) | 7단계 체계적 기능 개발 워크플로우 | `/feature-dev` |
@@ -76,15 +78,18 @@ claude plugin install cp@agent-plugins
 
 ### clarify
 
-모호한 요구사항을 구조화된 질문으로 명확화합니다.
+모호함을 다루는 3가지 스킬을 제공합니다.
 
 ```
-/clarify "로그인 기능 추가"
-/clarify "REST API 구축" --max-iterations 5
+/clarify:vague "로그인 기능 추가"
+/clarify:unknown "Q2 성장 전략 점검"
+/clarify:metamedium "열심히 하는데 성과가 안 나옴"
 ```
 
-- 반복당 4개 질문 × 4개 옵션
-- Before/After 요구사항 요약
+- `vague`: 요구사항 명확화 (가설 옵션 질문, Before/After 요약)
+- `unknown`: Known/Unknown 4분면 기반 전략 맹점 분석
+- `metamedium`: 내용(content) vs 형식(form) 레버리지 판단
+- 참고 저장소: https://github.com/team-attention/plugins-for-claude-natives
 
 ---
 
@@ -244,7 +249,9 @@ npm install -g typescript-language-server typescript
 
 | 명령어 | 설명 |
 |--------|------|
-| `/clarify "<요구사항>"` | 요구사항 명확화 |
+| `/clarify:vague "<요구사항>"` | 요구사항 명확화 |
+| `/clarify:unknown "<전략/계획>"` | 전략 맹점 분석 |
+| `/clarify:metamedium "<작업/기획>"` | 내용 vs 형식 의사결정 |
 | `/cp [msg]` | 커밋 & 푸시 |
 | `/deploy [target]` | 통합 배포 |
 | `/feature-dev <기능>` | 7단계 기능 개발 |
@@ -287,7 +294,7 @@ agent-plugins/
 │   ├── clarify/
 │   │   ├── .claude-plugin/plugin.json
 │   │   ├── hooks/hooks.json
-│   │   └── skills/clarify/SKILL.md
+│   │   └── skills/{vague,unknown,metamedium}/SKILL.md
 │   ├── cp/
 │   │   ├── .claude-plugin/plugin.json
 │   │   └── skills/cp/SKILL.md

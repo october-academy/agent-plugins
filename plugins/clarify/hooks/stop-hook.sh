@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# Clarify Stop Hook
-# Prevents session exit when clarify loop is active
+# Clarify(Vague) Stop Hook
+# Prevents session exit when vague clarification loop is active
 # Continues clarification until completion or max iterations
 
 set -euo pipefail
@@ -9,8 +9,8 @@ set -euo pipefail
 # Read hook input from stdin
 HOOK_INPUT=$(cat)
 
-# Check if clarify loop is active
-STATE_FILE=".claude/clarify.local.md"
+# Check if vague loop is active
+STATE_FILE=".claude/clarify-vague.local.md"
 
 if [[ ! -f "$STATE_FILE" ]]; then
   # No active loop - allow exit
@@ -25,20 +25,20 @@ ORIGINAL_REQUIREMENT=$(echo "$FRONTMATTER" | grep '^original_requirement:' | sed
 
 # Validate numeric fields
 if [[ ! "$ITERATION" =~ ^[0-9]+$ ]]; then
-  echo "Clarify: State file corrupted (iteration field invalid)" >&2
+  echo "Clarify(vague): State file corrupted (iteration field invalid)" >&2
   rm "$STATE_FILE"
   exit 0
 fi
 
 if [[ ! "$MAX_ITERATIONS" =~ ^[0-9]+$ ]]; then
-  echo "Clarify: State file corrupted (max_iterations field invalid)" >&2
+  echo "Clarify(vague): State file corrupted (max_iterations field invalid)" >&2
   rm "$STATE_FILE"
   exit 0
 fi
 
 # Check if max iterations reached
 if [[ $MAX_ITERATIONS -gt 0 ]] && [[ $ITERATION -ge $MAX_ITERATIONS ]]; then
-  echo "Clarify: Max iterations ($MAX_ITERATIONS) reached."
+  echo "Clarify(vague): Max iterations ($MAX_ITERATIONS) reached."
   echo "Please output the final clarified requirement summary now."
   rm "$STATE_FILE"
   exit 0
@@ -48,14 +48,14 @@ fi
 TRANSCRIPT_PATH=$(echo "$HOOK_INPUT" | jq -r '.transcript_path')
 
 if [[ ! -f "$TRANSCRIPT_PATH" ]]; then
-  echo "Clarify: Transcript file not found" >&2
+  echo "Clarify(vague): Transcript file not found" >&2
   rm "$STATE_FILE"
   exit 0
 fi
 
 # Check for assistant messages in transcript
 if ! grep -q '"role":"assistant"' "$TRANSCRIPT_PATH"; then
-  echo "Clarify: No assistant messages found in transcript" >&2
+  echo "Clarify(vague): No assistant messages found in transcript" >&2
   rm "$STATE_FILE"
   exit 0
 fi
@@ -84,7 +84,7 @@ COMPLETION_PROMISE="CLARIFICATION COMPLETE"
 PROMISE_TEXT=$(echo "$LAST_OUTPUT" | perl -0777 -pe 's/.*?<promise>(.*?)<\/promise>.*/$1/s; s/^\s+|\s+$//g; s/\s+/ /g' 2>/dev/null || echo "")
 
 if [[ -n "$PROMISE_TEXT" ]] && [[ "$PROMISE_TEXT" = "$COMPLETION_PROMISE" ]]; then
-  echo "Clarify: Clarification completed successfully!"
+  echo "Clarify(vague): Clarification completed successfully!"
   rm "$STATE_FILE"
   exit 0
 fi
@@ -111,7 +111,7 @@ Review the conversation history to see previous questions and answers, then:
 
 Remember: Only output the promise when clarification is GENUINELY complete. Do not lie to exit."
 
-SYSTEM_MSG="Clarify iteration $NEXT_ITERATION/$MAX_ITERATIONS | Complete: <promise>CLARIFICATION COMPLETE</promise>"
+SYSTEM_MSG="Clarify:vague iteration $NEXT_ITERATION/$MAX_ITERATIONS | Complete: <promise>CLARIFICATION COMPLETE</promise>"
 
 # Block exit and feed prompt back to Claude
 jq -n \

@@ -10,8 +10,8 @@
   "plugins": [
     {
       "name": "clarify",
-      "description": "구조화된 질문을 통해 모호한 요구사항을 명확한 스펙으로 변환",
-      "version": "1.4.3",
+      "description": "세 가지 렌즈(vague/unknown/metamedium)로 요구사항, 전략 맹점, content-vs-form 의사결정을 명확화",
+      "version": "2.0.0",
       "author": {
         "name": "yuhogyun"
       },
