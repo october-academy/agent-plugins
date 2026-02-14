@@ -154,7 +154,7 @@
     {
       "name": "opsx-ext",
       "description": "OpenSpec 확장: team-orchestrated ship 워크플로우 (implement → verify → fix → archive)",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "author": {
         "name": "Yu Ho Gyun"
       },
