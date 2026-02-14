@@ -106,13 +106,18 @@ model: haiku  # haiku | sonnet | opus
 
 | Plugin | Type | Trigger |
 |--------|------|---------|
-| clarify | skills, hooks | `/clarify` |
+| clarify | skills, hooks | `/clarify:vague`, `/clarify:unknown`, `/clarify:metamedium` |
+| cp | skills | `/cp` |
+| deploy | skills | `/deploy` |
 | feature-dev | skills, agents, hooks | `/feature-dev` |
 | frontend-design | skills | `/frontend-design` (auto) |
 | git | skills | `/git:push`, `/git:push-pr` |
 | interview-spec | skills | `/interview-spec` (auto) |
 | linear | mcp | - |
+| opsx-ext | skills, commands | `/opsx-ext:ship` |
+| perf | skills | `/perf` |
 | simplify | skills, agents, hooks | `/simplify` |
+| sync | skills | `/sync` |
 | typescript-lsp | mcp | - |
 | web-perf-ux | skills | `/web-perf-ux` (auto) |
 | wrap | skills, agents, hooks | `/wrap` |

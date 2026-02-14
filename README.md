@@ -65,6 +65,7 @@ claude plugin install cp@agent-plugins
 | [git](./plugins/git) | Git 커밋, 푸시, PR 자동화 | `/git:push`, `/git:push-pr` |
 | [interview-spec](./plugins/interview-spec) | 요구사항 수집용 인터뷰 프롬프트 생성 | `/interview-spec` (자동) |
 | [linear](./plugins/linear) | Linear 이슈 트래킹 통합 (MCP) | - |
+| [opsx-ext](./plugins/opsx-ext) | OpenSpec ship 워크플로우 (implement → verify → fix → archive) | `/opsx-ext:ship` |
 | [perf](./plugins/perf) | 성능 측정 (Lighthouse/Core Web Vitals) | `/perf` |
 | [simplify](./plugins/simplify) | 코드 단순화 및 정제 | `/simplify` |
 | [sync](./plugins/sync) | 원격 저장소 동기화 (git pull) | `/sync` |
@@ -172,6 +173,20 @@ Linear 이슈 트래킹 MCP 통합. 이슈 생성/관리, 상태 업데이트, �
 
 ---
 
+### opsx-ext
+
+OpenSpec 확장 — 팀 기반 ship 워크플로우. Claude Code(leader) + Codex(reviewer) dual verification.
+
+```
+/opsx-ext:ship [change-name]
+```
+
+- 5단계 사이클: Implement → Dual Verify → Fix Loop (max 3) → Archive → Cleanup
+- 멀티 에이전트: implementer(구현) + reviewer(코드 리뷰) + leader(검증/오케스트레이션)
+- 전제 조건: OpenSpec CLI, Codex CLI 설치 필요
+
+---
+
 ### perf
 
 빠른 성능 측정. Lighthouse/Core Web Vitals 기반.
@@ -259,6 +274,7 @@ npm install -g typescript-language-server typescript
 | `/git:push [msg] [--branch]` | 커밋 및 푸시 |
 | `/git:push-pr [msg] [--base]` | 커밋, 푸시, PR |
 | `/interview-spec` | 인터뷰 프롬프트 생성 |
+| `/opsx-ext:ship [change-name]` | OpenSpec ship 워크플로우 |
 | `/perf [path]` | 성능 측정 |
 | `/simplify [file]` | 코드 단순화 |
 | `/sync [branch]` | 원격 동기화 |
@@ -276,6 +292,7 @@ claude plugin install frontend-design@agent-plugins
 claude plugin install git@agent-plugins
 claude plugin install interview-spec@agent-plugins
 claude plugin install linear@agent-plugins
+claude plugin install opsx-ext@agent-plugins
 claude plugin install perf@agent-plugins
 claude plugin install simplify@agent-plugins
 claude plugin install sync@agent-plugins
@@ -317,6 +334,12 @@ agent-plugins/
 │   ├── linear/
 │   │   ├── .claude-plugin/plugin.json
 │   │   └── .mcp.json
+│   ├── opsx-ext/
+│   │   ├── .claude-plugin/plugin.json
+│   │   ├── commands/ship.md
+│   │   ├── skills/opsx-ext-ship/SKILL.md
+│   │   ├── extras/{rules,codex-prompts}/
+│   │   └── install-extras.sh
 │   ├── perf/
 │   │   ├── .claude-plugin/plugin.json
 │   │   └── skills/perf/SKILL.md
