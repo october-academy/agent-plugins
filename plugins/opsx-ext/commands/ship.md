@@ -5,7 +5,7 @@ category: Workflow
 tags: [workflow, ship, team, codex, experimental]
 ---
 
-Ship a change through team-orchestrated implementation, dual verification, automated Codex fixing, and archival.
+Ship a change through team-orchestrated implementation, dual verification, leader-driven fixing, and archival.
 
 **Input**: Optionally specify a change name (e.g., `/opsx:ship my-feature`). If omitted, prompt for selection.
 
@@ -13,7 +13,7 @@ Ship a change through team-orchestrated implementation, dual verification, autom
 
 | Role | Agent Type | Phase | Responsibility |
 |------|-----------|-------|----------------|
-| Leader | Main agent (you) | All | Orchestration, OpenSpec verify, Codex exec fix, archive |
+| Leader | Main agent (you) | All | Orchestration, OpenSpec verify, direct fix, archive |
 | implementer | general-purpose | 1 | Task implementation (apply methodology) |
 | reviewer | general-purpose | 2, 3* | Codex code review (*round 3 only in Phase 3) |
 
@@ -206,22 +206,32 @@ Ship a change through team-orchestrated implementation, dual verification, autom
 
    For iteration N = 1, 2, 3:
 
-   **a. Prepare Codex fix prompt**
-   - Read `.codex/prompts/verify-fix-loop.md`
-   - Replace all `<CHANGE_NAME>` with the actual change name
-   - Write processed prompt to `openspec/changes/<name>/codex-prompt.md`
+   **a. Leader directly fixes issues**
+   - Read the latest report (`verify-report.md` or `combined-report.md`)
+   - Read change artifacts for context (`design.md`, `specs/`, `tasks.md`)
+   - For each CRITICAL, WARNING, and SUGGESTION issue:
+     1. Read the referenced source file at the specified `file:line`
+     2. Understand the issue in context of change requirements
+     3. Apply the minimal, scoped fix
+   - Keep changes strictly scoped to reported issues — no refactoring or improvements beyond the fix
+   - If a design decision in `design.md` conflicts with code, update the **code** to match design
+   - Write fix summary to `openspec/changes/<name>/fix-summary.md`:
+     ```
+     # Fix Summary: <change-name> (Round N)
 
-   **b. Run Codex exec**
-   ```bash
-   codex exec \
-     --dangerously-bypass-approvals-and-sandbox \
-     -m gpt-5.3-codex \
-     - < "openspec/changes/<name>/codex-prompt.md"
-   ```
+     ## Fixes Applied
+     ### CRITICAL
+     - [issue] → Fixed in `file.ts:line` — [what changed]
+     ### WARNING
+     - [issue] → Fixed in `file.ts:line` — [what changed]
+     ### SUGGESTION
+     - [issue] → Fixed in `file.ts:line` — [what changed]
 
-   Wait for completion. If Codex fails (non-zero exit), report error to user and stop fix loop.
+     ## Could Not Fix
+     - [issue] — Reason: [explanation]
+     ```
 
-   **c. Re-verify**
+   **b. Re-verify**
 
    **Round 1-2 (leader-only):**
    - Leader runs OpenSpec verify (steps from verify.md)
@@ -307,7 +317,7 @@ CRITICAL: 1 | WARNING: 2 | SUGGESTION: 1
 
 ── Phase 3: Fix Loop ──
 ⏳ Fix Round 1/3...
-✓ Codex fix complete
+✓ Fix applied
 ⏳ Re-verifying...
 ✓ All checks passed!
 
@@ -324,12 +334,11 @@ Ship complete!
 **Guardrails**
 
 - Always prompt for change selection if not provided
-- Max 3 Codex fix iterations — hard limit to prevent infinite loops
+- Max 3 fix iterations — hard limit to prevent infinite loops
 - Implementer implements, reviewer reviews, leader orchestrates — separation of concerns
-- Leader does OpenSpec verify and Codex exec fix directly (not delegated to teammates)
-- If `codex exec` fails (non-zero exit, timeout), report error and stop fix loop
+- Leader does OpenSpec verify and fixes issues directly (not delegated to teammates)
 - Always run cleanup (step 9), even on failure or pause
-- All working files preserved in change directory (verify-report.md, review-report.md, combined-report.md, codex-prompt.md, fix-summary.md)
+- All working files preserved in change directory (verify-report.md, review-report.md, combined-report.md, fix-summary.md)
 - The reviewer follows `.codex/prompts/code-review.md` for review methodology
-- The leader uses `.codex/prompts/verify-fix-loop.md` for Codex fix prompts
+- The leader reads `.codex/prompts/verify-fix-loop.md` for fix constraints reference
 - The implementer follows apply methodology from `.claude/commands/opsx/apply.md`

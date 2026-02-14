@@ -2,7 +2,7 @@
 
 OpenSpec 확장 플러그인 — team-orchestrated **ship** 워크플로우를 제공합니다.
 
-변경사항을 구현(implement) → 검증(verify) → 수정(fix) → 아카이브(archive) 사이클로 자동 처리하며, Claude Code(leader) + Codex(reviewer)를 조합한 dual verification을 수행합니다.
+변경사항을 구현(implement) → 검증(verify) → 수정(fix) → 아카이브(archive) 사이클로 자동 처리하며, Claude Code leader가 OpenSpec verify + Codex code review의 dual verification을 수행하고 이슈를 직접 수정합니다.
 
 ## Installation
 
@@ -65,7 +65,7 @@ If no change name is provided, you'll be prompted to select one.
 |-------|-------------|
 | 1. Implement | Implementer agent applies all tasks from `tasks.md` |
 | 2. Dual Verify | Leader runs OpenSpec verify + Reviewer runs Codex code review in parallel |
-| 3. Fix Loop | Codex fixes reported issues (max 3 rounds), leader re-verifies |
+| 3. Fix Loop | Leader directly fixes reported issues (max 3 rounds), then re-verifies |
 | 4. Archive | Change moved to archive directory, specs synced |
 | 5. Cleanup | Team shutdown and resource cleanup |
 
