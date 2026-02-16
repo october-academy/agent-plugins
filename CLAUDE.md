@@ -114,7 +114,7 @@ model: haiku  # haiku | sonnet | opus
 | git | skills | `/git:push`, `/git:push-pr` |
 | interview-spec | skills | `/interview-spec` (auto) |
 | linear | mcp | - |
-| opsx-ext | skills, commands | `/opsx-ext:ship` |
+| opsx | skills, commands | `/opsx:ship` |
 | perf | skills | `/perf` |
 | simplify | skills, agents, hooks | `/simplify` |
 | sync | skills | `/sync` |

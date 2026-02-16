@@ -1,4 +1,4 @@
-# opsx-ext
+# opsx
 
 OpenSpec 확장 플러그인 — team-orchestrated **ship** 워크플로우를 제공합니다.
 
@@ -9,7 +9,7 @@ OpenSpec 확장 플러그인 — team-orchestrated **ship** 워크플로우를 �
 ### Skills (Claude Code + Codex)
 
 ```bash
-npx skills add october-academy/agent-plugins -a claude-code -a codex --skill opsx-ext -y
+npx skills add october-academy/agent-plugins -a claude-code -a codex --skill opsx -y
 ```
 
 ### Claude Code Plugin
@@ -22,7 +22,7 @@ claude plugin marketplace add october-academy/agent-plugins
 claude plugin marketplace update
 
 # 3. Install plugin
-claude plugin install opsx-ext@agent-plugins
+claude plugin install opsx@agent-plugins
 
 # 4. Restart Claude Code
 ```
@@ -74,7 +74,7 @@ If no change name is provided, you'll be prompted to select one.
 | Component | Path | Description |
 |-----------|------|-------------|
 | Command | `commands/ship.md` | Claude Code `/opsx:ship` command |
-| Skill | `skills/opsx-ext-ship/SKILL.md` | Agent Skills format (for `npx skills add`) |
+| Skill | `skills/ship/SKILL.md` | Agent Skills format (for `npx skills add`) |
 | Rule | `extras/rules/opsx-ship-gate.md` | Complexity gate — auto-suggests ship after apply |
 | Codex prompt | `extras/codex-prompts/verify-fix-loop.md` | Fix prompt template for Codex exec |
 | Codex prompt | `extras/codex-prompts/code-review.md` | Code review prompt template for Codex exec |
@@ -96,7 +96,7 @@ This plugin extends OpenSpec without modifying upstream files. The `/opsx:ship` 
 
 ```bash
 # Remove plugin
-claude plugin uninstall opsx-ext@agent-plugins
+claude plugin uninstall opsx@agent-plugins
 
 # Remove extras
 ./install-extras.sh --project-root /path/to/your/project --uninstall

@@ -1,5 +1,5 @@
 #!/bin/bash
-# install-extras.sh — Install opsx-ext extras (rules, codex-prompts) into a project
+# install-extras.sh — Install opsx extras (rules, codex-prompts) into a project
 # Compatible with bash 3.2+ (macOS default)
 
 set -e
@@ -16,7 +16,7 @@ usage() {
   cat <<EOF
 Usage: $(basename "$0") [OPTIONS]
 
-Install opsx-ext extras (rules, codex-prompts) into your project.
+Install opsx extras (rules, codex-prompts) into your project.
 
 Options:
   --project-root DIR   Target project root (default: current directory)
@@ -99,7 +99,7 @@ unset IFS
 
 # Uninstall mode
 if [ "$UNINSTALL" = true ]; then
-  echo "Uninstalling opsx-ext extras from $PROJECT_ROOT..."
+  echo "Uninstalling opsx extras from $PROJECT_ROOT..."
   i=0
   while [ $i -lt $SRC_COUNT ]; do
     eval "dst=\$dst_$i"
@@ -117,7 +117,7 @@ if [ "$UNINSTALL" = true ]; then
 fi
 
 # Install mode
-echo "Installing opsx-ext extras into $PROJECT_ROOT..."
+echo "Installing opsx extras into $PROJECT_ROOT..."
 i=0
 while [ $i -lt $SRC_COUNT ]; do
   eval "src=\$src_$i"

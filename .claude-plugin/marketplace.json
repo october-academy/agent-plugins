@@ -152,13 +152,13 @@
       "category": "development"
     },
     {
-      "name": "opsx-ext",
+      "name": "opsx",
       "description": "OpenSpec 확장: team-orchestrated ship 워크플로우 (implement → verify → fix → archive)",
-      "version": "1.1.0",
+      "version": "2.0.0",
       "author": {
         "name": "Yu Ho Gyun"
       },
-      "source": "./plugins/opsx-ext",
+      "source": "./plugins/opsx",
       "category": "workflow"
     }
   ]
