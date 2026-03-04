@@ -1,6 +1,9 @@
 /* Blog Figure — Neo-Brutalism Base CSS
    Resolution: 1440×810 (16:9, blog-optimized)
-   Fonts: Black Han Sans (titles), Noto Sans KR (body), JetBrains Mono (code/numbers) */
+   Fonts: Black Han Sans (titles), Noto Sans KR (body), JetBrains Mono (code/numbers)
+
+   Design for mobile: this PNG will be viewed at ~25% size on phones.
+   Minimum font: 1.5rem (24px). Nothing smaller. */
 
 @import url('https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=JetBrains+Mono:wght@400;700&family=Noto+Sans+KR:wght@400;700;900&display=swap');
 
@@ -9,7 +12,7 @@
 body {
   width: 1440px; height: 810px;
   font-family: 'Noto Sans KR', sans-serif;
-  font-weight: 400;
+  font-weight: 700;
   color: var(--dark); background: var(--card);
   overflow: hidden;
   display: flex; flex-direction: column;
@@ -67,14 +70,14 @@ body {
 /* --- Typography --- */
 .title { font-family: 'Black Han Sans', sans-serif; }
 .mono { font-family: 'JetBrains Mono', monospace; }
-.text-sm { font-size: 0.875rem; }
-.text-base { font-size: 1rem; }
-.text-lg { font-size: 1.125rem; }
-.text-xl { font-size: 1.25rem; }
-.text-2xl { font-size: 1.5rem; }
-.text-3xl { font-size: 1.875rem; }
-.text-4xl { font-size: 2.25rem; }
-.text-5xl { font-size: 3rem; }
+.text-sm { font-size: 1.25rem; }
+.text-base { font-size: 1.5rem; }
+.text-lg { font-size: 1.75rem; }
+.text-xl { font-size: 2rem; }
+.text-2xl { font-size: 2.25rem; }
+.text-3xl { font-size: 2.75rem; }
+.text-4xl { font-size: 3.25rem; }
+.text-5xl { font-size: 4rem; }
 .font-normal { font-weight: 400; }
 .font-bold { font-weight: 700; }
 .font-black { font-weight: 900; }
@@ -89,7 +92,7 @@ body {
   border: 3px solid var(--dark);
   border-radius: 12px;
   box-shadow: 4px 4px 0px var(--dark);
-  padding: 1.25rem;
+  padding: 1.5rem;
 }
 
 /* --- Layout Helpers --- */
@@ -98,9 +101,9 @@ body {
 .items-center { align-items: center; }
 .justify-center { justify-content: center; }
 .justify-between { justify-content: space-between; }
-.gap-1 { gap: 0.5rem; }
-.gap-2 { gap: 1rem; }
-.gap-3 { gap: 1.5rem; }
+.gap-1 { gap: 0.75rem; }
+.gap-2 { gap: 1.25rem; }
+.gap-3 { gap: 2rem; }
 .text-center { text-align: center; }
 .w-full { width: 100%; }
 .h-full { height: 100%; }
@@ -110,11 +113,11 @@ body {
 /* --- Figure Title (top banner) --- */
 .figure-title {
   font-family: 'Black Han Sans', sans-serif;
-  font-size: 2.25rem;
+  font-size: 3rem;
   background: var(--white);
   border: 3px solid var(--dark);
   box-shadow: 4px 4px 0px var(--dark);
-  padding: 0.5rem 2rem;
+  padding: 0.75rem 2.5rem;
   margin-bottom: 2rem;
   display: inline-block;
 }
@@ -127,7 +130,7 @@ body {
   overflow: hidden;
 }
 .split-left, .split-right {
-  flex: 1; padding: 2rem;
+  flex: 1; padding: 2.5rem;
   display: flex; flex-direction: column; align-items: center;
 }
 .split-left { border-right: 3px solid var(--dark); }
@@ -135,8 +138,8 @@ body {
 /* --- Section Label (colored banner) --- */
 .section-label {
   font-family: 'Black Han Sans', sans-serif;
-  font-size: 1.5rem;
-  padding: 0.5rem 1.5rem;
+  font-size: 2rem;
+  padding: 0.6rem 2rem;
   color: var(--white);
   display: inline-block;
   margin-bottom: 1.5rem;
@@ -144,24 +147,25 @@ body {
 
 /* --- Flow Card (vertical sequence) --- */
 .flow-card {
-  width: 380px;
+  width: 420px;
   background: var(--white);
   border: 3px solid var(--dark);
   border-radius: 12px;
-  padding: 1rem 1.5rem;
-  display: flex; align-items: center; gap: 1rem;
+  padding: 1.25rem 2rem;
+  display: flex; align-items: center; gap: 1.25rem;
   font-weight: 700;
+  font-size: 1.5rem;
 }
-.flow-card span { font-weight: 400; }
+.flow-card span { font-weight: 700; }
 .flow-card.bad { box-shadow: 4px 4px 0px var(--bad-card); }
 .flow-card.good { box-shadow: 4px 4px 0px var(--good-card); }
 
 /* --- Icon Circle --- */
 .icon {
-  width: 48px; height: 48px;
+  width: 56px; height: 56px;
   border-radius: 50%; border: 3px solid var(--dark);
   display: flex; align-items: center; justify-content: center;
-  font-size: 1.4rem; flex-shrink: 0;
+  font-size: 1.6rem; flex-shrink: 0;
 }
 .icon.bad { background: var(--bad-card); color: var(--bad-accent); }
 .icon.good { background: var(--good-card); color: var(--good-accent); }
@@ -169,8 +173,8 @@ body {
 
 /* --- Arrows --- */
 .arrow-down {
-  width: 3px; height: 20px;
-  background: var(--dark); margin: 4px 0;
+  width: 3px; height: 24px;
+  background: var(--dark); margin: 6px 0;
   position: relative;
 }
 .arrow-down::after {
@@ -182,8 +186,8 @@ body {
   border-top: 8px solid var(--dark);
 }
 .arrow-up {
-  width: 3px; height: 20px;
-  background: var(--dark); margin: 4px 0;
+  width: 3px; height: 24px;
+  background: var(--dark); margin: 6px 0;
   position: relative;
 }
 .arrow-up::after {
@@ -221,7 +225,7 @@ body {
   border-right: 8px solid var(--dark);
 }
 .arrow-label {
-  font-size: 0.75rem; font-weight: 700;
+  font-size: 1.25rem; font-weight: 700;
   color: var(--info-accent);
   text-align: center;
 }
@@ -250,33 +254,34 @@ body {
 .tl-block {
   display: flex; flex-direction: column;
   align-items: center; justify-content: center;
-  padding: 1.5rem;
+  padding: 2rem;
   border-right: 3px solid var(--dark);
   font-family: 'Black Han Sans', sans-serif;
 }
 .tl-block:last-child { border-right: none; }
-.tl-block .tl-label { font-size: 1.5rem; }
-.tl-block .tl-time { font-size: 1.25rem; margin-top: 0.25rem; }
+.tl-block .tl-label { font-size: 2rem; }
+.tl-block .tl-time { font-size: 1.75rem; margin-top: 0.5rem; }
 
-/* Timeline annotation below */
+/* Timeline annotation below — use sparingly, keywords only */
 .tl-annotations {
-  display: flex; width: 90%; margin-top: 0.75rem;
+  display: flex; width: 90%; margin-top: 1rem;
 }
 .tl-anno {
   display: flex; flex-direction: column;
   align-items: center; gap: 0.25rem;
-  font-size: 0.9rem; text-align: center;
+  font-size: 1.25rem; text-align: center;
+  font-weight: 700;
 }
 
 /* --- Data Card (for stats) --- */
 .data-card {
   background: var(--bad-card);
   border: 3px solid var(--dark);
-  padding: 1rem 2rem;
+  padding: 1.25rem 2.5rem;
   display: flex; justify-content: space-between;
   align-items: center; gap: 2rem;
   font-family: 'Black Han Sans', sans-serif;
-  font-size: 1.75rem;
+  font-size: 2.25rem;
 }
 
 /* --- Insight Box (footer message) --- */
@@ -284,9 +289,9 @@ body {
   background: var(--yellow);
   border: 3px solid var(--dark);
   box-shadow: 4px 4px 0px var(--dark);
-  padding: 0.5rem 1.5rem;
+  padding: 0.75rem 2rem;
   font-family: 'Black Han Sans', sans-serif;
-  font-size: 1.25rem;
+  font-size: 1.75rem;
   transform: rotate(-1deg);
   display: inline-block;
 }
@@ -296,8 +301,9 @@ body {
   background: var(--info-card);
   border: 3px solid var(--dark);
   border-radius: 8px;
-  padding: 1rem 1.5rem;
-  font-size: 1.2rem;
+  padding: 1.25rem 2rem;
+  font-size: 1.75rem;
+  font-weight: 700;
   width: 100%;
 }
 
@@ -307,10 +313,10 @@ body {
   transform: translate(-50%, 0) rotate(5deg);
   background: var(--dark); color: var(--white);
   font-family: 'Black Han Sans', sans-serif;
-  font-size: 2rem;
+  font-size: 2.5rem;
   border: 3px solid var(--white);
   border-radius: 50%;
-  width: 80px; height: 80px;
+  width: 90px; height: 90px;
   display: flex; align-items: center; justify-content: center;
   z-index: 30;
   box-shadow: 4px 4px 0px var(--dark);
@@ -320,7 +326,7 @@ body {
 .concept-block {
   border: 4px solid var(--dark);
   box-shadow: 6px 6px 0px var(--dark);
-  padding: 2rem;
+  padding: 2.5rem;
   display: flex; flex-direction: column;
   align-items: center; justify-content: center;
   font-family: 'Black Han Sans', sans-serif;
@@ -343,15 +349,15 @@ body {
 }
 .arch-label {
   font-family: 'Black Han Sans', sans-serif;
-  font-size: 1.25rem;
-  padding: 1rem 1.25rem;
+  font-size: 1.75rem;
+  padding: 1.25rem 1.5rem;
   display: flex; align-items: center; justify-content: center;
   border-right: 3px solid var(--dark);
-  min-width: 140px;
+  min-width: 160px;
   color: var(--white);
 }
 .arch-nodes {
-  display: flex; gap: 1rem; padding: 1.5rem;
+  display: flex; gap: 1.5rem; padding: 2rem;
   flex: 1; justify-content: center;
   align-items: center; flex-wrap: wrap;
 }
@@ -360,15 +366,16 @@ body {
   border: 3px solid var(--dark);
   border-radius: 12px;
   box-shadow: 4px 4px 0px var(--dark);
-  padding: 0.75rem 1.25rem;
+  padding: 1rem 1.5rem;
   font-weight: 700;
+  font-size: 1.5rem;
   display: flex; align-items: center; gap: 0.5rem;
 }
 
 /* --- Interaction (sequence diagram) --- */
 .seq {
   display: flex; flex-direction: column;
-  width: 90%; gap: 1.5rem;
+  width: 90%; gap: 2rem;
   align-items: center;
 }
 .seq-entities {
@@ -377,17 +384,17 @@ body {
 }
 .seq-entity {
   font-family: 'Black Han Sans', sans-serif;
-  font-size: 1.5rem;
+  font-size: 1.75rem;
   background: var(--white);
   border: 3px solid var(--dark);
   box-shadow: 4px 4px 0px var(--dark);
-  padding: 0.75rem 2rem;
+  padding: 1rem 2.5rem;
   text-align: center;
-  min-width: 160px;
+  min-width: 180px;
 }
 .seq-messages {
   display: flex; flex-direction: column;
-  gap: 1rem; width: 100%;
+  gap: 1.25rem; width: 100%;
 }
 .seq-msg {
   display: flex; align-items: center; gap: 0.5rem;
@@ -402,10 +409,10 @@ body {
   height: 0;
 }
 .seq-msg-label {
-  font-size: 0.95rem; font-weight: 700;
+  font-size: 1.5rem; font-weight: 700;
   white-space: nowrap;
   background: var(--white);
-  padding: 0.25rem 0.75rem;
+  padding: 0.4rem 1rem;
   border: 2px solid var(--dark);
   border-radius: 6px;
 }
@@ -434,9 +441,10 @@ body {
   border: 3px solid var(--dark);
   border-radius: 20px;
   box-shadow: 4px 4px 0px var(--dark);
-  padding: 1rem 1.5rem;
+  padding: 1.25rem 2rem;
   font-weight: 700; text-align: center;
-  min-width: 120px;
+  font-size: 1.5rem;
+  min-width: 140px;
   display: flex; flex-direction: column;
   align-items: center; gap: 0.25rem;
 }
@@ -445,12 +453,12 @@ body {
 .state-node.final { background: var(--bad-card); }
 .state-transition {
   display: flex; flex-direction: column;
-  align-items: center; padding: 0 0.25rem;
+  align-items: center; padding: 0 0.5rem;
 }
 
 /* --- Schema (data model) --- */
 .schema-container {
-  display: flex; gap: 2rem;
+  display: flex; gap: 2.5rem;
   justify-content: center;
   align-items: flex-start;
   width: 90%; flex-wrap: wrap;
@@ -459,20 +467,20 @@ body {
   background: var(--white);
   border: 3px solid var(--dark);
   box-shadow: 4px 4px 0px var(--dark);
-  min-width: 240px;
+  min-width: 280px;
 }
 .schema-header {
   font-family: 'Black Han Sans', sans-serif;
-  font-size: 1.25rem;
-  padding: 0.75rem 1rem;
+  font-size: 1.75rem;
+  padding: 1rem 1.25rem;
   border-bottom: 3px solid var(--dark);
   display: flex; align-items: center; gap: 0.5rem;
 }
 .schema-field {
-  padding: 0.5rem 1rem;
+  padding: 0.75rem 1.25rem;
   display: flex; justify-content: space-between;
   align-items: center;
-  font-size: 0.9rem;
+  font-size: 1.25rem;
 }
 .schema-field + .schema-field {
   border-top: 2px solid var(--gray-100);
@@ -481,15 +489,15 @@ body {
   background: var(--yellow);
   border: 2px solid var(--dark);
   border-radius: 4px;
-  padding: 0 0.5rem;
-  font-size: 0.7rem; font-weight: 900;
+  padding: 0.1rem 0.6rem;
+  font-size: 1rem; font-weight: 900;
 }
 .schema-fk {
   background: var(--info-card);
   border: 2px solid var(--dark);
   border-radius: 4px;
-  padding: 0 0.5rem;
-  font-size: 0.7rem; font-weight: 900;
+  padding: 0.1rem 0.6rem;
+  font-size: 1rem; font-weight: 900;
 }
 
 /* --- Hierarchy (tree structure) --- */
@@ -502,19 +510,20 @@ body {
   border: 3px solid var(--dark);
   border-radius: 12px;
   box-shadow: 4px 4px 0px var(--dark);
-  padding: 0.75rem 1.5rem;
+  padding: 1rem 2rem;
   font-weight: 700; text-align: center;
+  font-size: 1.5rem;
   display: inline-flex; align-items: center; gap: 0.5rem;
 }
 .tree-level {
-  display: flex; justify-content: center; gap: 2rem;
+  display: flex; justify-content: center; gap: 2.5rem;
 }
 .tree-branch {
   display: flex; flex-direction: column;
   align-items: center;
 }
 .tree-vline {
-  width: 3px; height: 24px;
+  width: 3px; height: 28px;
   background: var(--dark);
 }
 .tree-hline {
@@ -530,14 +539,14 @@ body {
 }
 .matrix-header {
   font-family: 'Black Han Sans', sans-serif;
-  font-size: 1.25rem;
-  padding: 1rem;
+  font-size: 1.75rem;
+  padding: 1.25rem;
   display: flex; align-items: center; justify-content: center;
   text-align: center;
   background: var(--white);
 }
 .matrix-cell {
-  padding: 1.25rem;
+  padding: 1.5rem;
   display: flex; flex-direction: column;
   align-items: center; justify-content: center;
   text-align: center; gap: 0.5rem;
@@ -545,21 +554,21 @@ body {
 .matrix-corner {
   background: var(--dark); color: var(--white);
   font-family: 'Black Han Sans', sans-serif;
-  font-size: 1rem;
+  font-size: 1.25rem;
   display: flex; align-items: center; justify-content: center;
 }
 .matrix-label-x {
   font-family: 'Black Han Sans', sans-serif;
-  font-size: 1.25rem;
-  padding: 1rem;
+  font-size: 1.75rem;
+  padding: 1.25rem;
   display: flex; align-items: center; justify-content: center;
   text-align: center;
   border-bottom: 3px solid var(--dark);
 }
 .matrix-label-y {
   font-family: 'Black Han Sans', sans-serif;
-  font-size: 1.25rem;
-  padding: 1rem;
+  font-size: 1.75rem;
+  padding: 1.25rem;
   display: flex; align-items: center; justify-content: center;
   text-align: center;
   border-right: 3px solid var(--dark);
@@ -572,7 +581,7 @@ body {
 }
 .journey-line {
   position: absolute;
-  top: 24px; left: 5%; right: 5%;
+  top: 28px; left: 5%; right: 5%;
   height: 3px; background: var(--dark);
   z-index: 1;
 }
@@ -583,20 +592,21 @@ body {
   z-index: 2;
 }
 .journey-dot {
-  width: 48px; height: 48px;
+  width: 56px; height: 56px;
   border-radius: 50%;
   border: 3px solid var(--dark);
   display: flex; align-items: center; justify-content: center;
-  font-size: 1.4rem;
+  font-size: 1.75rem;
+  font-weight: 700;
   background: var(--white);
 }
 .journey-label {
-  font-weight: 700; margin-top: 0.75rem; font-size: 1rem;
+  font-weight: 700; margin-top: 0.75rem; font-size: 1.5rem;
 }
 .journey-desc {
-  font-size: 0.8rem;
-  color: var(--muted-fg); margin-top: 0.25rem;
-  max-width: 140px;
+  font-size: 1.25rem; font-weight: 700;
+  color: var(--dark); margin-top: 0.25rem;
+  max-width: 180px;
 }
 
 /* --- Funnel (conversion stages) --- */
@@ -608,9 +618,9 @@ body {
 .funnel-stage {
   display: flex; align-items: center;
   justify-content: space-between;
-  padding: 1rem 2rem;
+  padding: 1.25rem 2.5rem;
   border: 3px solid var(--dark);
-  font-weight: 700; font-size: 1.25rem;
+  font-weight: 700; font-size: 1.75rem;
 }
 .funnel-stage + .funnel-stage {
   border-top: none;
@@ -631,7 +641,7 @@ body {
   display: grid;
   grid-template-columns: auto auto auto;
   grid-template-rows: auto auto auto;
-  gap: 1rem;
+  gap: 1.5rem;
   align-items: center; justify-items: center;
 }
 .loop-node {
@@ -639,32 +649,33 @@ body {
   border: 3px solid var(--dark);
   border-radius: 12px;
   box-shadow: 4px 4px 0px var(--dark);
-  padding: 1rem 1.5rem;
+  padding: 1.25rem 2rem;
   font-weight: 700; text-align: center;
+  font-size: 1.5rem;
   display: flex; flex-direction: column;
   align-items: center; gap: 0.25rem;
-  min-width: 160px;
+  min-width: 180px;
 }
 .loop-center {
   font-family: 'Black Han Sans', sans-serif;
-  font-size: 2rem;
+  font-size: 2.5rem;
   display: flex; align-items: center; justify-content: center;
 }
 
 /* --- Data Viz (bar chart) --- */
 .bar-chart {
   display: flex; flex-direction: column;
-  gap: 0.75rem; width: 90%;
+  gap: 1rem; width: 90%;
 }
 .bar-row {
-  display: flex; align-items: center; gap: 1rem;
+  display: flex; align-items: center; gap: 1.25rem;
 }
 .bar-label {
-  font-weight: 700; font-size: 1rem;
-  min-width: 140px; text-align: right;
+  font-weight: 700; font-size: 1.5rem;
+  min-width: 160px; text-align: right;
 }
 .bar-track {
-  flex: 1; height: 44px;
+  flex: 1; height: 56px;
   background: var(--gray-100);
   border: 3px solid var(--dark);
   overflow: hidden;
@@ -673,44 +684,45 @@ body {
   height: 100%;
   display: flex; align-items: center;
   justify-content: flex-end;
-  padding-right: 0.75rem;
+  padding-right: 1rem;
   font-weight: 700;
   font-family: 'Black Han Sans', sans-serif;
-  font-size: 1.1rem;
+  font-size: 1.5rem;
 }
 .bar-value {
   font-family: 'Black Han Sans', sans-serif;
-  font-size: 1.25rem; min-width: 60px;
+  font-size: 1.5rem; min-width: 70px;
 }
 
 /* --- Storyboard (sequential panels) --- */
 .storyboard {
-  display: grid; gap: 1rem; width: 90%;
+  display: grid; gap: 1.5rem; width: 90%;
 }
 .story-panel {
   background: var(--white);
   border: 3px solid var(--dark);
   box-shadow: 4px 4px 0px var(--dark);
-  padding: 1.5rem;
+  padding: 2rem;
   display: flex; flex-direction: column;
-  align-items: center; gap: 0.5rem;
+  align-items: center; gap: 0.75rem;
   text-align: center; position: relative;
 }
 .story-number {
-  position: absolute; top: -12px; left: -12px;
+  position: absolute; top: -14px; left: -14px;
   background: var(--dark); color: var(--white);
   font-family: 'Black Han Sans', sans-serif;
-  font-size: 1.25rem;
-  width: 36px; height: 36px;
+  font-size: 1.5rem;
+  width: 44px; height: 44px;
   display: flex; align-items: center; justify-content: center;
   border-radius: 50%;
 }
-.story-icon { font-size: 2.5rem; }
+.story-icon { font-size: 3rem; }
 .story-caption {
-  font-weight: 700; font-size: 1rem;
+  font-weight: 700; font-size: 1.5rem;
 }
 .story-desc {
-  font-size: 0.85rem; color: var(--muted-fg);
+  font-size: 1.25rem; font-weight: 700;
+  color: var(--dark);
 }
 
 /* ================================================================
@@ -742,40 +754,40 @@ body {
 .text-info { color: var(--info-accent); }
 
 /* --- Padding --- */
-.p-1 { padding: 0.5rem; }
-.p-2 { padding: 1rem; }
-.p-3 { padding: 1.5rem; }
-.p-4 { padding: 2rem; }
-.px-1 { padding-left: 0.5rem; padding-right: 0.5rem; }
-.px-2 { padding-left: 1rem; padding-right: 1rem; }
-.px-3 { padding-left: 1.5rem; padding-right: 1.5rem; }
-.py-1 { padding-top: 0.5rem; padding-bottom: 0.5rem; }
-.py-2 { padding-top: 1rem; padding-bottom: 1rem; }
-.py-3 { padding-top: 1.5rem; padding-bottom: 1.5rem; }
+.p-1 { padding: 0.75rem; }
+.p-2 { padding: 1.25rem; }
+.p-3 { padding: 2rem; }
+.p-4 { padding: 2.5rem; }
+.px-1 { padding-left: 0.75rem; padding-right: 0.75rem; }
+.px-2 { padding-left: 1.25rem; padding-right: 1.25rem; }
+.px-3 { padding-left: 2rem; padding-right: 2rem; }
+.py-1 { padding-top: 0.75rem; padding-bottom: 0.75rem; }
+.py-2 { padding-top: 1.25rem; padding-bottom: 1.25rem; }
+.py-3 { padding-top: 2rem; padding-bottom: 2rem; }
 
 /* --- Margin --- */
-.m-1 { margin: 0.5rem; }
-.m-2 { margin: 1rem; }
-.m-3 { margin: 1.5rem; }
-.mt-1 { margin-top: 0.5rem; }
-.mt-2 { margin-top: 1rem; }
-.mt-3 { margin-top: 1.5rem; }
-.mb-1 { margin-bottom: 0.5rem; }
-.mb-2 { margin-bottom: 1rem; }
-.mb-3 { margin-bottom: 1.5rem; }
-.ml-1 { margin-left: 0.5rem; }
-.mr-1 { margin-right: 0.5rem; }
+.m-1 { margin: 0.75rem; }
+.m-2 { margin: 1.25rem; }
+.m-3 { margin: 2rem; }
+.mt-1 { margin-top: 0.75rem; }
+.mt-2 { margin-top: 1.25rem; }
+.mt-3 { margin-top: 2rem; }
+.mb-1 { margin-bottom: 0.75rem; }
+.mb-2 { margin-bottom: 1.25rem; }
+.mb-3 { margin-bottom: 2rem; }
+.ml-1 { margin-left: 0.75rem; }
+.mr-1 { margin-right: 0.75rem; }
 
 /* --- Gap (additional) --- */
-.gap-4 { gap: 2rem; }
-.gap-5 { gap: 2.5rem; }
+.gap-4 { gap: 2.5rem; }
+.gap-5 { gap: 3rem; }
 
 /* --- Badge / Tag --- */
 .badge {
   display: inline-flex; align-items: center;
   font-family: 'Black Han Sans', sans-serif;
-  font-size: 0.8rem;
-  padding: 0.2rem 0.75rem;
+  font-size: 1.1rem;
+  padding: 0.3rem 1rem;
   border: 2px solid var(--dark);
   border-radius: 4px;
   font-weight: 900;
@@ -783,8 +795,8 @@ body {
 .tag {
   display: inline-flex; align-items: center;
   font-family: 'JetBrains Mono', monospace;
-  font-size: 0.75rem;
-  padding: 0.15rem 0.6rem;
+  font-size: 1rem;
+  padding: 0.2rem 0.75rem;
   border: 2px solid var(--dark);
   border-radius: 20px;
   font-weight: 700;
@@ -794,11 +806,11 @@ body {
 /* --- Code Inline --- */
 .code {
   font-family: 'JetBrains Mono', monospace;
-  font-size: 0.85em;
+  font-size: 1.1em;
   background: var(--muted);
   border: 2px solid var(--dark);
   border-radius: 4px;
-  padding: 0.1rem 0.4rem;
+  padding: 0.15rem 0.5rem;
 }
 
 /* ================================================================
@@ -905,26 +917,26 @@ body {
   border: 3px solid var(--dark);
   box-shadow: 3px 3px 0px var(--dark);
   font-family: 'Black Han Sans', sans-serif;
-  font-size: 0.9rem;
+  font-size: 1.1rem;
   text-align: center;
   transform: rotate(-5deg);
   background: var(--highlight);
 }
 .sticker-sm {
-  width: 56px; height: 56px;
-  font-size: 0.75rem;
+  width: 60px; height: 60px;
+  font-size: 1rem;
 }
 .sticker-lg {
   width: 100px; height: 100px;
-  font-size: 1.1rem;
+  font-size: 1.25rem;
 }
 
 /* Stamp — rectangular rubber stamp effect */
 .stamp {
   display: inline-block;
   font-family: 'Black Han Sans', sans-serif;
-  font-size: 1.25rem;
-  padding: 0.4rem 1.5rem;
+  font-size: 1.5rem;
+  padding: 0.5rem 1.75rem;
   border: 4px solid currentColor;
   border-radius: 4px;
   text-transform: uppercase;
@@ -979,13 +991,13 @@ body {
   width: 80%;
   height: 3px;
   background: var(--dark);
-  margin: 1.5rem auto;
+  margin: 2rem auto;
 }
 .divider-dashed {
   width: 80%;
   height: 0;
   border-top: 3px dashed var(--dark);
-  margin: 1.5rem auto;
+  margin: 2rem auto;
 }
 
 /* Callout — attention box */
@@ -994,9 +1006,10 @@ body {
   border: 3px solid var(--dark);
   border-left: 8px solid var(--accent);
   box-shadow: 4px 4px 0px var(--dark);
-  padding: 1rem 1.5rem;
-  display: flex; align-items: center; gap: 0.75rem;
+  padding: 1.25rem 2rem;
+  font-size: 1.5rem;
+  display: flex; align-items: center; gap: 1rem;
 }
 .callout-icon {
-  font-size: 1.5rem; flex-shrink: 0;
+  font-size: 2rem; flex-shrink: 0;
 }

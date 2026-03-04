@@ -86,17 +86,69 @@ Full HTML examples for each: [references/figure-patterns.md](references/figure-p
 - **Border**: 3px solid #0a0a0a
 - **Shadow**: Npx Npx 0px #0a0a0a (no blur ever)
 - **Title font**: Black Han Sans (headings/labels only)
-- **Body font**: Noto Sans KR, weight 400 (regular). Use 700 for labels/captions only
+- **Body font**: Noto Sans KR, weight 700 (bold default). Use 400 only for minor annotations
 - **Code/number font**: JetBrains Mono (`.mono`, `.code`, `.tag`)
 - **Colors**: CSS variables only — never hardcode hex in HTML
 - **No**: gradients, blur shadows, soft edges
+
+### 모바일 가독성 — 최우선 원칙
+
+> 이 PNG는 모바일에서 원본의 **25% 크기**로 보인다.
+> 손톱만한 크기에서도 **패턴 구조와 핵심 키워드**가 인식되어야 한다.
+
+- 읽을 수 없는 텍스트는 넣지 마라 — 어차피 안 보인다
+- **색상 대비와 면적**으로 구조를 전달하라
+- 텍스트는 "읽는 것"이 아니라 **"인식하는 것"**이어야 한다
+- 한 Figure에 한 개의 핵심 개념만 담아라 (One Idea Per Figure)
+
+### 텍스트 버짓 — 절대 한도
+
+**Figure는 글의 설명을 대체하지 않는다. 시각적 앵커를 제공할 뿐이다.**
+
+| 컴포넌트 | 최대 텍스트 | 예시 |
+|---------|-----------|------|
+| `.flow-card` | **제목 2~4단어**. 설명 생략 또는 max 6자 | "맥락 확인", "사례 복기" |
+| `.quote-card` | **max 8자** (핵심 키워드만) | "좋은데요!", "0건" |
+| `.section-label` | **max 6자** | "나쁜 예시", "좋은 방법" |
+| `.tl-anno` | **사용 자제**. 쓸 경우 max 4자 키워드 | "맥락", "사례" |
+| `.journey-desc` | **max 6자** | "서비스 인지" |
+| `.story-desc` | **max 6자** | "결제 확인" |
+| `.bar-label` | **max 4단어** | "React", "설문 응답률" |
+| Figure 전체 | **max 20~25단어** | — |
+
+### 최소 폰트 크기
+
+1440px 캔버스에서 **1.25rem(20px) 미만 텍스트 금지**. 모바일 25% 축소 시 5px 미만은 읽기 불가.
+
+| 역할 | 최소 크기 |
+|------|---------|
+| 가장 작은 텍스트 (`.tag`, `.schema-pk`) | 1rem (16px) |
+| 설명/부연 (`.journey-desc`, `.story-desc`) | 1.25rem (20px) |
+| 라벨/캡션 (`.flow-card`, `.bar-label`) | 1.5rem (24px) |
+| 섹션 헤딩 (`.section-label`) | 2rem (32px) |
+| Figure 제목 (`.figure-title`) | 3rem (48px) |
+
+### 컴포넌트 수량 제한 — 시원시원한 배치
+
+**적은 수의 큰 컴포넌트 > 많은 수의 작은 컴포넌트**
+
+| 패턴 | 최대 수량 | 이유 |
+|------|---------|------|
+| Flow | **3단계** | 3개면 비교 충분, 5개면 텍스트 덩어리 |
+| Timeline | **3블록** | 블록 크기↑, 라벨 가독성↑ |
+| Storyboard | **4패널 (2×2)** | 패널 크기 2배 확보 |
+| Bar chart | **4행** | 바 높이 충분히 확보 |
+| Architecture | **3레이어, 레이어당 3노드** | 공간 여유 |
+| Split 비교 | **양쪽 각 2~3카드** | 카드 크기 유지 |
+| Journey | **4단계** | dot 간 여백 확보 |
+| Schema | **3테이블, 테이블당 4필드** | 글자 크기 유지 |
 
 ### Weight Hierarchy
 
 | Role | Weight | Example |
 |------|--------|---------|
-| Body text, descriptions, annotations | 400 | `.flow-card span`, `.journey-desc`, `.story-desc` |
-| Labels, captions, node text | 700 | `.flow-card strong`, `.journey-label`, `.bar-label` |
+| 모든 텍스트 기본값 | 700 | body default, `.flow-card`, `.journey-desc` |
+| 부연/보조 (드물게 사용) | 400 | 긴 설명이 불가피할 때만 |
 | Display titles | Black Han Sans | `.figure-title`, `.section-label` |
 
 ### Composition — 정형화 피하기
@@ -109,7 +161,7 @@ Full HTML examples for each: [references/figure-patterns.md](references/figure-p
 ### 아이콘/이모지 원칙
 
 - **텍스트만으로 충분하면 아이콘 생략**. `.icon` 원형은 선택 사항
-- `.flow-card`는 아이콘 없이 `<strong>제목</strong>` + `<span>설명</span>`만으로 충분
+- `.flow-card`는 아이콘 없이 `<strong>제목</strong>`만으로 충분. 설명 텍스트 최소화
 - 이모지는 카테고리 구분이 반드시 필요할 때만 (예: `.arch-label`, `.journey-dot`)
 - 장식용 이모지/아이콘 금지
 
