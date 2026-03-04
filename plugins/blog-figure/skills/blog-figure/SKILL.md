@@ -15,12 +15,308 @@ Generate Neo-Brutalism styled figure images for blog posts: HTML → browser →
 
 ## Workflow
 
-1. **Understand context**: Read blog MDX or user description to decide what to visualize
-2. **Choose pattern**: Pick from 15 patterns — see [references/figure-patterns.md](references/figure-patterns.md)
+1. **Understand context**: Read blog MDX/MD or user description to decide what to visualize
+2. **Suggest patterns**: Analyze context, pick the **4 most fitting patterns** from 15 available, and present them via `AskUserQuestion` with ASCII art previews (see [Pattern Selection](#pattern-selection) below)
 3. **Create HTML**: Write standalone HTML to `/tmp/blog-figure-{name}.html` linking `assets/figure.css`
 4. **Capture PNG**: Open in browser, screenshot at 1440×810, save PNG
 5. **Save to project**: Move PNG to `apps/content/src/content/blog/images/{slug}/`
-6. **Verify**: Read the saved PNG to visually confirm
+6. **Insert into document**: If user provided a `.md` or `.mdx` file, insert the image tag at the contextually correct location (see [Document Insertion](#document-insertion) below)
+7. **Verify**: Read the saved PNG to visually confirm
+
+## Pattern Selection
+
+After understanding context, use `AskUserQuestion` to let the user pick from the 4 most relevant patterns. Each option MUST include a `markdown` field with an ASCII art preview showing the pattern's layout structure.
+
+### How to pick the 4 patterns
+
+Analyze the user's content and rank all 15 patterns by relevance:
+- **Comparison**: X vs Y, 좌우 대비, before/after
+- **Flow**: 프로세스, 단계별 차이, 방법론
+- **Timeline**: 시간 배분, 비율, 순서
+- **Concept**: 관계도, 벤 다이어그램, 개념
+- **Architecture**: 시스템 구성, 레이어, 컴포넌트
+- **Interaction**: 시퀀스, 요청/응답, API 플로우
+- **State**: 상태 전이, 라이프사이클
+- **Schema**: DB 모델, 엔티티 관계
+- **Hierarchy**: 트리, 조직도, 분류
+- **Matrix**: 2x2 분석, 비교표
+- **Journey**: 사용자 여정, 터치포인트
+- **Funnel**: 전환율, 단계별 감소
+- **Loop**: 순환 프로세스, 피드백
+- **Data Viz**: 수치 비교, 바 차트
+- **Storyboard**: 시나리오, 단계별 장면
+
+Top 4를 선택하여 아래처럼 AskUserQuestion 호출:
+
+```
+AskUserQuestion({
+  questions: [{
+    question: "어떤 Figure 패턴이 가장 적합할까요?",
+    header: "패턴 선택",
+    multiSelect: false,
+    options: [
+      {
+        label: "{Pattern 1 이름}",
+        description: "{왜 이 패턴이 적합한지 1줄 설명}",
+        markdown: "{ASCII art preview}"
+      },
+      // ... 3개 더
+    ]
+  }]
+})
+```
+
+### ASCII Art Preview Templates
+
+각 패턴의 markdown preview에 사용할 ASCII art 템플릿:
+
+**Comparison**:
+```
+┌──────────────────────────────────┐
+│  ┌──────────┐  ┌──────────┐     │
+│  │  Left    │VS│  Right   │     │
+│  │ ┌──────┐ │  │ ┌──────┐ │     │
+│  │ │Card 1│ │  │ │Card 1│ │     │
+│  │ └──────┘ │  │ └──────┘ │     │
+│  │ ┌──────┐ │  │ ┌──────┐ │     │
+│  │ │Card 2│ │  │ │Card 2│ │     │
+│  │ └──────┘ │  │ └──────┘ │     │
+│  └──────────┘  └──────────┘     │
+└──────────────────────────────────┘
+```
+
+**Flow**:
+```
+┌──────────────────────────────────┐
+│        ┌──────────────┐          │
+│        │   Step 1     │          │
+│        └──────┬───────┘          │
+│               ▼                  │
+│        ┌──────────────┐          │
+│        │   Step 2     │          │
+│        └──────┬───────┘          │
+│               ▼                  │
+│        ┌──────────────┐          │
+│        │   Step 3     │          │
+│        └──────────────┘          │
+└──────────────────────────────────┘
+```
+
+**Timeline**:
+```
+┌──────────────────────────────────┐
+│ ┌────────┬──────────┬────────┐   │
+│ │ Block1 │  Block2  │ Block3 │   │
+│ │  3min  │   5min   │  4min  │   │
+│ └────────┴──────────┴────────┘   │
+└──────────────────────────────────┘
+```
+
+**Concept**:
+```
+┌──────────────────────────────────┐
+│    ┌───────┐                     │
+│    │   A   │  ┌───────────┐      │
+│    │       ├──┤     B     │      │
+│    └───────┘  │           ├──┐   │
+│               └───────────┘  │   │
+│                    ┌─────────┤   │
+│                    │    C    │   │
+│                    └─────────┘   │
+└──────────────────────────────────┘
+```
+
+**Architecture**:
+```
+┌──────────────────────────────────┐
+│ Client  │ [Web] [Mobile] [CLI]   │
+│─────────┼────────────────────────│
+│ Service │ [API] [Auth] [Events]  │
+│─────────┼────────────────────────│
+│ Data    │ [PostgreSQL] [Redis]   │
+└──────────────────────────────────┘
+```
+
+**Interaction**:
+```
+┌──────────────────────────────────┐
+│  [User]              [Server]    │
+│    │── Request ──────────▶│      │
+│    │◀── Response ─ ─ ─ ──│      │
+│    │── Action ───────────▶│      │
+│    │◀── Result ─ ─ ─ ─ ──│      │
+└──────────────────────────────────┘
+```
+
+**State**:
+```
+┌──────────────────────────────────┐
+│ (Start)──▶[State A]──▶[State B] │
+│                          │       │
+│                          ▼       │
+│                       [State C]  │
+│                          │       │
+│                          ▼       │
+│                        (End)     │
+└──────────────────────────────────┘
+```
+
+**Schema**:
+```
+┌──────────────────────────────────┐
+│ ┌──────────┐  ┌──────────┐      │
+│ │ User     │  │ Post     │      │
+│ ├──────────┤  ├──────────┤      │
+│ │ id    PK │  │ id    PK │      │
+│ │ email    │──│ user  FK │      │
+│ │ name     │  │ title    │      │
+│ └──────────┘  └──────────┘      │
+└──────────────────────────────────┘
+```
+
+**Hierarchy**:
+```
+┌──────────────────────────────────┐
+│           [Root]                 │
+│          ┌──┼──┐                 │
+│          ▼  ▼  ▼                 │
+│        [A] [B] [C]               │
+│        ┌┼┐                       │
+│        ▼ ▼                       │
+│      [D][E]                      │
+└──────────────────────────────────┘
+```
+
+**Matrix**:
+```
+┌──────────────────────────────────┐
+│         │  High    │  Low       │
+│─────────┼──────────┼────────────│
+│  Easy   │ QuickWin │ Fill      │
+│─────────┼──────────┼────────────│
+│  Hard   │ Big Bet  │ Avoid     │
+└──────────────────────────────────┘
+```
+
+**Journey**:
+```
+┌──────────────────────────────────┐
+│  ①─────────②─────────③────────④  │
+│  발견     가입      Aha!    재방문 │
+└──────────────────────────────────┘
+```
+
+**Funnel**:
+```
+┌──────────────────────────────────┐
+│ ┌────────────────────────────┐   │
+│ │       Visit  10,000        │   │
+│ ├──────────────────────┤         │
+│ │    Signup  3,200     │         │
+│ ├────────────────┤               │
+│ │  Trial   720   │               │
+│ ├──────────┤                     │
+│ │ Pay  180 │                     │
+└──────────────────────────────────┘
+```
+
+**Loop**:
+```
+┌──────────────────────────────────┐
+│  [Plan]───▶[Do]                  │
+│    ▲          │                   │
+│    │    ↻     ▼                   │
+│  [Act]◀───[Check]                │
+└──────────────────────────────────┘
+```
+
+**Data Viz**:
+```
+┌──────────────────────────────────┐
+│  React  ████████████████░░ 85%   │
+│  Vue    ███████████████░░░ 78%   │
+│  Svelte ██████████████████ 92%   │
+│  Angular████████████░░░░░░ 54%   │
+└──────────────────────────────────┘
+```
+
+**Storyboard**:
+```
+┌──────────────────────────────────┐
+│  ┌─────────┐   ┌─────────┐      │
+│  │①        │   │②        │      │
+│  │ Scene 1 │   │ Scene 2 │      │
+│  └─────────┘   └─────────┘      │
+│  ┌─────────┐   ┌─────────┐      │
+│  │③        │   │④        │      │
+│  │ Scene 3 │   │ Scene 4 │      │
+│  └─────────┘   └─────────┘      │
+└──────────────────────────────────┘
+```
+
+### Example: AskUserQuestion Call
+
+User가 "사용자 인터뷰 프로세스를 시각화해줘"라고 요청한 경우:
+
+```
+AskUserQuestion({
+  questions: [{
+    question: "어떤 Figure 패턴이 가장 적합할까요?",
+    header: "패턴 선택",
+    multiSelect: false,
+    options: [
+      {
+        label: "Flow (추천)",
+        description: "인터뷰 단계를 수직 플로우로 표현. 프로세스 시각화에 최적",
+        markdown: "┌──────────────────────────────────┐\n│        ┌──────────────┐          │\n│        │  맥락 확인    │          │\n│        └──────┬───────┘          │\n│               ▼                  │\n│        ┌──────────────┐          │\n│        │  사례 복기    │          │\n│        └──────┬───────┘          │\n│               ▼                  │\n│        ┌──────────────┐          │\n│        │  니즈 발견    │          │\n│        └──────────────┘          │\n└──────────────────────────────────┘"
+      },
+      {
+        label: "Journey",
+        description: "인터뷰이의 여정을 수평 터치포인트로 표현",
+        markdown: "┌──────────────────────────────────┐\n│  ①─────────②─────────③────────④  │\n│  준비     라포     질문     정리  │\n└──────────────────────────────────┘"
+      },
+      {
+        label: "Timeline",
+        description: "인터뷰 시간 배분을 비율로 시각화",
+        markdown: "┌──────────────────────────────────┐\n│ ┌────────┬──────────┬────────┐   │\n│ │  라포   │   질문    │  정리  │   │\n│ │  3min  │   5min   │  2min  │   │\n│ └────────┴──────────┴────────┘   │\n└──────────────────────────────────┘"
+      },
+      {
+        label: "Comparison",
+        description: "좋은 인터뷰 vs 나쁜 인터뷰를 좌우 대비",
+        markdown: "┌──────────────────────────────────┐\n│  ┌──────────┐  ┌──────────┐     │\n│  │ 나쁜방법  │VS│ 좋은방법  │     │\n│  │ ┌──────┐ │  │ ┌──────┐ │     │\n│  │ │평가요청│ │  │ │맥락확인│ │     │\n│  │ └──────┘ │  │ └──────┘ │     │\n│  └──────────┘  └──────────┘     │\n└──────────────────────────────────┘"
+      }
+    ]
+  }]
+})
+```
+
+**중요**: `markdown` 필드에는 해당 컨텍스트에 맞는 실제 키워드를 넣어라. 제네릭 플레이스홀더(Step 1, Card 1)가 아닌 실제 내용을 반영한 프리뷰를 보여줘야 사용자가 판단할 수 있다.
+
+## Document Insertion
+
+사용자가 `.md` 또는 `.mdx` 파일을 제공한 경우, PNG 저장 후 해당 파일에 이미지를 삽입한다.
+
+### 삽입 규칙
+
+1. **위치 결정**: Figure가 설명하는 컨텐츠의 **직후**에 삽입. 해당 섹션의 마지막 문단 뒤, 다음 `##` 헤딩 전
+2. **MDX 파일** (`.mdx`):
+   ```mdx
+   <Figure src="/blog/images/{slug}/{filename}.png" alt="설명" caption="캡션" />
+   ```
+3. **Markdown 파일** (`.md`):
+   ```markdown
+   ![설명](/blog/images/{slug}/{filename}.png)
+   ```
+4. **빈 줄**: 삽입된 태그 앞뒤로 빈 줄 1개씩 확보
+5. **복수 Figure**: 같은 파일에 여러 Figure를 삽입할 경우, 각각 관련 섹션 근처에 배치
+
+### 삽입 위치 판단 기준
+
+- Figure 내용과 가장 관련 높은 **헤딩(##, ###)** 을 찾는다
+- 해당 헤딩의 본문 마지막 문단 뒤에 삽입
+- 코드 블록(```) 내부에는 절대 삽입하지 않는다
+- frontmatter(`---`) 내부에는 삽입하지 않는다
+- 이미 동일 파일명의 Figure/image가 있으면 교체(중복 방지)
 
 ## HTML Template
 
