@@ -16,7 +16,7 @@ Generate Neo-Brutalism styled figure images for blog posts: HTML → browser →
 ## Workflow
 
 1. **Understand context**: Read blog MDX or user description to decide what to visualize
-2. **Choose pattern**: Pick from comparison, flow, timeline, or concept — see [references/figure-patterns.md](references/figure-patterns.md)
+2. **Choose pattern**: Pick from 15 patterns — see [references/figure-patterns.md](references/figure-patterns.md)
 3. **Create HTML**: Write standalone HTML to `/tmp/blog-figure-{name}.html` linking `assets/figure.css`
 4. **Capture PNG**: Open in browser, screenshot at 1440×810, save PNG
 5. **Save to project**: Move PNG to `apps/content/src/content/blog/images/{slug}/`
@@ -62,10 +62,21 @@ npx playwright screenshot --viewport-size="1440,810" file:///tmp/blog-figure-{na
 
 | Pattern | Use case | Key classes |
 |---------|----------|-------------|
-| **Comparison** | X vs Y, 좌우 대비 | `.split`, `.split-left/right`, `.vs-badge` |
+| **Comparison** | X vs Y, 좌우 대비 | `.split`, `.vs-badge` |
 | **Flow** | 단계별 프로세스 | `.flow-card`, `.arrow-down`, `.icon` |
 | **Timeline** | 시간 배분, 비율 | `.timeline`, `.tl-block` |
-| **Concept** | 관계도, 개념 비교 | `.concept-block`, absolute positioning |
+| **Concept** | 관계도, 개념 비교 | `.concept-block` |
+| **Architecture** | 시스템 구성도, 레이어 | `.arch`, `.arch-layer`, `.arch-node` |
+| **Interaction** | 시퀀스, 요청/응답 | `.seq`, `.seq-msg` |
+| **State** | 상태 전이, 라이프사이클 | `.state-chain`, `.state-node` |
+| **Schema** | DB 모델, 엔티티 관계 | `.schema-table`, `.schema-field` |
+| **Hierarchy** | 트리, 조직도 | `.tree`, `.tree-node`, `.tree-level` |
+| **Matrix** | 2x2 분석, 비교표 | `.matrix`, `.matrix-cell` |
+| **Journey** | 사용자 여정, 터치포인트 | `.journey`, `.journey-step` |
+| **Funnel** | 전환율, 단계별 감소 | `.funnel`, `.funnel-stage` |
+| **Loop** | 순환 프로세스, 피드백 | `.loop`, `.loop-node` |
+| **Data Viz** | 수치 비교, 바 차트 | `.bar-chart`, `.bar-row` |
+| **Storyboard** | 시나리오, 단계별 장면 | `.storyboard`, `.story-panel` |
 
 Full HTML examples for each: [references/figure-patterns.md](references/figure-patterns.md)
 
