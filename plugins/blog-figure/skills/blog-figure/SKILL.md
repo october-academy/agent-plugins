@@ -6,6 +6,7 @@ description: >
   Use when: (1) user asks to create a blog figure/image/diagram, (2) user says "figure 만들어",
   "블로그 이미지", "다이어그램 생성", (3) MDX references a missing image in /blog/images/,
   (4) user wants to visualize a concept for a blog post.
+user-invocable: true
 ---
 
 # Blog Figure Generator
