@@ -87,9 +87,13 @@ Full HTML examples for each: [references/figure-patterns.md](references/figure-p
 - **Shadow**: Npx Npx 0px #0a0a0a (no blur ever)
 - **Title font**: Black Han Sans
 - **Body font**: Noto Sans KR
+- **Code/number font**: JetBrains Mono (`.mono`, `.code`, `.tag`)
 - **Colors**: CSS variables only — never hardcode hex in HTML
 - **Icons**: Emoji (not FontAwesome — keeps HTML self-contained)
 - **No**: gradients, blur shadows, soft edges
+- **Textures**: `.bg-dots`, `.bg-lines`, `.bg-grid`, `.bg-crosshatch` for visual depth
+- **Decorations**: `.tape`, `.sticker`, `.stamp`, `.mark` for handmade feel
+- **Utilities**: `.bg-*`, `.p-*`, `.m-*`, `.badge`, `.tag` to reduce inline styles
 
 ## File Naming
 

@@ -634,12 +634,47 @@ Notes: `grid-template-columns`로 열 수 조정 (2×3이면 `repeat(3,1fr)`, 3�
 - **Size**: 1440×810 (16:9)
 - **Border**: Always 3px solid #0a0a0a
 - **Shadow**: Npx Npx 0px #0a0a0a (no blur, ever)
-- **Fonts**: Black Han Sans for titles/labels, Noto Sans KR for body
+- **Fonts**: Black Han Sans (titles), Noto Sans KR (body), JetBrains Mono (code/numbers)
 - **Colors**: Use CSS variables only, never hardcode hex in HTML
 - **Icons**: Emoji only (no FontAwesome — keeps HTML self-contained)
 - **No**: gradients, blur shadows, soft edges, rounded-full on cards
 - **Slight rotation** on badges/labels: rotate(-1deg) to rotate(5deg)
 - **Icon circles**: 48px, border-radius 50%, 3px border
+
+### Utilities (reduce inline styles)
+
+| Category | Classes |
+|----------|---------|
+| Background | `.bg-white`, `.bg-card`, `.bg-dark`, `.bg-accent`, `.bg-highlight`, `.bg-good`, `.bg-bad`, `.bg-info`, `.bg-warm` |
+| Text Color | `.text-dark`, `.text-white`, `.text-accent`, `.text-muted`, `.text-good`, `.text-bad`, `.text-info` |
+| Spacing | `.p-1`~`.p-4`, `.px-*`, `.py-*`, `.m-1`~`.m-3`, `.mt-*`, `.mb-*` |
+| Badge/Tag | `.badge` (bold label), `.tag` (mono rounded pill) |
+| Code | `.code` (inline monospace), `.mono` (font class) |
+
+### Textures (CSS-only patterns)
+
+| Class | Effect | Best for |
+|-------|--------|----------|
+| `.bg-dots` | Dot grid 16px | 배경 텍스처, 카드 뒤 |
+| `.bg-dots-lg` | Dot grid 24px | 넓은 배경 |
+| `.bg-lines` | Diagonal hatch (dark) | 금지/위험 영역 |
+| `.bg-lines-light` | Diagonal hatch (muted) | 은은한 패턴 배경 |
+| `.bg-grid` | Graph paper | 기술 다이어그램 배경 |
+| `.bg-grid-dark` | Graph paper (darker) | 어두운 배경 위 |
+| `.bg-crosshatch` | X자 해치 | 빈 영역, 플레이스홀더 |
+
+### Decorations (handmade feel)
+
+| Class | Effect | Usage |
+|-------|--------|-------|
+| `.tape` | Washi tape on top center | 카드 상단에 테이프 효과 |
+| `.tape-left` / `.tape-right` | 좌/우 치우친 테이프 | 비대칭 배치 |
+| `.sticker` / `.sticker-sm` / `.sticker-lg` | Circular sticker | 강조 뱃지, 코너 장식 |
+| `.stamp` + `.stamp-red/green/blue` | Rubber stamp | 상태 표시 (APPROVED, REJECTED 등) |
+| `.mark` | Yellow marker underline | 텍스트 강조 (형광펜) |
+| `.mark-accent/good/bad` | Color marker variants | 색상별 강조 |
+| `.callout` | Left-border attention box | 주의사항, 팁, 경고 |
+| `.divider` / `.divider-dashed` | Horizontal separator | 섹션 구분 |
 
 ## Color Palette (agentic30 design system)
 
