@@ -9,7 +9,7 @@
 body {
   width: 1440px; height: 810px;
   font-family: 'Noto Sans KR', sans-serif;
-  font-weight: 700;
+  font-weight: 400;
   color: var(--dark); background: var(--card);
   overflow: hidden;
   display: flex; flex-direction: column;
@@ -150,9 +150,9 @@ body {
   border-radius: 12px;
   padding: 1rem 1.5rem;
   display: flex; align-items: center; gap: 1rem;
-  font-weight: 900;
+  font-weight: 700;
 }
-.flow-card span { font-weight: 700; }
+.flow-card span { font-weight: 400; }
 .flow-card.bad { box-shadow: 4px 4px 0px var(--bad-card); }
 .flow-card.good { box-shadow: 4px 4px 0px var(--good-card); }
 
@@ -266,7 +266,6 @@ body {
   display: flex; flex-direction: column;
   align-items: center; gap: 0.25rem;
   font-size: 0.9rem; text-align: center;
-  font-weight: 700;
 }
 
 /* --- Data Card (for stats) --- */
@@ -299,7 +298,6 @@ body {
   border-radius: 8px;
   padding: 1rem 1.5rem;
   font-size: 1.2rem;
-  font-weight: 700;
   width: 100%;
 }
 
@@ -363,7 +361,7 @@ body {
   border-radius: 12px;
   box-shadow: 4px 4px 0px var(--dark);
   padding: 0.75rem 1.25rem;
-  font-weight: 900;
+  font-weight: 700;
   display: flex; align-items: center; gap: 0.5rem;
 }
 
@@ -404,7 +402,7 @@ body {
   height: 0;
 }
 .seq-msg-label {
-  font-size: 0.95rem; font-weight: 900;
+  font-size: 0.95rem; font-weight: 700;
   white-space: nowrap;
   background: var(--white);
   padding: 0.25rem 0.75rem;
@@ -437,7 +435,7 @@ body {
   border-radius: 20px;
   box-shadow: 4px 4px 0px var(--dark);
   padding: 1rem 1.5rem;
-  font-weight: 900; text-align: center;
+  font-weight: 700; text-align: center;
   min-width: 120px;
   display: flex; flex-direction: column;
   align-items: center; gap: 0.25rem;
@@ -474,7 +472,7 @@ body {
   padding: 0.5rem 1rem;
   display: flex; justify-content: space-between;
   align-items: center;
-  font-size: 0.9rem; font-weight: 700;
+  font-size: 0.9rem;
 }
 .schema-field + .schema-field {
   border-top: 2px solid var(--gray-100);
@@ -505,7 +503,7 @@ body {
   border-radius: 12px;
   box-shadow: 4px 4px 0px var(--dark);
   padding: 0.75rem 1.5rem;
-  font-weight: 900; text-align: center;
+  font-weight: 700; text-align: center;
   display: inline-flex; align-items: center; gap: 0.5rem;
 }
 .tree-level {
@@ -593,10 +591,10 @@ body {
   background: var(--white);
 }
 .journey-label {
-  font-weight: 900; margin-top: 0.75rem; font-size: 1rem;
+  font-weight: 700; margin-top: 0.75rem; font-size: 1rem;
 }
 .journey-desc {
-  font-size: 0.8rem; font-weight: 700;
+  font-size: 0.8rem;
   color: var(--muted-fg); margin-top: 0.25rem;
   max-width: 140px;
 }
@@ -612,7 +610,7 @@ body {
   justify-content: space-between;
   padding: 1rem 2rem;
   border: 3px solid var(--dark);
-  font-weight: 900; font-size: 1.25rem;
+  font-weight: 700; font-size: 1.25rem;
 }
 .funnel-stage + .funnel-stage {
   border-top: none;
@@ -642,7 +640,7 @@ body {
   border-radius: 12px;
   box-shadow: 4px 4px 0px var(--dark);
   padding: 1rem 1.5rem;
-  font-weight: 900; text-align: center;
+  font-weight: 700; text-align: center;
   display: flex; flex-direction: column;
   align-items: center; gap: 0.25rem;
   min-width: 160px;
@@ -662,7 +660,7 @@ body {
   display: flex; align-items: center; gap: 1rem;
 }
 .bar-label {
-  font-weight: 900; font-size: 1rem;
+  font-weight: 700; font-size: 1rem;
   min-width: 140px; text-align: right;
 }
 .bar-track {
@@ -676,7 +674,7 @@ body {
   display: flex; align-items: center;
   justify-content: flex-end;
   padding-right: 0.75rem;
-  font-weight: 900;
+  font-weight: 700;
   font-family: 'Black Han Sans', sans-serif;
   font-size: 1.1rem;
 }
@@ -709,10 +707,10 @@ body {
 }
 .story-icon { font-size: 2.5rem; }
 .story-caption {
-  font-weight: 900; font-size: 1rem;
+  font-weight: 700; font-size: 1rem;
 }
 .story-desc {
-  font-size: 0.85rem; font-weight: 700; color: var(--muted-fg);
+  font-size: 0.85rem; color: var(--muted-fg);
 }
 
 /* ================================================================
@@ -997,7 +995,6 @@ body {
   border-left: 8px solid var(--accent);
   box-shadow: 4px 4px 0px var(--dark);
   padding: 1rem 1.5rem;
-  font-weight: 700;
   display: flex; align-items: center; gap: 0.75rem;
 }
 .callout-icon {

@@ -85,15 +85,39 @@ Full HTML examples for each: [references/figure-patterns.md](references/figure-p
 - **Size**: 1440×810 (16:9)
 - **Border**: 3px solid #0a0a0a
 - **Shadow**: Npx Npx 0px #0a0a0a (no blur ever)
-- **Title font**: Black Han Sans
-- **Body font**: Noto Sans KR
+- **Title font**: Black Han Sans (headings/labels only)
+- **Body font**: Noto Sans KR, weight 400 (regular). Use 700 for labels/captions only
 - **Code/number font**: JetBrains Mono (`.mono`, `.code`, `.tag`)
 - **Colors**: CSS variables only — never hardcode hex in HTML
-- **Icons**: Emoji (not FontAwesome — keeps HTML self-contained)
 - **No**: gradients, blur shadows, soft edges
-- **Textures**: `.bg-dots`, `.bg-lines`, `.bg-grid`, `.bg-crosshatch` for visual depth
-- **Decorations**: `.tape`, `.sticker`, `.stamp`, `.mark` for handmade feel
-- **Utilities**: `.bg-*`, `.p-*`, `.m-*`, `.badge`, `.tag` to reduce inline styles
+
+### Weight Hierarchy
+
+| Role | Weight | Example |
+|------|--------|---------|
+| Body text, descriptions, annotations | 400 | `.flow-card span`, `.journey-desc`, `.story-desc` |
+| Labels, captions, node text | 700 | `.flow-card strong`, `.journey-label`, `.bar-label` |
+| Display titles | Black Han Sans | `.figure-title`, `.section-label` |
+
+### Composition — 정형화 피하기
+
+- `.figure-title` + `.insight-box`를 **매번 넣지 마라**. 컨텐츠만으로 의미가 전달되면 생략
+- 제목이 필요하면 `.figure-title` 대신 패턴 내부에 자연스럽게 포함
+- 하단 요약이 필요하면 `.insight-box` 대신 `.callout`이나 `.mark`로 변주
+- 같은 블로그 포스트 내 여러 Figure는 각각 다른 구성을 사용할 것
+
+### 아이콘/이모지 원칙
+
+- **텍스트만으로 충분하면 아이콘 생략**. `.icon` 원형은 선택 사항
+- `.flow-card`는 아이콘 없이 `<strong>제목</strong>` + `<span>설명</span>`만으로 충분
+- 이모지는 카테고리 구분이 반드시 필요할 때만 (예: `.arch-label`, `.journey-dot`)
+- 장식용 이모지/아이콘 금지
+
+### Textures & Decorations
+
+- `.bg-dots`, `.bg-lines`, `.bg-grid`, `.bg-crosshatch` — 시각적 깊이
+- `.tape`, `.sticker`, `.stamp`, `.mark` — 수제 느낌
+- `.bg-*`, `.p-*`, `.m-*`, `.badge`, `.tag` — inline style 최소화
 
 ## File Naming
 
