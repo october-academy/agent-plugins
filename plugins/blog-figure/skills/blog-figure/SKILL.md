@@ -16,7 +16,7 @@ Generate Neo-Brutalism styled figure images for blog posts: HTML → browser →
 ## Workflow
 
 1. **Understand context**: Read blog MDX/MD or user description to decide what to visualize
-2. **Suggest patterns**: Analyze context, pick the **4 most fitting patterns** from 15 available, and present them via `AskUserQuestion` with ASCII art previews (see [Pattern Selection](#pattern-selection) below)
+2. **Suggest patterns**: Analyze context, pick the **4 most fitting patterns** from 16 available, and present them via `AskUserQuestion` with ASCII art previews (see [Pattern Selection](#pattern-selection) below)
 3. **Create HTML**: Write standalone HTML to `/tmp/blog-figure-{name}.html` linking `assets/figure.css`
 4. **Capture PNG**: Open in browser, screenshot at 1440×810, save PNG
 5. **Save to project**: Move PNG to `apps/content/src/content/blog/images/{slug}/`
@@ -45,6 +45,7 @@ Analyze the user's content and rank all 15 patterns by relevance:
 - **Loop**: 순환 프로세스, 피드백
 - **Data Viz**: 수치 비교, 바 차트
 - **Storyboard**: 시나리오, 단계별 장면
+- **Terminal**: CLI 시각화, 터미널 UI, 도구 사용 장면
 
 Top 4를 선택하여 아래처럼 AskUserQuestion 호출:
 
@@ -254,6 +255,20 @@ AskUserQuestion({
 └──────────────────────────────────┘
 ```
 
+**Terminal**:
+```
+┌──────────────────────────────────┐
+│ ~ /project                      │
+│ > command                       │
+│ ● Tool output                   │
+│ ┌─Step 1─┐ ┌─Step 2─┐ ┌─Step 3─┐│
+│ │ ● opt  │ │ ○ opt  │ │ ● opt  ││
+│ │ ○ opt  │ │ ● opt  │ │ ○ opt  ││
+│ └────────┘ └────────┘ └────────┘│
+│ ● Result                        │
+└──────────────────────────────────┘
+```
+
 ### Example: AskUserQuestion Call
 
 User가 "사용자 인터뷰 프로세스를 시각화해줘"라고 요청한 경우:
@@ -373,6 +388,7 @@ npx playwright screenshot --viewport-size="1440,810" file:///tmp/blog-figure-{na
 | **Loop** | 순환 프로세스, 피드백 | `.loop`, `.loop-node` |
 | **Data Viz** | 수치 비교, 바 차트 | `.bar-chart`, `.bar-row` |
 | **Storyboard** | 시나리오, 단계별 장면 | `.storyboard`, `.story-panel` |
+| **Terminal** | CLI 시각화, 터미널 UI | `.terminal`, `.terminal-card`, `.terminal-option` |
 
 Full HTML examples for each: [references/figure-patterns.md](references/figure-patterns.md)
 
@@ -410,6 +426,8 @@ Full HTML examples for each: [references/figure-patterns.md](references/figure-p
 | `.journey-desc` | **max 6자** | "서비스 인지" |
 | `.story-desc` | **max 6자** | "결제 확인" |
 | `.bar-label` | **max 4단어** | "React", "설문 응답률" |
+| `.terminal-card-question` | **2줄 이내** (`<br>` 금지, balance 자동 줄바꿈) | "허수 포함 시 거짓 성공감 위험은?" |
+| `.terminal-option` | **max 10자** | "WAU 기준 활성 유저만" |
 | Figure 전체 | **max 20~25단어** | — |
 
 ### 최소 폰트 크기
@@ -438,6 +456,7 @@ Full HTML examples for each: [references/figure-patterns.md](references/figure-p
 | Split 비교 | **양쪽 각 2~3카드** | 카드 크기 유지 |
 | Journey | **4단계** | dot 간 여백 확보 |
 | Schema | **3테이블, 테이블당 4필드** | 글자 크기 유지 |
+| Terminal | **3카드, 카드당 옵션 2~4개** | 질문 2줄 이내, `<br>` 금지 |
 
 ### Weight Hierarchy
 

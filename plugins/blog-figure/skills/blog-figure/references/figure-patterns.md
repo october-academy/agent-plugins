@@ -513,6 +513,133 @@ Notes: `grid-template-columns`로 열 수 조정. **2×2 기본**. `.story-desc`
 
 ---
 
+## 16. Terminal (터미널 UI)
+
+Best for: CLI 도구 시각화, 터미널 명령어 시퀀스, AskUserQuestion UI, 개발자 도구 데모
+
+Key classes: `.terminal`, `.terminal-card`, `.terminal-card-header`, `.terminal-card-tag`, `.terminal-option`, `.terminal-radio`, `.terminal-answer`
+
+Max: **3 Step 카드 (가로)**, 카드당 옵션 **2~4개**
+
+```html
+<body>
+<div class="terminal">
+  <div style="margin-bottom:20px">
+    <div class="terminal-path"><span style="color:var(--good-card)">~</span> /project</div>
+    <div class="terminal-prompt">
+      <span style="color:var(--good-card);font-weight:700">&#10095;</span>
+      <span style="color:var(--accent);font-weight:600">@SPEC.md</span>를 읽고
+      <span style="color:var(--tl-purple);font-weight:600">AskUserQuestionTool</span>로 인터뷰해 주세요.
+    </div>
+  </div>
+
+  <div class="terminal-tool">
+    <span class="terminal-dot" style="background:var(--accent)"></span>
+    <span>Read</span>
+    <span style="color:var(--muted-fg)">SPEC.md</span>
+  </div>
+
+  <div class="terminal-text">분석 완료. 핵심 결정 사항을 인터뷰합니다.</div>
+
+  <div class="terminal-steps">
+    <div class="terminal-card">
+      <div class="terminal-card-header">
+        <span>Step 1 / 3</span>
+        <span class="terminal-card-tag">성공 기준</span>
+      </div>
+      <div class="terminal-card-question">허수 포함 시 거짓 성공감 위험은?</div>
+      <div class="flex flex-col" style="gap:10px;margin-bottom:18px">
+        <div class="terminal-option selected">
+          <span class="terminal-radio checked"></span>
+          <span>WAU 기준 활성 유저만</span>
+        </div>
+        <div class="terminal-option">
+          <span class="terminal-radio"></span>
+          <span>가입 수 기준</span>
+        </div>
+        <div class="terminal-option">
+          <span class="terminal-radio"></span>
+          <span>결제 전환만 유효</span>
+        </div>
+      </div>
+      <hr class="terminal-divider">
+      <div class="terminal-answer">
+        <span style="font-weight:700;flex-shrink:0">✔</span>
+        <span>WAU 기준 활성 유저만</span>
+      </div>
+    </div>
+
+    <div class="terminal-connector">&#8250;</div>
+
+    <div class="terminal-card">
+      <div class="terminal-card-header">
+        <span>Step 2 / 3</span>
+        <span class="terminal-card-tag">좌절 관리</span>
+      </div>
+      <div class="terminal-card-question">Day 20에 "활성 12명" — 좌절 방지?</div>
+      <div class="flex flex-col" style="gap:10px;margin-bottom:18px">
+        <div class="terminal-option">
+          <span class="terminal-radio"></span>
+          <span>숫자를 숨기기</span>
+        </div>
+        <div class="terminal-option">
+          <span class="terminal-radio"></span>
+          <span>리얼타임 가이드</span>
+        </div>
+      </div>
+      <hr class="terminal-divider">
+      <div class="terminal-answer">
+        <span style="font-weight:700;flex-shrink:0">✔</span>
+        <span style="color:var(--white)">
+          <span class="mono" style="color:var(--muted-fg)">Other:</span> 공개 + 그로스 가이드
+        </span>
+      </div>
+    </div>
+
+    <div class="terminal-connector">&#8250;</div>
+
+    <div class="terminal-card">
+      <div class="terminal-card-header">
+        <span>Step 3 / 3</span>
+        <span class="terminal-card-tag">목표 재정의</span>
+      </div>
+      <div class="terminal-card-question">"100명"보다 "첫 결제 1명"이 진짜?</div>
+      <div class="flex flex-col" style="gap:10px;margin-bottom:18px">
+        <div class="terminal-option selected">
+          <span class="terminal-radio checked"></span>
+          <span>첫 매출이 진짜 목표</span>
+        </div>
+        <div class="terminal-option">
+          <span class="terminal-radio"></span>
+          <span>단계적 접근</span>
+        </div>
+      </div>
+      <hr class="terminal-divider">
+      <div class="terminal-answer">
+        <span style="font-weight:700;flex-shrink:0">✔</span>
+        <span>첫 매출이 진짜 목표</span>
+      </div>
+    </div>
+  </div>
+
+  <div style="margin-top:28px">
+    <div class="terminal-tool" style="margin:0">
+      <span class="terminal-dot" style="background:var(--good-card)"></span>
+      <span style="color:var(--good-card)">Write</span>
+      <span style="color:var(--muted-fg)">SPEC-v2.md</span>
+    </div>
+  </div>
+  <div class="terminal-text" style="color:var(--good-card);margin-top:8px;margin-bottom:0">
+    ✔ 인터뷰 완료 — 스펙 작성됨
+  </div>
+</div>
+</body>
+```
+
+Notes: figure.css 기반이므로 외부 @import 없이 동작. 다크 테마는 `.terminal` 클래스가 body 대신 적용. 질문 텍스트에 `<br>` 사용 금지 — `.terminal-card-question`의 `text-wrap: balance`가 자동으로 균등 줄바꿈 처리. 질문은 **2줄 이내**로 작성.
+
+---
+
 ## Design Rules (Quick Reference)
 
 - **Size**: 1440×810 (16:9)
