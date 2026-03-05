@@ -645,7 +645,7 @@ Notes: figure.css 기반이므로 외부 @import 없이 동작. 다크 테마는
 - **Size**: 1440×810 (16:9)
 - **Border**: Always 3px solid #0a0a0a
 - **Shadow**: Npx Npx 0px #0a0a0a (no blur, ever)
-- **Fonts**: Black Han Sans (titles), Noto Sans KR 700 (body default), JetBrains Mono (code)
+- **Fonts**: Noto Sans KR 900 (titles), Noto Sans KR 700 (body default), JetBrains Mono (code)
 - **Colors**: Use CSS variables only, never hardcode hex in HTML
 - **Emoji**: 의미 전달에 필수일 때만 사용. 장식용 금지
 - **No**: gradients, blur shadows, soft edges, rounded-full on cards

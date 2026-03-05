@@ -472,7 +472,7 @@ Full HTML examples for each: [references/figure-patterns.md](references/figure-p
 - **Size**: 1440×810 (16:9)
 - **Border**: 3px solid #0a0a0a
 - **Shadow**: Npx Npx 0px #0a0a0a (no blur ever)
-- **Title font**: Black Han Sans (headings/labels only)
+- **Title font**: Noto Sans KR 900 (headings/labels only)
 - **Body font**: Noto Sans KR, weight 700 (bold default). Use 400 only for minor annotations
 - **Code/number font**: JetBrains Mono (`.mono`, `.code`, `.tag`)
 - **Colors**: CSS variables only — never hardcode hex in HTML
@@ -539,7 +539,7 @@ Full HTML examples for each: [references/figure-patterns.md](references/figure-p
 |------|--------|---------|
 | 모든 텍스트 기본값 | 700 | body default, `.flow-card`, `.journey-desc` |
 | 부연/보조 (드물게 사용) | 400 | 긴 설명이 불가피할 때만 |
-| Display titles | Black Han Sans | `.figure-title`, `.section-label` |
+| Display titles | Noto Sans KR 900 | `.figure-title`, `.section-label` |
 
 ### Composition — 정형화 피하기
 
