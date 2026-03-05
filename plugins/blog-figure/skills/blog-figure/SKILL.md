@@ -91,12 +91,14 @@ AskUserQuestion({
 
 | Brief 구조 | 적합한 패턴 (우선순위) |
 |-----------|---------------------|
-| 대비 (A vs B) | Comparison, Flow (split), Matrix |
+| 대비 (A vs B) | Comparison, Flow (split), Matrix, Network |
 | 순서 (A→B→C) | Flow, Journey, Timeline, Storyboard |
-| 계층 (A⊃B⊃C) | Architecture, Hierarchy, Schema |
-| 순환 (A↻B) | Loop, State |
+| 계층 (A⊃B⊃C) | Architecture, Hierarchy, Isometric, Schema |
+| 순환 (A↻B) | Loop, State, Graph |
 | 수치 비교 | Data Viz, Funnel, Timeline |
-| 상호작용 | Interaction, Terminal, Storyboard |
+| 상호작용 | Interaction, Terminal, IconDiagram, Storyboard |
+| 추상/공간 구조 | Isometric, Network, Graph |
+| 시스템 연결 | IconDiagram, Architecture, Interaction |
 
 ## Pattern Selection
 
@@ -104,7 +106,7 @@ After understanding context, use `AskUserQuestion` to let the user pick from the
 
 ### How to pick the 4 patterns
 
-Analyze the user's content and rank all 15 patterns by relevance:
+Analyze the user's content and rank all 20 patterns by relevance:
 - **Comparison**: X vs Y, 좌우 대비, before/after
 - **Flow**: 프로세스, 단계별 차이, 방법론
 - **Timeline**: 시간 배분, 비율, 순서
@@ -121,6 +123,10 @@ Analyze the user's content and rank all 15 patterns by relevance:
 - **Data Viz**: 수치 비교, 바 차트
 - **Storyboard**: 시나리오, 단계별 장면
 - **Terminal**: CLI 시각화, 터미널 UI, 도구 사용 장면
+- **Isometric**: 3D 블록, 와이어프레임, 레이어 구조 [SVG]
+- **IconDiagram**: 시스템 다이어그램, 아이콘 연결, 기술 구성도 [SVG]
+- **Network**: 노드 네트워크, 결정론↔확률 대비, 추상 관계 [Canvas]
+- **Graph**: 포스-다이렉티드 그래프, 노드-링크 자동 레이아웃 [D3]
 
 Top 4를 선택하여 아래처럼 AskUserQuestion 호출:
 
@@ -344,6 +350,54 @@ AskUserQuestion({
 └──────────────────────────────────┘
 ```
 
+**Isometric** (SVG):
+```
+┌──────────────────────────────────┐
+│            ◇◇◇                   │
+│           ╱ UI╲                  │
+│         ◇◇◇◇◇◇◇                 │
+│        ╱Service╲                 │
+│      ◇◇◇◇◇◇◇◇◇◇◇               │
+│     ╱   Infra    ╲              │
+└──────────────────────────────────┘
+```
+
+**IconDiagram** (SVG):
+```
+┌──────────────────────────────────┐
+│ ┌──────┐         ┌──────┐       │
+│ │ ◉    │───────▶ │ ⚙    │       │
+│ │ User │         │ API  │       │
+│ └──────┘         └──┬───┘       │
+│                     ▼           │
+│                  ┌──────┐       │
+│                  │ ⊡ DB │       │
+│                  └──────┘       │
+└──────────────────────────────────┘
+```
+
+**Network** (Canvas):
+```
+┌──────────────────────────────────┐
+│ [GRID]           [SCATTER]       │
+│  ○ ○ ○ ○      ◯        ○       │
+│  ○ ○ ○ ○       ○──◯──○         │
+│                  ╲ ╱  ╲         │
+│                   ◯    ○        │
+└──────────────────────────────────┘
+```
+
+**Graph** (D3):
+```
+┌──────────────────────────────────┐
+│        ◯───────◯                 │
+│       ╱ ╲     ╱                  │
+│      ◯   ◯──◯                   │
+│       ╲ ╱                        │
+│        ◯                         │
+└──────────────────────────────────┘
+```
+
 ### Example: AskUserQuestion Call
 
 User가 "사용자 인터뷰 프로세스를 시각화해줘"라고 요청한 경우:
@@ -464,6 +518,10 @@ npx playwright screenshot --viewport-size="1440,810" file:///tmp/blog-figure-{na
 | **Data Viz** | 수치 비교, 바 차트 | `.bar-chart`, `.bar-row` |
 | **Storyboard** | 시나리오, 단계별 장면 | `.storyboard`, `.story-panel` |
 | **Terminal** | CLI 시각화, 터미널 UI | `.terminal`, `.terminal-card`, `.terminal-option` |
+| **Isometric** | 3D 블록, 레이어, 와이어프레임 | SVG `<polygon>`, `.iso` |
+| **IconDiagram** | 기술 다이어그램, 아이콘 연결 | SVG `<rect>`, `<marker>` |
+| **Network** | 노드 네트워크, 추상 관계 | `<canvas>`, JS render |
+| **Graph** | 포스-다이렉티드 그래프 | D3.js, `<svg>` |
 
 Full HTML examples for each: [references/figure-patterns.md](references/figure-patterns.md)
 
@@ -475,8 +533,15 @@ Full HTML examples for each: [references/figure-patterns.md](references/figure-p
 - **Title font**: Noto Sans KR 900 (headings/labels only)
 - **Body font**: Noto Sans KR, weight 700 (bold default). Use 400 only for minor annotations
 - **Code/number font**: JetBrains Mono (`.mono`, `.code`, `.tag`)
-- **Colors**: CSS variables only — never hardcode hex in HTML
+- **Colors**: CSS variables only — never hardcode hex in HTML (Canvas/D3 패턴은 JS 내 hex 허용)
 - **No**: gradients, blur shadows, soft edges
+
+### 시각 패턴 (Isometric, IconDiagram, Network, Graph) 참고
+
+- **SVG 패턴** (Isometric, IconDiagram): `<svg>` 인라인. 정밀한 좌표 배치. figure.css 색상 변수 사용 가능.
+- **Canvas 패턴** (Network): `<canvas>` + JS. `document.fonts.ready.then()`으로 폰트 로드 후 렌더링. retina 2x (`width=2880, height=1620, style width=1440px`).
+- **D3 패턴** (Graph): `<script src="https://d3js.org/d3.v7.min.js">`. 시뮬레이션 동기 실행: `for(let i=0;i<300;i++) sim.tick(); sim.stop();`
+- **공통**: dot grid 배경 (`<pattern>` SVG 또는 Canvas 루프), 모노스페이스 섹션 라벨, 텍스트 최소화 — 도형과 연결선으로 구조 전달
 
 ### 모바일 가독성 — 최우선 원칙
 
