@@ -61,7 +61,7 @@ AskUserQuestion({
   questions: [{
     question: "어떤 장면을 Figure로 만들까요?",
     header: "Content Brief",
-    multiSelect: false,
+    multiSelect: true,
     options: [
       {
         label: "해석 A: {1줄 핵심 메시지}",
