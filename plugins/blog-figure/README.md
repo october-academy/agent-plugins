@@ -69,6 +69,16 @@ claude plugin install blog-figure@agent-plugins
 | **Flow** | Step-by-step process |
 | **Timeline** | Time allocation, proportions |
 | **Concept** | Relationships, concept diagrams |
+| **Waffle** | Percentage, proportions |
+| **Typographic** | Editorial quotes, definitions |
+| **Slope** | Rank changes, before/after |
+| **Treemap** | Area-proportional composition |
+| **Radar** | Multi-dimensional comparison |
+| **Dumbbell** | Gap between two values |
+| **Heatmap** | 2D frequency/density |
+| **Bullet** | Actual vs target KPI |
+| **Sparkline Grid** | Multi-item trend summary |
+| **Waterfall** | Incremental change breakdown |
 
 ## Design Rules
 

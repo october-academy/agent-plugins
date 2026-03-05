@@ -3,7 +3,8 @@
    Fonts: Noto Sans KR 900 (titles), Noto Sans KR 700 (body), JetBrains Mono (code/numbers)
 
    Design for mobile: this PNG will be viewed at ~25% size on phones.
-   Minimum font: 1.5rem (24px). Nothing smaller. */
+   Content text minimum: 1.5rem (24px). Decorative markers: 1.25rem (20px).
+   Nothing below 1.25rem (20px). */
 
 @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Noto+Sans+KR:wght@400;700;900&display=swap');
 
@@ -70,7 +71,7 @@ body {
 /* --- Typography --- */
 .title { font-family: 'Black Han Sans', sans-serif; }
 .mono { font-family: 'JetBrains Mono', monospace; }
-.text-sm { font-size: 1.25rem; }
+.text-sm { font-size: 1.5rem; }
 .text-base { font-size: 1.5rem; }
 .text-lg { font-size: 1.75rem; }
 .text-xl { font-size: 2rem; }
@@ -225,7 +226,7 @@ body {
   border-right: 8px solid var(--dark);
 }
 .arrow-label {
-  font-size: 1.25rem; font-weight: 700;
+  font-size: 1.5rem; font-weight: 700;
   color: var(--info-accent);
   text-align: center;
 }
@@ -269,7 +270,7 @@ body {
 .tl-anno {
   display: flex; flex-direction: column;
   align-items: center; gap: 0.25rem;
-  font-size: 1.25rem; text-align: center;
+  font-size: 1.5rem; text-align: center;
   font-weight: 700;
 }
 
@@ -480,7 +481,7 @@ body {
   padding: 0.75rem 1.25rem;
   display: flex; justify-content: space-between;
   align-items: center;
-  font-size: 1.25rem;
+  font-size: 1.5rem;
 }
 .schema-field + .schema-field {
   border-top: 2px solid var(--gray-100);
@@ -490,14 +491,14 @@ body {
   border: 2px solid var(--dark);
   border-radius: 4px;
   padding: 0.1rem 0.6rem;
-  font-size: 1rem; font-weight: 900;
+  font-size: 1.25rem; font-weight: 900;
 }
 .schema-fk {
   background: var(--info-card);
   border: 2px solid var(--dark);
   border-radius: 4px;
   padding: 0.1rem 0.6rem;
-  font-size: 1rem; font-weight: 900;
+  font-size: 1.25rem; font-weight: 900;
 }
 
 /* --- Hierarchy (tree structure) --- */
@@ -554,7 +555,7 @@ body {
 .matrix-corner {
   background: var(--dark); color: var(--white);
   font-weight: 900;
-  font-size: 1.25rem;
+  font-size: 1.5rem;
   display: flex; align-items: center; justify-content: center;
 }
 .matrix-label-x {
@@ -604,7 +605,7 @@ body {
   font-weight: 700; margin-top: 0.75rem; font-size: 1.5rem;
 }
 .journey-desc {
-  font-size: 1.25rem; font-weight: 700;
+  font-size: 1.5rem; font-weight: 700;
   color: var(--dark); margin-top: 0.25rem;
   max-width: 180px;
 }
@@ -721,7 +722,7 @@ body {
   font-weight: 700; font-size: 1.5rem;
 }
 .story-desc {
-  font-size: 1.25rem; font-weight: 700;
+  font-size: 1.5rem; font-weight: 700;
   color: var(--dark);
 }
 
@@ -786,7 +787,7 @@ body {
 .badge {
   display: inline-flex; align-items: center;
   font-weight: 900;
-  font-size: 1.1rem;
+  font-size: 1.25rem;
   padding: 0.3rem 1rem;
   border: 2px solid var(--dark);
   border-radius: 4px;
@@ -794,7 +795,7 @@ body {
 .tag {
   display: inline-flex; align-items: center;
   font-family: 'JetBrains Mono', monospace;
-  font-size: 1rem;
+  font-size: 1.25rem;
   padding: 0.2rem 0.75rem;
   border: 2px solid var(--dark);
   border-radius: 20px;
@@ -1027,13 +1028,13 @@ body {
 
 .terminal-path {
   color: var(--muted-fg);
-  font-size: 1.25rem;
+  font-size: 1.4rem;
   font-weight: 500;
   margin-bottom: 8px;
 }
 
 .terminal-prompt {
-  font-size: 1.3rem;
+  font-size: 1.5rem;
   line-height: 1.6;
   font-weight: 500;
   margin-bottom: 20px;
@@ -1041,7 +1042,7 @@ body {
 
 .terminal-tool {
   display: flex; align-items: center; gap: 10px;
-  font-size: 1.25rem;
+  font-size: 1.4rem;
   margin-bottom: 6px;
   font-weight: 500;
 }
@@ -1053,7 +1054,7 @@ body {
 }
 
 .terminal-text {
-  font-size: 1.25rem;
+  font-size: 1.4rem;
   color: var(--muted-fg);
   margin-top: 4px; margin-bottom: 22px;
   font-family: 'Noto Sans KR', sans-serif;
@@ -1070,21 +1071,21 @@ body {
   background: rgba(115, 115, 115, 0.1);
   border: 2px solid rgba(115, 115, 115, 0.25);
   border-radius: 12px;
-  padding: 22px 26px 20px;
+  padding: 18px 22px 16px;
   display: flex; flex-direction: column;
 }
 
 .terminal-card-header {
   display: flex; justify-content: space-between;
   align-items: center;
-  margin-bottom: 16px;
-  font-size: 1.25rem;
+  margin-bottom: 12px;
+  font-size: 1.4rem;
   color: var(--muted-fg);
   font-weight: 600;
 }
 
 .terminal-card-tag {
-  font-size: 1.25rem;
+  font-size: 1.4rem;
   color: var(--accent);
   font-weight: 700;
   background: rgba(255, 107, 53, 0.12);
@@ -1093,20 +1094,20 @@ body {
 }
 
 .terminal-card-question {
-  font-size: 1.3rem;
+  font-size: 1.5rem;
   font-family: 'Noto Sans KR', sans-serif;
   font-weight: 700;
   color: var(--white);
   line-height: 1.6;
-  margin-bottom: 20px;
+  margin-bottom: 16px;
   word-break: keep-all;
   overflow-wrap: break-word;
   text-wrap: balance;
 }
 
 .terminal-option {
-  display: flex; align-items: center; gap: 12px;
-  font-size: 1.25rem;
+  display: flex; align-items: center; gap: 8px;
+  font-size: 1.4rem;
   padding: 10px 16px;
   border-radius: 8px;
   border: 1.5px solid transparent;
@@ -1145,7 +1146,7 @@ body {
 .terminal-answer {
   display: flex; align-items: flex-start; gap: 10px;
   margin-top: 16px;
-  font-size: 1.25rem;
+  font-size: 1.4rem;
   color: var(--good-card);
   font-family: 'Noto Sans KR', sans-serif;
   font-weight: 600;

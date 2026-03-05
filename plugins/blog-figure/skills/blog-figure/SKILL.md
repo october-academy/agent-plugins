@@ -17,7 +17,7 @@ Generate Neo-Brutalism styled figure images for blog posts: HTML → browser →
 
 1. **Understand context**: Read blog MDX/MD or user description to decide what to visualize
 2. **Content Brief**: Extract the core concept to visualize and present to user for confirmation (see [Content Brief](#content-brief) below)
-3. **Suggest patterns**: Based on the confirmed brief, pick the **4 most fitting patterns** from 16 available, and present them via `AskUserQuestion` with ASCII art previews (see [Pattern Selection](#pattern-selection) below)
+3. **Suggest patterns**: Based on the confirmed brief, pick the **4 most fitting patterns** from 30 available, and present them via `AskUserQuestion` with ASCII art previews (see [Pattern Selection](#pattern-selection) below)
 4. **Create HTML**: Write standalone HTML to `/tmp/blog-figure-{name}.html` linking `assets/figure.css`
 5. **Capture PNG**: Open in browser, screenshot at 1440×810, save PNG
 6. **Save to project**: Move PNG to `apps/content/src/content/blog/images/{slug}/`
@@ -95,7 +95,15 @@ AskUserQuestion({
 | 순서 (A→B→C) | Flow, Journey, Timeline, Storyboard |
 | 계층 (A⊃B⊃C) | Architecture, Hierarchy, Isometric, Schema |
 | 순환 (A↻B) | Loop, State, Graph |
-| 수치 비교 | Data Viz, Funnel, Timeline |
+| 수치 비교 | Data Viz, Funnel, Timeline, Waffle, Dumbbell, Bullet |
+| 비율/구성비 | Waffle, Treemap, Funnel |
+| 다차원 평가 | Radar, Matrix |
+| 순위 변화 | Slope, Data Viz |
+| 밀도/빈도 | Heatmap, Waffle |
+| 실적/목표 | Bullet, Data Viz |
+| 트렌드 요약 | Sparkline Grid, Data Viz |
+| 증감 분해 | Waterfall, Data Viz |
+| 인용/선언 | Typographic Statement |
 | 상호작용 | Interaction, Terminal, IconDiagram, Storyboard |
 | 추상/공간 구조 | Isometric, Network, Graph |
 | 시스템 연결 | IconDiagram, Architecture, Interaction |
@@ -106,7 +114,7 @@ After understanding context, use `AskUserQuestion` to let the user pick from the
 
 ### How to pick the 4 patterns
 
-Analyze the user's content and rank all 20 patterns by relevance:
+Analyze the user's content and rank all 30 patterns by relevance:
 - **Comparison**: X vs Y, 좌우 대비, before/after
 - **Flow**: 프로세스, 단계별 차이, 방법론
 - **Timeline**: 시간 배분, 비율, 순서
@@ -127,6 +135,16 @@ Analyze the user's content and rank all 20 patterns by relevance:
 - **IconDiagram**: 시스템 다이어그램, 아이콘 연결, 기술 구성도 [SVG]
 - **Network**: 노드 네트워크, 결정론↔확률 대비, 추상 관계 [Canvas]
 - **Graph**: 포스-다이렉티드 그래프, 노드-링크 자동 레이아웃 [D3]
+- **Waffle**: 비율 체감, 퍼센트 시각화, 100칸 중 N칸 [SVG]
+- **Typographic Statement**: 에디토리얼 인용, 핵심 정의, 선언적 메시지 [SVG]
+- **Slope**: 전후 순위 변화, 랭킹 이동, 두 시점 비교 [SVG]
+- **Treemap**: 면적 비례 구성비, 카테고리 분포 [D3]
+- **Radar**: 다축 프로파일 비교, 역량 평가, 다차원 지표 [SVG+JS]
+- **Dumbbell**: 두 값 사이 갭/범위, 격차 비교 [SVG]
+- **Heatmap**: 2D 빈도/밀도, 시간별·카테고리별 분포 [Canvas]
+- **Bullet**: 실적 vs 목표, KPI 달성률 [SVG]
+- **Sparkline Grid**: 다수 항목 트렌드 요약, 소형 라인차트 그리드 [SVG+JS]
+- **Waterfall**: 증감 분해, 누적 변화, 요인별 기여도 [SVG]
 
 Top 4를 선택하여 아래처럼 AskUserQuestion 호출:
 
@@ -398,6 +416,138 @@ AskUserQuestion({
 └──────────────────────────────────┘
 ```
 
+**Waffle** (SVG):
+```
+┌──────────────────────────────────┐
+│  ■ ■ ■ ■ ■ ■ ■ ■ ■ ■          │
+│  ■ ■ ■ ■ ■ ■ ■ ■ ■ ■   72%   │
+│  ■ ■ ■ ■ ■ ■ ■ ■ ■ ■   채택   │
+│  ■ ■ ■ ■ ■ ■ ■ ■ ■ ■          │
+│  ■ ■ ■ ■ ■ ■ ■ ■ ■ ■          │
+│  ■ ■ ■ ■ ■ ■ ■ ■ ■ ■          │
+│  ■ ■ ■ ■ ■ ■ ■ ■ □ □          │
+│  □ □ □ □ □ □ □ □ □ □   28%    │
+│  □ □ □ □ □ □ □ □ □ □   미채택  │
+│  □ □ □ □ □ □ □ □ □ □          │
+└──────────────────────────────────┘
+```
+
+**Typographic Statement** (SVG):
+```
+┌──────────────────────────────────┐
+│                                  │
+│    ┌─────────────────────────┐   │
+│    │  사용자가 말하는 것과     │   │
+│    │   실제 행동은 다르다      │   │
+│    └─────────────────────────┘   │
+│                                  │
+│              — Jakob Nielsen      │
+└──────────────────────────────────┘
+```
+
+**Slope** (SVG):
+```
+┌──────────────────────────────────┐
+│   2023                2024       │
+│   1. React  ─────────  3. React  │
+│   2. Svelte ────╲╱──  1. Svelte  │
+│   3. Vue    ────╱╲──  2. Vue     │
+│   4. Angular─────────  5. Angular│
+│   5. Solid  ─────────  4. Solid  │
+└──────────────────────────────────┘
+```
+
+**Treemap** (D3):
+```
+┌──────────────────────────────────┐
+│ ┌──────────────┬────────────┐    │
+│ │              │            │    │
+│ │      A  40%  │     B 25%  │    │
+│ │              │            │    │
+│ ├────────┬─────┴────────────┘    │
+│ │   C    │  D  │                 │
+│ │  20%   │ 15% │                 │
+│ └────────┴─────┘                 │
+└──────────────────────────────────┘
+```
+
+**Radar** (SVG+JS):
+```
+┌──────────────────────────────────┐
+│            속도                   │
+│           ╱  ╲                   │
+│      DX ╱ ████ ╲ 생태계          │
+│        ╱  ████  ╲               │
+│     학습 ████████ 유연성          │
+│          ╲    ╱                  │
+│           안정성                  │
+└──────────────────────────────────┘
+```
+
+**Dumbbell** (SVG):
+```
+┌──────────────────────────────────┐
+│              2023        2024    │
+│  React    ●──────────────────●   │
+│  Vue      ●────────────●        │
+│  Svelte      ●─────────────●    │
+│  Angular  ●────●                │
+└──────────────────────────────────┘
+```
+
+**Heatmap** (Canvas):
+```
+┌──────────────────────────────────┐
+│       월  화  수  목  금  토  일  │
+│  9am  ░░  ▓▓  ▓▓  ▓▓  ░░  ░░  ░░│
+│  12   ▓▓  ██  ██  ▓▓  ▓▓  ░░  ░░│
+│  3pm  ░░  ▓▓  ██  ██  ▓▓  ░░  ░░│
+│  6pm  ░░  ░░  ▓▓  ▓▓  ░░  ░░  ░░│
+│        ░ 낮음          ██ 높음   │
+└──────────────────────────────────┘
+```
+
+**Bullet** (SVG):
+```
+┌──────────────────────────────────┐
+│  매출   ░░░░▓▓▓▓████│████       │
+│                       ▲ target   │
+│  성장률  ░░░▓▓▓████████│        │
+│  NPS    ░░░▓▓▓▓███│             │
+└──────────────────────────────────┘
+```
+
+**Sparkline Grid** (SVG+JS):
+```
+┌──────────────────────────────────┐
+│ ┌──────────┐ ┌──────────┐ ┌────┐│
+│ │React  85 │ │Vue    62 │ │Svel││
+│ │  ╱‾‾╲__╱ │ │   __╱‾   │ │ __╱││
+│ │╱        ‾│ │╱‾        │ │╱   ││
+│ └──────────┘ └──────────┘ └────┘│
+│ ┌──────────┐ ┌──────────┐ ┌────┐│
+│ │Angular 42│ │Solid  35 │ │Qwik││
+│ │‾╲__      │ │      __╱ │ │  __││
+│ │    ‾╲__  │ │   __╱    │ │_╱  ││
+│ └──────────┘ └──────────┘ └────┘│
+└──────────────────────────────────┘
+```
+
+**Waterfall** (SVG):
+```
+┌──────────────────────────────────┐
+│         ┌──┐                     │
+│    ┌──┐ │+25│                    │
+│    │+40│ └──┼──┐                 │
+│ ┌──┤   └──┘ │-30│               │
+│ │  └──┘      └──┼──┐            │
+│ │100│            │-20│  ┌──┐     │
+│ │   │            └──┘  │115│     │
+│ └───┘                  └───┘     │
+│ 시작  매출  서비스  원가 운영비 합계│
+└──────────────────────────────────┘
+```
+
 ### Example: AskUserQuestion Call
 
 User가 "사용자 인터뷰 프로세스를 시각화해줘"라고 요청한 경우:
@@ -522,6 +672,16 @@ npx playwright screenshot --viewport-size="1440,810" file:///tmp/blog-figure-{na
 | **IconDiagram** | 기술 다이어그램, 아이콘 연결 | SVG `<rect>`, `<marker>` |
 | **Network** | 노드 네트워크, 추상 관계 | `<canvas>`, JS render |
 | **Graph** | 포스-다이렉티드 그래프 | D3.js, `<svg>` |
+| **Waffle** | 비율 체감, 퍼센트 | SVG `<rect>` 10x10 grid |
+| **Typographic Statement** | 에디토리얼 인용, 핵심 정의 | SVG `<text>`, quote card |
+| **Slope** | 전후 순위 변화, 랭킹 이동 | SVG `<line>`, `<circle>` |
+| **Treemap** | 면적 비례 구성비 | D3.js treemap |
+| **Radar** | 다축 프로파일 비교 | SVG + JS (cos/sin) |
+| **Dumbbell** | 두 값 사이 갭/범위 | SVG `<circle>` x2 + `<line>` |
+| **Heatmap** | 2D 빈도/밀도 분포 | `<canvas>`, JS lerp |
+| **Bullet** | 실적 vs 목표, KPI | SVG nested `<rect>` + `<line>` |
+| **Sparkline Grid** | 다수 항목 트렌드 요약 | SVG + JS, `<polyline>`, `<polygon>` |
+| **Waterfall** | 증감 분해, 누적 변화 | SVG floating `<rect>` + connector |
 
 Full HTML examples for each: [references/figure-patterns.md](references/figure-patterns.md)
 
@@ -542,6 +702,13 @@ Full HTML examples for each: [references/figure-patterns.md](references/figure-p
 - **Canvas 패턴** (Network): `<canvas>` + JS. `document.fonts.ready.then()`으로 폰트 로드 후 렌더링. retina 2x (`width=2880, height=1620, style width=1440px`).
 - **D3 패턴** (Graph): `<script src="https://d3js.org/d3.v7.min.js">`. 시뮬레이션 동기 실행: `for(let i=0;i<300;i++) sim.tick(); sim.stop();`
 - **공통**: dot grid 배경 (`<pattern>` SVG 또는 Canvas 루프), 모노스페이스 섹션 라벨, 텍스트 최소화 — 도형과 연결선으로 구조 전달
+
+### SVG/Canvas/D3 인라인 font-size 규칙
+
+| 역할 | 최소 px | 비고 |
+|------|---------|------|
+| 콘텐츠 라벨 | 24px | `font-size="24"`, `ctx.font = '${24*S}px ...'` |
+| 보조 라벨 (축 눈금, 순위 등) | 20px | 18px 이하 금지 |
 
 ### 모바일 가독성 — 최우선 원칙
 
@@ -566,21 +733,28 @@ Full HTML examples for each: [references/figure-patterns.md](references/figure-p
 | `.journey-desc` | **max 6자** | "서비스 인지" |
 | `.story-desc` | **max 6자** | "결제 확인" |
 | `.bar-label` | **max 4단어** | "React", "설문 응답률" |
-| `.terminal-card-question` | **2줄 이내** (`<br>` 금지, balance 자동 줄바꿈) | "허수 포함 시 거짓 성공감 위험은?" |
-| `.terminal-option` | **max 10자** | "WAU 기준 활성 유저만" |
-| Figure 전체 | **max 20~25단어** | — |
+| `.terminal-card-question` | **max 12자, 1줄 권장** (`<br>` 금지, balance 자동 줄바꿈) | "성공 기준은?" |
+| `.terminal-option` | **max 8자** | "WAU 활성만" |
+| `.terminal-answer` | **max 8자** | "첫 매출" |
+| `.schema-field` | **필드명 max 8자. 타입 주석 생략** | "user_id FK" |
+| `.matrix-corner` | **max 4자 또는 빈칸** | "" |
+| Figure 전체 | **max 20단어** (Terminal 예외: 35단어) | — |
 
-### 최소 폰트 크기
+### 최소 폰트 크기 — 2-tier 시스템
 
-1440px 캔버스에서 **1.25rem(20px) 미만 텍스트 금지**. 모바일 25% 축소 시 5px 미만은 읽기 불가.
+1440px 캔버스에서 **1.25rem(20px) 미만 절대 금지**.
+콘텐츠 텍스트(읽어야 하는 키워드)는 **1.5rem(24px) 이상**.
 
-| 역할 | 최소 크기 |
-|------|---------|
-| 가장 작은 텍스트 (`.tag`, `.schema-pk`) | 1rem (16px) |
-| 설명/부연 (`.journey-desc`, `.story-desc`) | 1.25rem (20px) |
-| 라벨/캡션 (`.flow-card`, `.bar-label`) | 1.5rem (24px) |
-| 섹션 헤딩 (`.section-label`) | 2rem (32px) |
-| Figure 제목 (`.figure-title`) | 3rem (48px) |
+| Tier | 최소 크기 | 25% 환산 | 해당 요소 |
+|------|---------|---------|----------|
+| 콘텐츠 | 1.5rem (24px) | 6px | `.flow-card`, `.bar-label`, `.state-node`, `.arch-node`, `.schema-field`, `.arrow-label`, `.journey-desc`, `.story-desc`, `.tl-anno`, `.matrix-corner`, `.terminal-prompt`, `.terminal-card-question` |
+| 장식 마커 | 1.25rem (20px) | 5px | `.tag`, `.badge`, `.schema-pk`, `.schema-fk` |
+| 섹션 헤딩 | 2rem (32px) | 8px | `.section-label` |
+| Figure 제목 | 3rem (48px) | 12px | `.figure-title` |
+
+**장식 전용 클래스** (`.sticker`, `.sticker-sm`, `.code`)는 콘텐츠 용도 사용 금지.
+**Terminal 보조 텍스트** (`.terminal-option`, `.terminal-answer` 등)는 1.4rem(22px) 허용.
+**SVG/Canvas 인라인**: `font-size` 최소 20px. 18px 이하 금지.
 
 ### 컴포넌트 수량 제한 — 시원시원한 배치
 
@@ -592,11 +766,22 @@ Full HTML examples for each: [references/figure-patterns.md](references/figure-p
 | Timeline | **3블록** | 블록 크기↑, 라벨 가독성↑ |
 | Storyboard | **4패널 (2×2)** | 패널 크기 2배 확보 |
 | Bar chart | **4행** | 바 높이 충분히 확보 |
-| Architecture | **3레이어, 레이어당 3노드** | 공간 여유 |
+| Architecture | **3레이어, 레이어당 2노드** (3은 max) | 공간 여유 |
 | Split 비교 | **양쪽 각 2~3카드** | 카드 크기 유지 |
 | Journey | **4단계** | dot 간 여백 확보 |
-| Schema | **3테이블, 테이블당 4필드** | 글자 크기 유지 |
-| Terminal | **3카드, 카드당 옵션 2~4개** | 질문 2줄 이내, `<br>` 금지 |
+| Schema | **2테이블, 테이블당 3필드** | 글자 크기 유지 |
+| Terminal | **3카드, 카드당 옵션 2개 (max 3)** | 질문 max 12자 1줄, `<br>` 금지 |
+| Matrix | **2×2. 코너 4자 이내 또는 빈칸** | 축 라벨이 의미 전달 |
+| Waffle | **1 grid (10x10), 2 카테고리** | 총 ~8단어 (범례 포함) |
+| Typographic | **1 primary text (max 8단어)** | attribution max 4단어 |
+| Slope | **max 5항목, 2시점** | 항목명 1단어 |
+| Treemap | **max 6~8 cells** | 라벨 1단어, 80px 미만 숨김 |
+| Radar | **max 5축, 1~2 series** | 축 라벨 1단어 |
+| Dumbbell | **max 5 rows** | 라벨 max 3단어 |
+| Heatmap | **max 7x5 grid (35 cells)** | 셀 ~110x90px |
+| Bullet | **max 3~4 charts** | 범위 3단계 + 타겟 마커 |
+| Sparkline Grid | **max 6 sparklines (3x2)** | 항목당 라벨 1단어 + 값 1개 |
+| Waterfall | **max 6~8 bars** | 라벨 1~2단어, 시작/합계 포함 |
 
 ### Weight Hierarchy
 
