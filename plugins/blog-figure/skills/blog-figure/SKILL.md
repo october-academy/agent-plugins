@@ -16,12 +16,87 @@ Generate Neo-Brutalism styled figure images for blog posts: HTML → browser →
 ## Workflow
 
 1. **Understand context**: Read blog MDX/MD or user description to decide what to visualize
-2. **Suggest patterns**: Analyze context, pick the **4 most fitting patterns** from 16 available, and present them via `AskUserQuestion` with ASCII art previews (see [Pattern Selection](#pattern-selection) below)
-3. **Create HTML**: Write standalone HTML to `/tmp/blog-figure-{name}.html` linking `assets/figure.css`
-4. **Capture PNG**: Open in browser, screenshot at 1440×810, save PNG
-5. **Save to project**: Move PNG to `apps/content/src/content/blog/images/{slug}/`
-6. **Insert into document**: If user provided a `.md` or `.mdx` file, insert the image tag at the contextually correct location (see [Document Insertion](#document-insertion) below)
-7. **Verify**: Read the saved PNG to visually confirm
+2. **Content Brief**: Extract the core concept to visualize and present to user for confirmation (see [Content Brief](#content-brief) below)
+3. **Suggest patterns**: Based on the confirmed brief, pick the **4 most fitting patterns** from 16 available, and present them via `AskUserQuestion` with ASCII art previews (see [Pattern Selection](#pattern-selection) below)
+4. **Create HTML**: Write standalone HTML to `/tmp/blog-figure-{name}.html` linking `assets/figure.css`
+5. **Capture PNG**: Open in browser, screenshot at 1440×810, save PNG
+6. **Save to project**: Move PNG to `apps/content/src/content/blog/images/{slug}/`
+7. **Insert into document**: If user provided a `.md` or `.mdx` file, insert the image tag at the contextually correct location (see [Document Insertion](#document-insertion) below)
+8. **Verify**: Read the saved PNG to visually confirm
+
+## Content Brief
+
+패턴을 고르기 **전에**, 블로그에서 시각화할 핵심 개념을 추출하여 사용자에게 확인받는다. Figure의 내용이 블로그와 동떨어지거나 너무 추상적이 되는 것을 방지하는 핵심 단계.
+
+### 추출 항목
+
+| 항목 | 설명 | 예시 |
+|------|------|------|
+| **핵심 메시지** | 이 Figure가 전달해야 할 한 문장 | "사용자가 말하는 것과 실제 행동은 다르다" |
+| **키워드** | Figure에 실제로 들어갈 단어 3~5개 | "좋은데요", "0건", "말 vs 행동" |
+| **구조** | 개념 간 관계 유형 | 대비(A vs B), 순서(A→B→C), 계층(A⊃B), 순환(A↻B) |
+| **강조점** | 보는 사람이 가장 먼저 인식해야 할 것 | "0건이라는 숫자의 충격" |
+
+### 추출 방법
+
+블로그 글에서 다음을 찾는다:
+
+1. **글의 핵심 주장/결론** — 제목, 서론 마지막 문장, 결론 첫 문장에서 발견됨
+2. **구체적 사례/데이터** — 추상적 개념보다 구체적 숫자, 인용, 사례가 Figure에 적합
+3. **대비/전환 구조** — "하지만", "반면", "이전에는 ~했지만 지금은", "X가 아니라 Y" 같은 전환점
+4. **독자의 Aha moment** — 글을 읽다가 "오" 하고 멈칫할 지점. 그것이 Figure의 존재 이유
+
+### 피해야 할 것
+
+- 글의 목차를 그대로 나열 (Figure는 목차가 아님)
+- 추상적 키워드만 나열 ("전략", "실행", "성과" → 어떤 글에나 끼워넣을 수 있으면 나쁜 Brief)
+- 글 전체를 요약하려는 시도 (Figure는 글의 **한 장면**을 포착할 뿐)
+
+### 사용자 확인
+
+`AskUserQuestion`으로 2~3가지 시각화 방향을 제시한다. 각 옵션은 "이 글에서 무엇을 figure로 만들지"에 대한 서로 다른 해석이다.
+
+```
+AskUserQuestion({
+  questions: [{
+    question: "어떤 장면을 Figure로 만들까요?",
+    header: "Content Brief",
+    multiSelect: false,
+    options: [
+      {
+        label: "해석 A: {1줄 핵심 메시지}",
+        description: "키워드: {단어1}, {단어2}, {단어3}",
+        markdown: "**구조**: {관계 유형}\n**강조점**: {가장 눈에 띄어야 할 것}\n**근거**: 블로그에서 이 부분이 Figure로 적합한 이유 1줄"
+      },
+      {
+        label: "해석 B: {1줄 핵심 메시지}",
+        description: "키워드: {단어1}, {단어2}, {단어3}",
+        markdown: "**구조**: {관계 유형}\n**강조점**: {가장 눈에 띄어야 할 것}\n**근거**: 블로그에서 이 부분이 Figure로 적합한 이유 1줄"
+      },
+      {
+        label: "해석 C: {1줄 핵심 메시지}",
+        description: "키워드: {단어1}, {단어2}, {단어3}",
+        markdown: "**구조**: {관계 유형}\n**강조점**: {가장 눈에 띄어야 할 것}\n**근거**: 블로그에서 이 부분이 Figure로 적합한 이유 1줄"
+      }
+    ]
+  }]
+})
+```
+
+**중요**: 각 해석은 글의 **서로 다른 부분/관점**을 포착해야 한다. 같은 내용을 다른 말로 바꾼 3개가 아니라, 진짜로 다른 장면 3개를 제시하라.
+
+### Content Brief → Pattern Selection 연결
+
+사용자가 Brief를 확인하면, 그 Brief의 **구조**가 패턴 선택을 자연스럽게 좁힌다:
+
+| Brief 구조 | 적합한 패턴 (우선순위) |
+|-----------|---------------------|
+| 대비 (A vs B) | Comparison, Flow (split), Matrix |
+| 순서 (A→B→C) | Flow, Journey, Timeline, Storyboard |
+| 계층 (A⊃B⊃C) | Architecture, Hierarchy, Schema |
+| 순환 (A↻B) | Loop, State |
+| 수치 비교 | Data Viz, Funnel, Timeline |
+| 상호작용 | Interaction, Terminal, Storyboard |
 
 ## Pattern Selection
 
