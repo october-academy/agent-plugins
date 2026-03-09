@@ -4,6 +4,24 @@ Structure & flow patterns (15): Comparison, Flow, Timeline, Concept, Architectur
 
 All use `assets/figure.css`. **핵심 원칙**: 텍스트는 최소한으로. 색상과 면적으로 구조 전달. 모바일 25% 축소에서도 인식 가능.
 
+## TOC
+
+- 1. Comparison
+- 2. Flow
+- 3. Timeline
+- 4. Concept
+- 5. Architecture
+- 6. Interaction
+- 7. State
+- 8. Schema
+- 9. Hierarchy
+- 10. Matrix
+- 11. Journey
+- 12. Funnel
+- 13. Loop
+- 15. Storyboard
+- 16. Terminal
+
 ---
 
 ## 1. Comparison (좌우 비교)
@@ -187,16 +205,27 @@ Key classes: `.seq`, `.seq-entities`, `.seq-entity`, `.seq-messages`, `.seq-msg`
 
 ```html
 <body>
-  <div class="seq">
-    <div class="seq-entities">
-      <div class="seq-entity" style="background:var(--tl-blue)">사용자</div>
-      <div class="seq-entity" style="background:var(--tl-lime)">서버</div>
+  <div class="seq" style="width:96%;min-height:70%;justify-content:space-between;gap:2.5rem">
+    <div class="seq-entities" style="padding:0 48px">
+      <div class="seq-entity" style="background:var(--tl-blue);min-width:220px">사용자</div>
+      <div class="seq-entity" style="background:var(--tl-lime);min-width:220px">API</div>
+      <div class="seq-entity" style="background:var(--tl-orange);min-width:220px">DB</div>
     </div>
-    <div class="seq-messages">
+    <div class="seq-messages" style="gap:2rem">
       <div class="seq-msg right">
         <div class="seq-msg-label">로그인 요청</div>
         <div class="seq-msg-line"></div>
         <div class="seq-msg-arrow"></div>
+      </div>
+      <div class="seq-msg right">
+        <div class="seq-msg-label">사용자 조회</div>
+        <div class="seq-msg-line dashed"></div>
+        <div class="seq-msg-arrow"></div>
+      </div>
+      <div class="seq-msg left">
+        <div class="seq-msg-arrow"></div>
+        <div class="seq-msg-line"></div>
+        <div class="seq-msg-label">세션 생성</div>
       </div>
       <div class="seq-msg left">
         <div class="seq-msg-arrow"></div>
@@ -208,7 +237,7 @@ Key classes: `.seq`, `.seq-entities`, `.seq-entity`, `.seq-messages`, `.seq-msg`
 </body>
 ```
 
-Notes: `.right`은 →방향(요청), `.left`는 ←방향(응답). 메시지 라벨은 2~3단어. 엔티티 2~3개.
+Notes: `.right`은 →방향(요청), `.left`는 ←방향(응답). **메시지 4개 이상**으로 리듬을 만들고, 엔티티는 **3개 기본**으로 잡아 폭을 넓게 쓴다. 카드형 엔티티를 크게 잡고 상단 1/3, 메시지 스택을 하단 2/3에 두면 under-fill을 줄일 수 있다.
 
 ---
 
@@ -220,23 +249,40 @@ Key classes: `.state-chain`, `.state-node`, `.state-node.active/.initial/.final`
 
 ```html
 <body>
-  <div class="state-chain">
-    <div class="state-node initial">장바구니</div>
-    <div class="state-transition">
-      <div class="arrow-label">결제</div>
-      <div class="arrow-right" style="width:60px"></div>
+  <div class="state-chain" style="width:96%;justify-content:space-between">
+    <div class="state-node initial" style="min-width:190px;padding:1.5rem 2rem">
+      <strong>발견</strong>
+      <span class="text-sm">문제 인지</span>
     </div>
-    <div class="state-node active">결제 완료</div>
     <div class="state-transition">
-      <div class="arrow-label">배송</div>
-      <div class="arrow-right" style="width:60px"></div>
+      <div class="arrow-label">인터뷰</div>
+      <div class="arrow-right" style="width:90px"></div>
     </div>
-    <div class="state-node final">수령</div>
+    <div class="state-node" style="min-width:190px;padding:1.5rem 2rem">
+      <strong>정의</strong>
+      <span class="text-sm">가설 정리</span>
+    </div>
+    <div class="state-transition">
+      <div class="arrow-label">구현</div>
+      <div class="arrow-right" style="width:90px"></div>
+    </div>
+    <div class="state-node active" style="min-width:190px;padding:1.5rem 2rem">
+      <strong>검증</strong>
+      <span class="text-sm">활성 확인</span>
+    </div>
+    <div class="state-transition">
+      <div class="arrow-label">반복</div>
+      <div class="arrow-right" style="width:90px"></div>
+    </div>
+    <div class="state-node final" style="min-width:190px;padding:1.5rem 2rem">
+      <strong>확장</strong>
+      <span class="text-sm">재방문 유도</span>
+    </div>
   </div>
 </body>
 ```
 
-Notes: 수평 체인이 기본. **상태 4개 이내** 권장. `.initial`(시작), `.active`(강조), `.final`(종료) 변형 사용.
+Notes: 수평 체인이 기본. **상태 4개**가 가장 안정적이고, 각 상태에 **짧은 보조 설명 1줄**을 붙이면 카드 면적이 커져 모바일에서도 더 잘 읽힌다. `.initial`(시작), `.active`(강조), `.final`(종료) 변형 사용.
 
 ---
 
@@ -246,28 +292,39 @@ Best for: DB 테이블 구조, 데이터 모델, 엔티티 관계
 
 Key classes: `.schema-container`, `.schema-table`, `.schema-header`, `.schema-field`, `.schema-pk`, `.schema-fk`
 
-Max: **2테이블, 테이블당 3필드**
+Max: **3테이블, 테이블당 3~4필드**
 
 ```html
 <body>
-  <div class="schema-container">
-    <div class="schema-table">
-      <div class="schema-header" style="background:var(--tl-blue)">User</div>
-      <div class="schema-field"><span>id</span> <span class="schema-pk">PK</span></div>
-      <div class="schema-field"><span>email</span></div>
-      <div class="schema-field"><span>name</span></div>
-    </div>
-    <div class="schema-table">
-      <div class="schema-header" style="background:var(--tl-lime)">Post</div>
-      <div class="schema-field"><span>id</span> <span class="schema-pk">PK</span></div>
-      <div class="schema-field"><span>user_id</span> <span class="schema-fk">FK</span></div>
-      <div class="schema-field"><span>title</span></div>
+  <div style="position:relative;width:100%;display:flex;justify-content:center">
+    <div class="schema-container" style="width:100%;gap:1.75rem;justify-content:space-between;align-items:stretch">
+      <div class="schema-table" style="min-width:300px;flex:1">
+        <div class="schema-header" style="background:var(--tl-blue)">User</div>
+        <div class="schema-field"><span>id</span> <span class="schema-pk">PK</span></div>
+        <div class="schema-field"><span>email</span></div>
+        <div class="schema-field"><span>plan_id</span> <span class="schema-fk">FK</span></div>
+        <div class="schema-field"><span>status</span></div>
+      </div>
+      <div class="schema-table" style="min-width:300px;flex:1">
+        <div class="schema-header" style="background:var(--tl-lime)">Plan</div>
+        <div class="schema-field"><span>id</span> <span class="schema-pk">PK</span></div>
+        <div class="schema-field"><span>name</span></div>
+        <div class="schema-field"><span>price</span></div>
+        <div class="schema-field"><span>cycle</span></div>
+      </div>
+      <div class="schema-table" style="min-width:300px;flex:1">
+        <div class="schema-header" style="background:var(--tl-orange)">Invoice</div>
+        <div class="schema-field"><span>id</span> <span class="schema-pk">PK</span></div>
+        <div class="schema-field"><span>user_id</span> <span class="schema-fk">FK</span></div>
+        <div class="schema-field"><span>amount</span></div>
+        <div class="schema-field"><span>paid_at</span></div>
+      </div>
     </div>
   </div>
 </body>
 ```
 
-Notes: 필드명 + PK/FK 뱃지만 유지. 타입 표시 생략이 기본. 필요 시 `.schema-field` 내 우측에 1.5rem으로. 테이블 2개 권장 (공간 제한).
+Notes: 필드명 + PK/FK 뱃지만 유지하고 타입 표기는 기본적으로 생략한다. **3테이블까지**는 1440px 캔버스에서 안정적으로 읽히며, 관계를 이해시키는 핵심 FK만 남기면 된다. 작은 중앙 배지보다 **좌우로 넓게 펼친 테이블 배치**가 더 잘 읽힌다.
 
 ---
 
@@ -279,29 +336,53 @@ Key classes: `.tree`, `.tree-node`, `.tree-level`, `.tree-branch`, `.tree-vline`
 
 ```html
 <body>
-  <div class="tree">
-    <div class="tree-node" style="background:var(--yellow)">App</div>
-    <div class="tree-vline"></div>
-    <div class="tree-hline" style="width:400px"></div>
-    <div class="tree-level">
+  <div class="tree" style="width:100%;padding:0 12px;gap:0.25rem">
+    <div class="tree-node" style="background:var(--yellow);min-width:260px;padding:1.25rem 3rem">Platform</div>
+    <div class="tree-vline" style="height:40px"></div>
+    <div class="tree-hline" style="width:980px"></div>
+    <div class="tree-level" style="gap:1rem;width:100%;justify-content:space-between;align-items:flex-start">
       <div class="tree-branch">
-        <div class="tree-vline"></div>
-        <div class="tree-node" style="background:var(--tl-blue)">Layout</div>
+        <div class="tree-vline" style="height:32px"></div>
+        <div class="tree-node" style="background:var(--tl-blue);min-width:200px;flex-direction:column;gap:0.25rem">
+          <span>Product</span>
+          <span class="mono" style="font-size:1rem;color:var(--muted-fg)">core UX</span>
+        </div>
+        <div class="tree-vline" style="height:28px"></div>
+        <div class="tree-level" style="gap:0.75rem">
+          <div class="tree-node" style="background:var(--white);min-width:132px;padding:0.9rem 1rem;font-size:1.1rem">온보딩</div>
+          <div class="tree-node" style="background:var(--white);min-width:132px;padding:0.9rem 1rem;font-size:1.1rem">리텐션</div>
+        </div>
       </div>
       <div class="tree-branch">
-        <div class="tree-vline"></div>
-        <div class="tree-node" style="background:var(--tl-lime)">Pages</div>
+        <div class="tree-vline" style="height:32px"></div>
+        <div class="tree-node" style="background:var(--tl-lime);min-width:200px;flex-direction:column;gap:0.25rem">
+          <span>Growth</span>
+          <span class="mono" style="font-size:1rem;color:var(--muted-fg)">top funnel</span>
+        </div>
+        <div class="tree-vline" style="height:28px"></div>
+        <div class="tree-level" style="gap:0.75rem">
+          <div class="tree-node" style="background:var(--white);min-width:132px;padding:0.9rem 1rem;font-size:1.1rem">획득</div>
+          <div class="tree-node" style="background:var(--white);min-width:132px;padding:0.9rem 1rem;font-size:1.1rem">활성화</div>
+        </div>
       </div>
       <div class="tree-branch">
-        <div class="tree-vline"></div>
-        <div class="tree-node" style="background:var(--tl-orange)">Shared</div>
+        <div class="tree-vline" style="height:32px"></div>
+        <div class="tree-node" style="background:var(--tl-orange);min-width:200px;flex-direction:column;gap:0.25rem">
+          <span>Revenue</span>
+          <span class="mono" style="font-size:1rem;color:var(--muted-fg)">monetization</span>
+        </div>
+        <div class="tree-vline" style="height:28px"></div>
+        <div class="tree-level" style="gap:0.75rem">
+          <div class="tree-node" style="background:var(--white);min-width:132px;padding:0.9rem 1rem;font-size:1.1rem">업그레이드</div>
+          <div class="tree-node" style="background:var(--white);min-width:132px;padding:0.9rem 1rem;font-size:1.1rem">확장</div>
+        </div>
       </div>
     </div>
   </div>
 </body>
 ```
 
-Notes: **깊이 2단계** 권장. 노드 텍스트는 단어 1개.
+Notes: **깊이 3단계**까지는 안전하다. 루트 1개 + 상위 카테고리 3개 + 하위 노드 2개씩 구성이 가장 읽기 쉽고, 세로 리듬도 살아난다. 상위 노드에는 짧은 보조 라벨을 붙이고, 하위 노드는 흰색 카드로 통일하면 계층이 빨리 구분된다.
 
 ---
 
@@ -345,37 +426,47 @@ Best for: 사용자 경험 흐름, 터치포인트 맵, 온보딩 과정
 
 Key classes: `.journey`, `.journey-line`, `.journey-step`, `.journey-dot`, `.journey-label`, `.journey-desc`
 
-Max: **4단계**
+Max: **5단계**
 
 ```html
 <body>
-  <div class="journey">
-    <div class="journey-line"></div>
-    <div class="journey-step">
+  <div class="journey" style="width:100%;align-items:stretch;gap:1rem;padding:0 1rem">
+    <div class="journey-line" style="top:44px;left:6%;right:6%"></div>
+    <div class="journey-step" style="background:var(--white);border:3px solid var(--dark);box-shadow:4px 4px 0px var(--dark);padding:1.25rem 1rem 1.5rem">
       <div class="journey-dot" style="background:var(--tl-blue)">1</div>
       <div class="journey-label">발견</div>
       <div class="journey-desc">서비스 인지</div>
+      <div class="mono" style="margin-top:0.75rem;font-size:1.25rem;color:var(--muted-fg)">진입 68%</div>
     </div>
-    <div class="journey-step">
+    <div class="journey-step" style="background:var(--white);border:3px solid var(--dark);box-shadow:4px 4px 0px var(--dark);padding:1.25rem 1rem 1.5rem">
       <div class="journey-dot" style="background:var(--tl-lime)">2</div>
       <div class="journey-label">가입</div>
       <div class="journey-desc">빠른 시작</div>
+      <div class="mono" style="margin-top:0.75rem;font-size:1.25rem;color:var(--muted-fg)">완료 42%</div>
     </div>
-    <div class="journey-step">
-      <div class="journey-dot" style="background:var(--tl-orange)">3</div>
+    <div class="journey-step" style="background:var(--white);border:3px solid var(--dark);box-shadow:4px 4px 0px var(--dark);padding:1.25rem 1rem 1.5rem">
+      <div class="journey-dot" style="background:var(--yellow)">3</div>
+      <div class="journey-label">활성화</div>
+      <div class="journey-desc">첫 결과 경험</div>
+      <div class="mono" style="margin-top:0.75rem;font-size:1.25rem;color:var(--muted-fg)">전환 31%</div>
+    </div>
+    <div class="journey-step" style="background:var(--white);border:3px solid var(--dark);box-shadow:4px 4px 0px var(--dark);padding:1.25rem 1rem 1.5rem">
+      <div class="journey-dot" style="background:var(--tl-orange)">4</div>
       <div class="journey-label">Aha!</div>
       <div class="journey-desc">가치 인식</div>
+      <div class="mono" style="margin-top:0.75rem;font-size:1.25rem;color:var(--muted-fg)">재방문 24%</div>
     </div>
-    <div class="journey-step">
-      <div class="journey-dot" style="background:var(--tl-purple)">4</div>
+    <div class="journey-step" style="background:var(--white);border:3px solid var(--dark);box-shadow:4px 4px 0px var(--dark);padding:1.25rem 1rem 1.5rem">
+      <div class="journey-dot" style="background:var(--tl-purple)">5</div>
       <div class="journey-label">재방문</div>
       <div class="journey-desc">습관 형성</div>
+      <div class="mono" style="margin-top:0.75rem;font-size:1.25rem;color:var(--muted-fg)">잔존 11%</div>
     </div>
   </div>
 </body>
 ```
 
-Notes: `.journey-desc`는 **4자 이내** 키워드. timeline과 달리 비율이 아닌 이산 포인트.
+Notes: `.journey-desc`는 짧은 한 줄 설명을 허용하되 **12자 내외**로 유지한다. 점만 나열하지 말고 **카드형 step + 작은 수치 배지**를 붙이면 스토리와 정보 밀도가 함께 올라간다. 5단계까지는 같은 폭으로 균등 분배하는 것이 가장 안정적이다.
 
 ---
 
@@ -422,21 +513,21 @@ Key classes: `.loop`, `.loop-node`, `.loop-center`, `.arrow-right`, `.arrow-down
 
 ```html
 <body>
-  <div class="loop" style="gap:1.5rem">
-    <div class="loop-node" style="background:var(--tl-blue)">아이디어</div>
-    <div class="arrow-right" style="width:80px"></div>
-    <div class="loop-node" style="background:var(--tl-lime)">Build</div>
-    <div class="arrow-up" style="height:40px"></div>
-    <div class="loop-center" style="font-size:2.5rem">↻</div>
-    <div class="arrow-down" style="height:40px"></div>
-    <div class="loop-node" style="background:var(--tl-purple)">Learn</div>
-    <div class="arrow-left" style="width:80px"></div>
-    <div class="loop-node" style="background:var(--tl-orange)">Measure</div>
+  <div class="loop" style="width:1160px;height:560px;grid-template-columns:280px 180px 280px;grid-template-rows:190px 120px 190px;gap:1.25rem">
+    <div class="loop-node" style="background:var(--tl-blue);min-width:250px;padding:1.75rem 2rem">문제 정의</div>
+    <div class="arrow-right" style="width:150px"></div>
+    <div class="loop-node" style="background:var(--tl-lime);min-width:250px;padding:1.75rem 2rem">인터뷰</div>
+    <div class="arrow-up" style="height:96px"></div>
+    <div class="loop-center" style="font-size:2.35rem;background:var(--yellow);border:3px solid var(--dark);width:120px;height:120px;border-radius:999px;box-shadow:4px 4px 0px var(--dark);text-align:center;line-height:1.1;padding-top:24px">학습<br>루프</div>
+    <div class="arrow-down" style="height:96px"></div>
+    <div class="loop-node" style="background:var(--tl-purple);min-width:250px;padding:1.75rem 2rem">검증</div>
+    <div class="arrow-left" style="width:150px"></div>
+    <div class="loop-node" style="background:var(--tl-orange);min-width:250px;padding:1.75rem 2rem">빌드</div>
   </div>
 </body>
 ```
 
-Notes: 3x3 CSS grid로 4개 노드를 정사각형 배치. 노드 텍스트는 단어 1개.
+Notes: 3x3 CSS grid로 4개 노드를 정사각형 배치한다. **중앙 허브 + 긴 화살표**를 넣어 순환감을 크게 보이게 하고, 단순 루프도 **가로 1000px 이상**을 써야 축소 시 구조가 또렷하다.
 
 ---
 
@@ -450,24 +541,43 @@ Max: **4패널 (2×2)**
 
 ```html
 <body>
-  <div class="storyboard" style="grid-template-columns:repeat(2,1fr)">
-    <div class="story-panel">
+  <div class="storyboard" style="grid-template-columns:repeat(2,1fr);width:96%">
+    <div class="story-panel" style="min-height:250px;justify-content:flex-start">
       <div class="story-number">1</div>
+      <div style="width:100%;height:92px;background:var(--muted);border:3px solid var(--dark);box-shadow:4px 4px 0px var(--dark);margin-top:0.75rem;position:relative">
+        <div style="position:absolute;left:14px;right:14px;top:14px;height:10px;background:var(--white)"></div>
+        <div style="position:absolute;left:14px;right:44px;top:34px;height:10px;background:var(--white)"></div>
+        <div style="position:absolute;left:14px;right:24px;top:54px;height:10px;background:var(--white)"></div>
+      </div>
       <div class="story-caption">앱 열기</div>
       <div class="story-desc">알림 확인</div>
     </div>
-    <div class="story-panel">
+    <div class="story-panel" style="min-height:250px;justify-content:flex-start">
       <div class="story-number">2</div>
+      <div style="width:100%;height:92px;background:var(--muted);border:3px solid var(--dark);box-shadow:4px 4px 0px var(--dark);margin-top:0.75rem;position:relative">
+        <div style="position:absolute;left:14px;top:14px;width:60px;height:60px;background:var(--white)"></div>
+        <div style="position:absolute;left:90px;right:14px;top:18px;height:10px;background:var(--white)"></div>
+        <div style="position:absolute;left:90px;right:34px;top:40px;height:10px;background:var(--white)"></div>
+      </div>
       <div class="story-caption">내역 확인</div>
       <div class="story-desc">금액 검토</div>
     </div>
-    <div class="story-panel">
+    <div class="story-panel" style="min-height:250px;justify-content:flex-start">
       <div class="story-number">3</div>
+      <div style="width:100%;height:92px;background:var(--muted);border:3px solid var(--dark);box-shadow:4px 4px 0px var(--dark);margin-top:0.75rem;position:relative">
+        <div style="position:absolute;left:14px;right:14px;top:14px;bottom:14px;border:3px solid var(--white)"></div>
+        <div style="position:absolute;left:50%;top:50%;width:44px;height:44px;border-radius:999px;background:var(--white);transform:translate(-50%,-50%)"></div>
+      </div>
       <div class="story-caption">결제 승인</div>
       <div class="story-desc">슬라이드</div>
     </div>
-    <div class="story-panel">
+    <div class="story-panel" style="min-height:250px;justify-content:flex-start">
       <div class="story-number">4</div>
+      <div style="width:100%;height:92px;background:var(--muted);border:3px solid var(--dark);box-shadow:4px 4px 0px var(--dark);margin-top:0.75rem;position:relative">
+        <div style="position:absolute;left:18px;top:16px;width:58px;height:58px;border-radius:999px;background:var(--white)"></div>
+        <div style="position:absolute;left:94px;right:18px;top:22px;height:10px;background:var(--white)"></div>
+        <div style="position:absolute;left:94px;right:40px;top:46px;height:10px;background:var(--white)"></div>
+      </div>
       <div class="story-caption">완료</div>
       <div class="story-desc">영수증 표시</div>
     </div>
@@ -475,7 +585,7 @@ Max: **4패널 (2×2)**
 </body>
 ```
 
-Notes: `grid-template-columns`로 열 수 조정. **2×2 기본**. `.story-desc`는 2~4자 키워드만.
+Notes: `grid-template-columns`로 열 수 조정. **2×2 기본**. 각 패널에 **장면 placeholder 영역**을 먼저 두면 스토리보드다운 밀도가 생기고 하단 공백이 크게 줄어든다.
 
 ---
 

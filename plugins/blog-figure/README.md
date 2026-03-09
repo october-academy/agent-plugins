@@ -25,7 +25,8 @@ claude plugin install blog-figure@agent-plugins
 
 ### Auto-triggers
 
-- "figure 만들어", "블로그 이미지", "다이어그램 생성"
+- "figure 만들어", "블로그 이미지", "다이어그램", "시각화", "개념도", "도표", "그래프", "차트", "인포그래픽", "그림"
+- "이 섹션에 이미지", "한 장으로 보여줘", "블로그 그림"
 - MDX references a missing image in `/blog/images/`
 - User wants to visualize a concept for a blog post
 
@@ -38,9 +39,9 @@ claude plugin install blog-figure@agent-plugins
                    │
                    ▼
 ┌─────────────────────────────────────────┐
-│  2. Choose pattern                      │
-│     (comparison, flow, timeline,        │
-│      concept)                           │
+│  2. Confirm content brief               │
+│     choose from 30 patterns             │
+│     (layout, data-viz, visual)          │
 └──────────────────┬──────────────────────┘
                    │
                    ▼
@@ -52,7 +53,8 @@ claude plugin install blog-figure@agent-plugins
                    ▼
 ┌─────────────────────────────────────────┐
 │  4. Capture PNG (1440x810, retina 2x)   │
-│     Chrome DevTools / Playwright / CLI   │
+│     Chrome DevTools MCP / Playwright MCP │
+│     / Chrome CLI / Playwright CLI        │
 └──────────────────┬──────────────────────┘
                    │
                    ▼
@@ -61,24 +63,43 @@ claude plugin install blog-figure@agent-plugins
 └─────────────────────────────────────────┘
 ```
 
-## Patterns
+## Pattern Families
 
-| Pattern | Use Case |
-|---------|----------|
-| **Comparison** | X vs Y, before/after |
-| **Flow** | Step-by-step process |
-| **Timeline** | Time allocation, proportions |
-| **Concept** | Relationships, concept diagrams |
-| **Waffle** | Percentage, proportions |
-| **Typographic** | Editorial quotes, definitions |
-| **Slope** | Rank changes, before/after |
-| **Treemap** | Area-proportional composition |
-| **Radar** | Multi-dimensional comparison |
-| **Dumbbell** | Gap between two values |
-| **Heatmap** | 2D frequency/density |
-| **Bullet** | Actual vs target KPI |
-| **Sparkline Grid** | Multi-item trend summary |
-| **Waterfall** | Incremental change breakdown |
+| Family | Patterns | Use Case |
+|--------|----------|----------|
+| **Layout (15)** | Comparison, Flow, Timeline, Concept, Architecture, Interaction, State, Schema, Hierarchy, Matrix, Journey, Funnel, Loop, Storyboard, Terminal | Process, structure, contrast, narrative |
+| **Data Viz Static (6)** | Data Viz, Waffle, Slope, Dumbbell, Bullet, Waterfall | Bar charts, ratios, ranking change, KPI |
+| **Data Viz Dynamic (4)** | Treemap, Radar, Heatmap, Sparkline Grid | JS/D3/Canvas: composition, profiles, density, trends |
+| **Visual (5)** | Isometric, IconDiagram, Network, Graph, Typographic Statement | Editorial figures, system diagrams, generative visuals |
+
+## Validation
+
+```bash
+python3 plugins/blog-figure/skills/blog-figure/scripts/render_pattern_previews.py --clean --output-dir /tmp/blog-figure-previews
+python3 -m http.server 8123 --directory /private/tmp
+```
+
+- Gallery: `file:///tmp/blog-figure-previews/index.html`
+- MCP-friendly URL: `http://127.0.0.1:8123/blog-figure-previews/index.html`
+- Detail QA URL: `http://127.0.0.1:8123/blog-figure-previews/index.html?density=detail`
+- Ready signal: 상단 counter가 `30 / 30 ready`
+
+### Workspace Review Site
+
+```bash
+python3 plugins/blog-figure/skills/blog-figure/scripts/build_workspace_review_site.py
+```
+
+- Review entry: `plugins/blog-figure/skills/blog-figure-workspace/review/index.html`
+- 목적: `final-test` + `iteration-3`의 30개 eval 산출물을 HTTP-friendly review copy로 한 번에 검수
+- MCP 검수 시에는 `plugins/blog-figure/skills/blog-figure-workspace/review/` 상위를 HTTP로 서빙해서 연다
+
+### CLI Capture
+
+```bash
+npx playwright screenshot --viewport-size="1600,4200" --wait-for-selector="body[data-gallery-ready='1']" --wait-for-timeout=3000 "http://127.0.0.1:8123/blog-figure-previews/index.html?density=detail" /tmp/blog-figure-previews/gallery-playwright.png
+'/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' --headless --disable-gpu --hide-scrollbars --virtual-time-budget=8000 --window-size=1600,4200 --screenshot=/tmp/blog-figure-previews/gallery-chrome.png "http://127.0.0.1:8123/blog-figure-previews/index.html?density=detail"
+```
 
 ## Design Rules
 
@@ -87,7 +108,7 @@ claude plugin install blog-figure@agent-plugins
 - **Shadow**: Npx Npx 0px #0a0a0a (no blur)
 - **Fonts**: Noto Sans KR 900 (titles), Noto Sans KR 700 (body)
 - **Colors**: CSS variables only
-- **Icons**: Emoji only (self-contained HTML)
+- **Graphics**: HTML 패턴은 emoji 가능, 시각 패턴은 inline SVG / Canvas / D3 사용
 
 ## License
 

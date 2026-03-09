@@ -4,6 +4,14 @@ Visual & generative patterns (5): Isometric, IconDiagram, Network, Graph, Typogr
 
 All use `assets/figure.css`. SVG 인라인, Canvas, D3 등 기술별 접근 방식이 다름.
 
+## TOC
+
+- 17. Isometric
+- 18. IconDiagram
+- 19. Network
+- 20. Graph
+- 22. Typographic Statement
+
 ---
 
 ## 17. Isometric (SVG 인라인)
@@ -33,34 +41,42 @@ Max: **4 블록**. 블록당 라벨 1단어.
   <!-- Isometric cube: top=light, left=mid, right=dark of same hue
        Position with translate(cx, cy). cy = bottom center of cube. -->
 
-  <!-- Layer 1: Infrastructure (bottom, largest) -->
-  <g transform="translate(520, 550)">
-    <polygon class="iso" fill="#BFDBFE" points="0,-50 200,-100 400,-50 200,0"/>
-    <polygon class="iso" fill="#93C5FD" points="0,-50 0,30 200,80 200,0"/>
-    <polygon class="iso" fill="#60A5FA" points="200,0 200,80 400,30 400,-50"/>
-    <text x="200" y="-25" text-anchor="middle" font-size="28" font-weight="900">인프라</text>
+  <!-- Layer 1: Data platform (bottom, largest) -->
+  <g transform="translate(360, 610)">
+    <polygon class="iso" fill="#BFDBFE" points="0,-70 360,-170 720,-70 360,30"/>
+    <polygon class="iso" fill="#93C5FD" points="0,-70 0,70 360,170 360,30"/>
+    <polygon class="iso" fill="#60A5FA" points="360,30 360,170 720,70 720,-70"/>
+    <text x="360" y="-15" text-anchor="middle" font-size="34" font-weight="900">데이터</text>
   </g>
 
-  <!-- Layer 2: Service (middle) -->
-  <g transform="translate(580, 440)">
-    <polygon class="iso" fill="#D9F99D" points="0,-45 140,-90 280,-45 140,0"/>
-    <polygon class="iso" fill="#BEF264" points="0,-45 0,25 140,70 140,0"/>
-    <polygon class="iso" fill="#A3E635" points="140,0 140,70 280,25 280,-45"/>
-    <text x="140" y="-20" text-anchor="middle" font-size="26" font-weight="900">서비스</text>
+  <!-- Layer 2: Backend -->
+  <g transform="translate(450, 470)">
+    <polygon class="iso" fill="#D9F99D" points="0,-60 250,-125 500,-60 250,5"/>
+    <polygon class="iso" fill="#BEF264" points="0,-60 0,50 250,115 250,5"/>
+    <polygon class="iso" fill="#A3E635" points="250,5 250,115 500,50 500,-60"/>
+    <text x="250" y="-18" text-anchor="middle" font-size="30" font-weight="900">백엔드</text>
   </g>
 
-  <!-- Layer 3: UI (top, smallest) -->
-  <g transform="translate(630, 340)">
-    <polygon class="iso" fill="#FFD5E0" points="0,-40 90,-80 180,-40 90,0"/>
-    <polygon class="iso" fill="#FCA5B8" points="0,-40 0,20 90,60 90,0"/>
-    <polygon class="iso" fill="#FF5C8D" points="90,0 90,60 180,20 180,-40"/>
-    <text x="90" y="-18" text-anchor="middle" font-size="24" font-weight="900">UI</text>
+  <!-- Layer 3: API -->
+  <g transform="translate(540, 340)">
+    <polygon class="iso" fill="#FFE7A3" points="0,-48 170,-100 340,-48 170,4"/>
+    <polygon class="iso" fill="#FDE047" points="0,-48 0,35 170,87 170,4"/>
+    <polygon class="iso" fill="#FACC15" points="170,4 170,87 340,35 340,-48"/>
+    <text x="170" y="-16" text-anchor="middle" font-size="28" font-weight="900">API</text>
+  </g>
+
+  <!-- Layer 4: UI -->
+  <g transform="translate(600, 235)">
+    <polygon class="iso" fill="#FFD5E0" points="0,-42 120,-82 240,-42 120,-2"/>
+    <polygon class="iso" fill="#FCA5B8" points="0,-42 0,24 120,64 120,-2"/>
+    <polygon class="iso" fill="#FF5C8D" points="120,-2 120,64 240,24 240,-42"/>
+    <text x="120" y="-18" text-anchor="middle" font-size="24" font-weight="900">UI</text>
   </g>
 </svg>
 </body>
 ```
 
-Notes: 각 면에 같은 색조의 3단계 명도를 적용(top=light, left=mid, right=dark). `translate(cx, cy)`로 블록 위치 조정. 블록을 쌓을 때 위 블록의 cy를 아래 블록보다 작게. `.iso` 클래스로 일관된 stroke. 텍스트는 블록 top face 중앙에 배치.
+Notes: 각 면에 같은 색조의 3단계 명도를 적용(top=light, left=mid, right=dark). `translate(cx, cy)`로 블록 위치 조정. **최하단 블록 폭을 크게 잡고 4단 적층**으로 만들면 아이소메트릭 패턴의 under-fill이 크게 줄어든다. 텍스트는 block top face 중앙에 배치한다.
 
 ---
 
@@ -94,45 +110,61 @@ Max: **4 노드**, **3 커넥터**. 아이콘은 기본 SVG 도형으로 구성 
   <rect width="1440" height="810" fill="url(#dots)"/>
 
   <!-- Node: User -->
-  <g transform="translate(160, 310)">
-    <rect class="box-sh" x="4" y="4" width="180" height="150" rx="12"/>
-    <rect class="box" width="180" height="150" rx="12"/>
+  <g transform="translate(110, 250)">
+    <rect class="box-sh" x="4" y="4" width="210" height="160" rx="12"/>
+    <rect class="box" width="210" height="160" rx="12"/>
     <!-- Person icon: head + shoulders -->
-    <circle cx="90" cy="45" r="20" fill="none" stroke="#3B82F6" stroke-width="3"/>
-    <path d="M55 95 Q90 72 125 95" fill="none" stroke="#3B82F6" stroke-width="3"/>
-    <text x="90" y="130" text-anchor="middle" font-size="24" font-weight="900">사용자</text>
+    <circle cx="105" cy="45" r="20" fill="none" stroke="#3B82F6" stroke-width="3"/>
+    <path d="M70 95 Q105 72 140 95" fill="none" stroke="#3B82F6" stroke-width="3"/>
+    <text x="105" y="138" text-anchor="middle" font-size="28" font-weight="900">사용자</text>
   </g>
 
-  <!-- Node: API -->
-  <g transform="translate(630, 310)">
-    <rect class="box-sh" x="4" y="4" width="180" height="150" rx="12"/>
-    <rect class="box" width="180" height="150" rx="12"/>
+  <!-- Node: Gateway -->
+  <g transform="translate(470, 130)">
+    <rect class="box-sh" x="4" y="4" width="220" height="170" rx="12"/>
+    <rect class="box" width="220" height="170" rx="12"/>
     <!-- Gear icon: circle + center dot -->
-    <circle cx="90" cy="50" r="24" fill="none" stroke="#a3e635" stroke-width="3"/>
-    <circle cx="90" cy="50" r="8" fill="#a3e635"/>
-    <text x="90" y="130" text-anchor="middle" font-size="24" font-weight="900">API</text>
+    <circle cx="110" cy="52" r="26" fill="none" stroke="#a3e635" stroke-width="3"/>
+    <circle cx="110" cy="52" r="8" fill="#a3e635"/>
+    <text x="110" y="144" text-anchor="middle" font-size="28" font-weight="900">Gateway</text>
+  </g>
+
+  <!-- Node: Queue -->
+  <g transform="translate(470, 430)">
+    <rect class="box-sh" x="4" y="4" width="220" height="160" rx="12"/>
+    <rect class="box" width="220" height="160" rx="12"/>
+    <rect x="70" y="34" width="80" height="52" rx="8" fill="none" stroke="#8B5CF6" stroke-width="3"/>
+    <path d="M70 60 h80" fill="none" stroke="#8B5CF6" stroke-width="3"/>
+    <text x="110" y="138" text-anchor="middle" font-size="28" font-weight="900">Queue</text>
   </g>
 
   <!-- Node: DB -->
-  <g transform="translate(1100, 310)">
-    <rect class="box-sh" x="4" y="4" width="180" height="150" rx="12"/>
-    <rect class="box" width="180" height="150" rx="12"/>
+  <g transform="translate(1020, 285)">
+    <rect class="box-sh" x="4" y="4" width="210" height="170" rx="12"/>
+    <rect class="box" width="210" height="170" rx="12"/>
     <!-- Cylinder icon: ellipse + body -->
-    <ellipse cx="90" cy="40" rx="32" ry="14" fill="none" stroke="#FF6B35" stroke-width="3"/>
-    <path d="M58 40 v35 a32 14 0 0 0 64 0 v-35" fill="none" stroke="#FF6B35" stroke-width="3"/>
-    <text x="90" y="130" text-anchor="middle" font-size="24" font-weight="900">DB</text>
+    <ellipse cx="105" cy="42" rx="34" ry="14" fill="none" stroke="#FF6B35" stroke-width="3"/>
+    <path d="M71 42 v40 a34 14 0 0 0 68 0 v-40" fill="none" stroke="#FF6B35" stroke-width="3"/>
+    <text x="105" y="144" text-anchor="middle" font-size="28" font-weight="900">DB</text>
   </g>
 
   <!-- Connectors with arrow markers -->
-  <line class="conn" x1="340" y1="385" x2="630" y2="385" marker-end="url(#arr)"/>
-  <text x="485" y="370" text-anchor="middle" font-size="20" font-weight="700" fill="#737373">요청</text>
-  <line class="conn" x1="810" y1="385" x2="1100" y2="385" marker-end="url(#arr)"/>
-  <text x="955" y="370" text-anchor="middle" font-size="20" font-weight="700" fill="#737373">쿼리</text>
+  <line class="conn" x1="320" y1="330" x2="470" y2="215" marker-end="url(#arr)"/>
+  <text x="395" y="245" text-anchor="middle" font-size="20" font-weight="700" fill="#737373">요청</text>
+
+  <line class="conn" x1="690" y1="215" x2="1020" y2="350" marker-end="url(#arr)"/>
+  <text x="865" y="255" text-anchor="middle" font-size="20" font-weight="700" fill="#737373">쿼리</text>
+
+  <line class="conn" x1="690" y1="510" x2="1020" y2="390" marker-end="url(#arr)"/>
+  <text x="865" y="470" text-anchor="middle" font-size="20" font-weight="700" fill="#737373">이벤트</text>
+
+  <line class="conn" x1="580" y1="300" x2="580" y2="430" marker-end="url(#arr)"/>
+  <text x="610" y="372" font-size="20" font-weight="700" fill="#737373">비동기 처리</text>
 </svg>
 </body>
 ```
 
-Notes: 아이콘은 기본 SVG 도형(circle, ellipse, path, rect)으로 구성. 외부 아이콘 라이브러리 불필요. `<marker>` 로 화살표 정의하고 `marker-end="url(#arr)"`으로 적용. 노드 간 거리를 넉넉히 잡아 커넥터 라벨이 읽히도록. 커넥터 라벨은 `fill="#737373"` (muted).
+Notes: 아이콘은 기본 SVG 도형(circle, ellipse, path, rect)으로 구성. 외부 아이콘 라이브러리 불필요. `<marker>` 로 화살표 정의하고 `marker-end="url(#arr)"`으로 적용. **4노드 + 3방향 흐름** 정도가 가장 완성도가 높고, 수평/수직 연결을 섞으면 캔버스 활용도가 훨씬 좋아진다.
 
 ---
 
@@ -175,27 +207,27 @@ const gridNodes = [];
 for (let r = 0; r < 2; r++)
   for (let c = 0; c < 7; c++)
     gridNodes.push({
-      x: 120 + c * 70, y: 380 + r * 80, r: 26,
+      x: 150 + c * 76, y: 350 + r * 88, r: 26,
       color: P.card, label: (c + r) % 2 ? '1' : '0', opacity: 0.85
     });
 
 // Section B: Stochastic scatter (right half)
 const scatterNodes = [
-  { x:820,  y:180, r:42, color:P.blue,   label:'0.8', opacity:0.85 },
-  { x:950,  y:250, r:22, color:P.lime,   label:'0.3', opacity:0.5 },
-  { x:1070, y:200, r:28, color:P.orange, label:'0.9', opacity:0.7 },
-  { x:1190, y:160, r:20, color:P.purple, label:'0.4', opacity:0.45 },
-  { x:1290, y:240, r:32, color:P.pink,   label:'0.7', opacity:0.75 },
-  { x:870,  y:360, r:18, color:P.yellow, label:'0.1', opacity:0.4 },
-  { x:1000, y:410, r:50, color:P.blue,   label:'0',   opacity:0.6 },
-  { x:1140, y:350, r:26, color:P.lime,   label:'0.5', opacity:0.55 },
-  { x:1260, y:400, r:35, color:P.orange, label:'0.2', opacity:0.5 },
-  { x:870,  y:510, r:24, color:P.purple, label:'0.6', opacity:0.6 },
-  { x:1010, y:540, r:30, color:P.pink,   label:'0.2', opacity:0.45 },
-  { x:1170, y:500, r:38, color:P.yellow, label:'0.8', opacity:0.7 },
-  { x:1290, y:540, r:20, color:P.blue,   label:'0.3', opacity:0.4 },
-  { x:940,  y:620, r:34, color:P.lime,   label:'0.9', opacity:0.8 },
-  { x:1110, y:630, r:22, color:P.orange, label:'0.3', opacity:0.5 },
+  { x:840,  y:180, r:42, color:P.blue,   label:'0.8', opacity:0.85 },
+  { x:965,  y:250, r:22, color:P.lime,   label:'0.3', opacity:0.5 },
+  { x:1090, y:200, r:28, color:P.orange, label:'0.9', opacity:0.7 },
+  { x:1195, y:160, r:20, color:P.purple, label:'0.4', opacity:0.45 },
+  { x:1290, y:235, r:32, color:P.pink,   label:'0.7', opacity:0.75 },
+  { x:885,  y:340, r:18, color:P.yellow, label:'0.1', opacity:0.4 },
+  { x:1015, y:395, r:50, color:P.blue,   label:'0',   opacity:0.6 },
+  { x:1150, y:345, r:26, color:P.lime,   label:'0.5', opacity:0.55 },
+  { x:1265, y:390, r:35, color:P.orange, label:'0.2', opacity:0.5 },
+  { x:885,  y:485, r:24, color:P.purple, label:'0.6', opacity:0.6 },
+  { x:1025, y:520, r:30, color:P.pink,   label:'0.2', opacity:0.45 },
+  { x:1180, y:485, r:38, color:P.yellow, label:'0.8', opacity:0.7 },
+  { x:1290, y:520, r:20, color:P.blue,   label:'0.3', opacity:0.4 },
+  { x:950,  y:590, r:34, color:P.lime,   label:'0.9', opacity:0.8 },
+  { x:1120, y:600, r:22, color:P.orange, label:'0.3', opacity:0.5 },
 ];
 
 const all = [...gridNodes, ...scatterNodes];
@@ -224,7 +256,7 @@ for (let x = 0; x < 2880; x += 32)
 ctx.strokeStyle = 'rgba(10,10,10,0.08)';
 ctx.lineWidth = 1.5 * S;
 ctx.setLineDash([8 * S, 6 * S]);
-ctx.beginPath(); ctx.moveTo(720 * S, 130 * S); ctx.lineTo(720 * S, 700 * S); ctx.stroke();
+ctx.beginPath(); ctx.moveTo(720 * S, 130 * S); ctx.lineTo(720 * S, 650 * S); ctx.stroke();
 ctx.setLineDash([]);
 
 // Edges
@@ -258,17 +290,17 @@ ctx.fillStyle = P.muted; ctx.textAlign = 'left';
 ctx.fillText('[ FIG 1 ] \u2014 DETERMINISTIC', 100 * S, 100 * S);
 ctx.fillText('[ FIG 2 ] \u2014 STOCHASTIC', 800 * S, 100 * S);
 
-// Captions (bottom)
-ctx.font = `700 ${18 * S}px 'Noto Sans KR'`;
+// Captions (bottom, keep a 100px safety gutter to avoid clipping)
+ctx.font = `700 ${20 * S}px 'Noto Sans KR'`;
 ctx.textAlign = 'center';
-ctx.fillText('\uADDC\uCE59 \uAE30\uBC18, \uC608\uCE21 \uAC00\uB2A5\uD55C \uACB0\uACFC', 370 * S, 730 * S);
-ctx.fillText('\uC720\uB3D9\uC801, \uD655\uB960\uC801 \uD0D0\uC0C9', 1050 * S, 730 * S);
+ctx.fillText('\uADDC\uCE59 \uAE30\uBC18, \uC608\uCE21 \uAC00\uB2A5\uD55C \uACB0\uACFC', 390 * S, 690 * S);
+ctx.fillText('\uC720\uB3D9\uC801, \uD655\uB960\uC801 \uD0D0\uC0C9', 1060 * S, 690 * S);
 });
 </script>
 </body>
 ```
 
-Notes: `document.fonts.ready.then()`으로 감싸야 Canvas에서 Google Fonts가 정상 렌더링됨. `S = 2`로 retina 해상도 출력 (canvas 2880×1620 → CSS 1440×810). 노드 `opacity`로 확률적 느낌 표현. 그리드 노드는 균일 크기/색상, 스캐터 노드는 다양한 크기/색상/투명도. edges는 가까운 노드 자동 연결. `\u` 이스케이프는 "규칙 기반, 예측 가능한 결과" / "유동적, 확률적 탐색" — 한글 텍스트를 Canvas에 직접 쓸 때 사용.
+Notes: `document.fonts.ready.then()`으로 감싸야 Canvas에서 Google Fonts가 정상 렌더링됨. `S = 2`로 retina 해상도 출력 (canvas 2880×1620 → CSS 1440×810). 노드 `opacity`로 확률적 느낌 표현. 그리드 노드는 균일 크기/색상, 스캐터 노드는 다양한 크기/색상/투명도. edges는 가까운 노드 자동 연결. 하단 캡션은 **100px safety gutter** 안에 두고 inline font를 **20px 이상** 유지한다. `\u` 이스케이프는 "규칙 기반, 예측 가능한 결과" / "유동적, 확률적 탐색" — 한글 텍스트를 Canvas에 직접 쓸 때 사용.
 
 ---
 
@@ -315,6 +347,8 @@ const nodes = [
   { id: '배포',     group: 3, r: 30 },
   { id: '검증',     group: 3, r: 32 },
   { id: '피봇',     group: 1, r: 25 },
+  { id: '로그',     group: 3, r: 24 },
+  { id: '지표',     group: 2, r: 24 },
 ];
 const links = [
   { source: '문제 정의', target: '인터뷰' },
@@ -325,6 +359,10 @@ const links = [
   { source: '검증',     target: '피봇' },
   { source: '피봇',     target: '문제 정의' },
   { source: '인터뷰',   target: '검증' },
+  { source: '배포',     target: '로그' },
+  { source: '로그',     target: '지표' },
+  { source: '지표',     target: '검증' },
+  { source: '개발',     target: '지표' },
 ];
 const groupColor = { 1: '#3B82F6', 2: '#a3e635', 3: '#FF6B35' };
 
@@ -333,14 +371,31 @@ const W = 1440, H = 810;
 
 // Force simulation
 const sim = d3.forceSimulation(nodes)
-  .force('link', d3.forceLink(links).id(d => d.id).distance(140))
-  .force('charge', d3.forceManyBody().strength(-600))
+  .force('link', d3.forceLink(links).id(d => d.id).distance(150))
+  .force('charge', d3.forceManyBody().strength(-720))
   .force('center', d3.forceCenter(W / 2, H / 2))
   .force('collision', d3.forceCollide().radius(d => d.r + 15));
 
 // Run to completion synchronously (critical for screenshot capture)
 for (let i = 0; i < 300; i++) sim.tick();
 sim.stop();
+
+// Scale-to-fit: stretch the settled graph into a strong composition box.
+const padX = 70;
+const padY = 56;
+const minX = d3.min(nodes, d => d.x - d.r);
+const maxX = d3.max(nodes, d => d.x + d.r);
+const minY = d3.min(nodes, d => d.y - d.r);
+const maxY = d3.max(nodes, d => d.y + d.r);
+const scaleX = (W - padX * 2) / Math.max(1, maxX - minX);
+const scaleY = (H - padY * 2) / Math.max(1, maxY - minY);
+const cx = (minX + maxX) / 2;
+const cy = (minY + maxY) / 2;
+nodes.forEach(d => {
+  d.x = (d.x - cx) * scaleX + W / 2;
+  d.y = (d.y - cy) * scaleY + H / 2;
+  d.r = d.r * Math.min(Math.min(scaleX, scaleY), 1.26);
+});
 
 // Draw links
 svg.selectAll('.link').data(links).join('line')
@@ -368,7 +423,7 @@ svg.selectAll('.label').data(nodes).join('text')
 </body>
 ```
 
-Notes: D3 v7을 CDN에서 로드. `for (let i=0; i<300; i++) sim.tick(); sim.stop();`으로 시뮬레이션을 동기 실행 — 스크린샷 캡처 시 레이아웃이 안정된 상태 보장. `nodes`의 `group`으로 색상 분류, `r`로 노드 크기 (중요도). `links`의 `source`/`target`은 노드 `id` 참조. Hard shadow는 동일 좌표에 offset된 검정 원으로 구현.
+Notes: D3 v7을 CDN에서 로드. `for (let i=0; i<300; i++) sim.tick(); sim.stop();`으로 시뮬레이션을 동기 실행 — 스크린샷 캡처 시 레이아웃이 안정된 상태 보장. 그 다음 **scale-to-fit pass**로 bounds를 다시 계산해 그래프를 composition box에 채운다. 정사각형 그래프가 16:9 캔버스에서 작아 보이면 `scaleX`와 `scaleY`를 **독립적으로** 계산해 가로와 세로를 각각 채우는 편이 낫다. `nodes`의 `group`으로 색상 분류, `r`로 노드 크기 (중요도). `links`의 `source`/`target`은 노드 `id` 참조. Hard shadow는 동일 좌표에 offset된 검정 원으로 구현.
 
 ---
 
