@@ -85,7 +85,7 @@ claude plugin install blog-figure@agent-plugins
 - **Size**: 1440x810 (16:9)
 - **Border**: 3px solid #0a0a0a
 - **Shadow**: Npx Npx 0px #0a0a0a (no blur)
-- **Fonts**: Black Han Sans (titles), Noto Sans KR (body)
+- **Fonts**: Noto Sans KR 900 (titles), Noto Sans KR 700 (body)
 - **Colors**: CSS variables only
 - **Icons**: Emoji only (self-contained HTML)
 

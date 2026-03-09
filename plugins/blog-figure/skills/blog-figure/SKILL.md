@@ -251,7 +251,7 @@ AskUserQuestion({
 </html>
 ```
 
-Replace `{SKILL_DIR}` with absolute path `~/.claude/skills/blog-figure`.
+Replace `{SKILL_DIR}` with the **absolute path to this skill's directory** (the directory containing this SKILL.md). Resolve via the file path of this skill file, e.g. if SKILL.md is at `/path/to/skills/blog-figure/SKILL.md`, then `{SKILL_DIR}` = `/path/to/skills/blog-figure`.
 
 ## Capture (pick whichever is available)
 
@@ -270,6 +270,12 @@ Replace `{SKILL_DIR}` with absolute path `~/.claude/skills/blog-figure`.
 ```bash
 npx playwright screenshot --viewport-size="1440,810" file:///tmp/blog-figure-{name}.html {target}.png
 ```
+
+**캡처 실패 시 복구**:
+1. Chrome DevTools 연결 실패 → Playwright MCP 시도 → Fallback CLI 시도
+2. 빈 PNG / 흰 화면 → HTML 파일을 `Read`로 확인 후 `file://` 경로가 올바른지 점검. `{SKILL_DIR}` 경로가 실제 figure.css 위치와 일치하는지 확인
+3. 폰트 깨짐 → Canvas/D3 패턴에서 `document.fonts.ready.then()` 래핑 누락 여부 확인
+4. 모든 방법 실패 → HTML 파일 경로를 사용자에게 알려주고 수동 캡처 요청
 
 ## Patterns
 
@@ -306,7 +312,13 @@ npx playwright screenshot --viewport-size="1440,810" file:///tmp/blog-figure-{na
 | **Sparkline Grid** | 다수 항목 트렌드 요약 | SVG + JS, `<polyline>`, `<polygon>` |
 | **Waterfall** | 증감 분해, 누적 변화 | SVG floating `<rect>` + connector |
 
-Full HTML examples for each: [references/figure-patterns.md](references/figure-patterns.md)
+Full HTML examples by category — **선택한 패턴이 속한 파일만 읽어라**:
+
+| Category | File | Patterns |
+|----------|------|----------|
+| Layout | [references/patterns-layout.md](references/patterns-layout.md) | Comparison, Flow, Timeline, Concept, Architecture, Interaction, State, Schema, Hierarchy, Matrix, Journey, Funnel, Loop, Storyboard, Terminal (15) |
+| Data Viz | [references/patterns-dataviz.md](references/patterns-dataviz.md) | Data Viz, Waffle, Slope, Treemap, Radar, Dumbbell, Heatmap, Bullet, Sparkline Grid, Waterfall (10) |
+| Visual | [references/patterns-visual.md](references/patterns-visual.md) | Isometric, IconDiagram, Network, Graph, Typographic Statement (5) |
 
 ## Design Rules
 
@@ -389,7 +401,7 @@ Full HTML examples for each: [references/figure-patterns.md](references/figure-p
 | Timeline | **3블록** | 블록 크기↑, 라벨 가독성↑ |
 | Storyboard | **4패널 (2×2)** | 패널 크기 2배 확보 |
 | Bar chart | **4행** | 바 높이 충분히 확보 |
-| Architecture | **3레이어, 레이어당 2노드** (3은 max) | 공간 여유 |
+| Architecture | **3레이어, 레이어당 3노드** (2노드면 너무 빈약) | 시스템 구조의 풍부함 |
 | Split 비교 | **양쪽 각 2~3카드** | 카드 크기 유지 |
 | Journey | **4단계** | dot 간 여백 확보 |
 | Schema | **2테이블, 테이블당 3필드** | 글자 크기 유지 |
@@ -427,6 +439,33 @@ Full HTML examples for each: [references/figure-patterns.md](references/figure-p
 - `.flow-card`는 아이콘 없이 `<strong>제목</strong>`만으로 충분. 설명 텍스트 최소화
 - 이모지는 카테고리 구분이 반드시 필요할 때만 (예: `.arch-label`, `.journey-dot`)
 - 장식용 이모지/아이콘 금지
+
+### 패턴별 레이아웃 규칙
+
+모바일 축소 상태에서도 구조가 한눈에 잡히려면, 각 패턴의 정렬과 색상 사용이 일관되어야 한다.
+
+**Comparison (Split)**
+- 양쪽 카드는 **동일한 상단 시작점**에서 시작. `margin-top` 등으로 한쪽만 아래로 밀지 마라
+- `.split-left`와 `.split-right`에 `justify-content: flex-start`를 명시하고, 카드 컨테이너의 구조를 동일하게 유지
+
+**Matrix (2×2)**
+- **열별 색상 통일**: 1열은 하나의 색상 계열, 2열은 다른 색상 계열. 같은 열의 셀은 모두 동일 색상
+- **헤더 ≠ 셀**: 헤더(`.matrix-label-x`)는 진한 톤(`--good-card`, `--info-card`), 본문 셀은 연한 톤(`--good-bg`, `--info-bg`)
+- **셀 구분선**: `.matrix`에 `background:var(--dark);gap:3px` 적용 (grid gap 기법). 개별 셀에 border 넣지 마라 — 이중 테두리가 생긴다
+- 예: 1열 헤더 `--good-card` → 1열 셀 `--good-bg`, 2열 헤더 `--info-card` → 2열 셀 `--info-bg`
+- **코너(좌상단)는 흰색**: `background:var(--white)`. 검은색 금지
+
+**Architecture**
+- 레이어당 노드 **최소 3개**. 2개만 넣으면 레이어 영역 대비 노드가 빈약해 보인다
+- 프롬프트에 2개만 명시되어 있어도, 맥락상 추가 가능한 노드를 보충하라 (예: Client 레이어에 Web, Mobile 외 CLI 추가)
+
+**Waffle (SVG)**
+- 제목은 **한국어**로, 그리드 상단 또는 좌측에 배치. 영문 부제목/서브타이틀 금지
+- 범례(legend)는 그리드 우측에 컴팩트하게. 범례 텍스트도 한국어
+
+**Typographic Statement (SVG)**
+- 인용문은 캔버스(1440×810) 기준 **수직·수평 모두 중앙 정렬**
+- SVG의 viewBox를 `0 0 1440 810`으로 설정하고, 텍스트 블록의 y 좌표를 중앙에 맞춰라
 
 ### Textures & Decorations
 

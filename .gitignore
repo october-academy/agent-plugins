@@ -17,3 +17,6 @@ npm-debug.log*
 # Environment
 .env
 .env.local
+
+# Skill workspaces (local test/eval artifacts)
+**/skills/*-workspace/
