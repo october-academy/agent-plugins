@@ -1,6 +1,6 @@
 ---
 name: ship
-description: Team-orchestrated implement → verify → fix → archive cycle
+description: Coordinates a multi-agent team to implement code changes, run dual verification (OpenSpec verify plus Codex code review), apply up to three leader-driven fix rounds, and archive a completed OpenSpec change. Spawns an implementer agent to apply tasks from tasks.md, spawns a reviewer agent to run Codex code review, and the leader directly handles verification, fixing, and archival. Use when the user wants to ship a feature or change end-to-end, run a coordinated multi-agent implementation, complete an OpenSpec change, perform automated code review and spec verification, or fully close out a planned development change through implementation and archival.
 user-invocable: true
 argument-hint: "[change-name]"
 ---
@@ -8,6 +8,8 @@ argument-hint: "[change-name]"
 Ship a change through team-orchestrated implementation, dual verification, leader-driven fixing, and archival.
 
 **Input**: Optionally specify a change name (e.g., `/opsx:ship my-feature`). If omitted, prompt for selection.
+
+> **Note**: In all agent prompts below, replace every occurrence of `CHANGENAME` with the actual change name before spawning the agent.
 
 **Team Structure**
 
@@ -45,6 +47,14 @@ Ship a change through team-orchestrated implementation, dual verification, leade
    3. "Abort" — stop workflow
 
    Store the result as `CODEX_AVAILABLE` (true/false) for use in later phases.
+
+   **`CODEX_AVAILABLE` behaviour summary** (applies to all subsequent phases):
+
+   | Condition | Reviewer spawned? | combined-report.md source |
+   |-----------|-------------------|--------------------------|
+   | `true` + reviewer succeeds | Yes | Merged verify + review |
+   | `true` + reviewer fails | Yes (fails) | verify-report.md only; warn user |
+   | `false` | No | verify-report.md only |
 
 3. **Create team and spawn implementer**
 
@@ -98,8 +108,6 @@ Ship a change through team-orchestrated implementation, dual verification, leade
      IMPORTANT: Always communicate progress to the leader via SendMessage.
      IMPORTANT: If a task is unclear or blocked, report to leader instead of guessing.
      ```
-
-   Replace `CHANGENAME` in the prompt with the actual change name before spawning.
 
 4. **Phase 1: Implement**
 
@@ -200,8 +208,6 @@ Ship a change through team-orchestrated implementation, dual verification, leade
      IMPORTANT: Always communicate results to the leader via SendMessage.
      ```
 
-   Replace `CHANGENAME` in the prompt with the actual change name before spawning.
-
    Then:
    - **TaskCreate**: subject "Code review for <change-name>"
    - **TaskUpdate**: assign owner to `reviewer`
@@ -218,15 +224,9 @@ Ship a change through team-orchestrated implementation, dual verification, leade
 
    **c. Collect and merge results into combined-report.md**
 
-   **If CODEX_AVAILABLE and reviewer completed successfully:**
-   - Read both verify-report.md and review-report.md
-   - Merge into `openspec/changes/<name>/combined-report.md`:
-     - Deduplicate issues appearing in both reports
-     - Combine all unique CRITICAL/WARNING/SUGGESTION issues
-
-   **If reviewer failed or CODEX_AVAILABLE=false:**
-   - Copy verify-report.md content to `openspec/changes/<name>/combined-report.md`
-   - If reviewer failed, report to user: "Codex review failed. Proceeding with OpenSpec verify results only."
+   Refer to the `CODEX_AVAILABLE` behaviour table in step 2 to determine the source for combined-report.md:
+   - **Merged (verify + review)**: Read both verify-report.md and review-report.md; deduplicate issues appearing in both; combine all unique CRITICAL/WARNING/SUGGESTION issues into `openspec/changes/<name>/combined-report.md`
+   - **Verify only**: Copy verify-report.md content to `openspec/changes/<name>/combined-report.md`; if reviewer failed, report to user: "Codex review failed. Proceeding with OpenSpec verify results only."
 
    Report to user: "Dual verify complete. CRITICAL: N | WARNING: N | SUGGESTION: N"
 
@@ -376,7 +376,7 @@ Ship complete!
 - Leader does OpenSpec verify and fixes issues directly (not delegated to teammates)
 - Implementer is shut down after Phase 1 to free resources
 - Reviewer is spawned on-demand at Phase 2 (not at team creation)
-- Codex availability is checked upfront; workflow adapts if unavailable
+- Codex availability is checked upfront; workflow adapts if unavailable (see step 2 table)
 - Agent failures trigger user-facing options instead of silent failure
 - combined-report.md is the single source of truth for fix loop (never reference verify-report.md or review-report.md directly in fix loop)
 - Always run cleanup (step 9), even on failure or pause

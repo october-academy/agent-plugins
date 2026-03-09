@@ -1,6 +1,6 @@
 ---
 name: perf
-description: Quick performance measurement using Lighthouse and Core Web Vitals. Use when user says "/perf", "성능 측정", "performance", "lighthouse", or wants to audit page performance. Supports single page or batch measurement.
+description: Quick performance measurement using Lighthouse and Core Web Vitals that generates performance reports, identifies bottlenecks, and provides optimization recommendations. Use when user says "/perf", "성능 측정", "performance", "lighthouse", or wants to audit page performance. Supports single page or batch measurement.
 user-invocable: true
 ---
 
@@ -29,9 +29,24 @@ Quick Lighthouse audit for web applications.
 
 ### 1. Identify Target URLs
 
-If `--all` or batch mode:
+If `--all` or batch mode, discover routes using one of the following strategies:
 
-Scan for key pages:
+**From sitemap.xml:**
+```bash
+curl -s https://example.com/sitemap.xml \
+  | grep -oP '(?<=<loc>)[^<]+' \
+  | head -20
+```
+
+**From Next.js / React Router config:**
+```bash
+# Extract path strings from router/routes file
+grep -rE "path:\s*['\"]|route\(['\"]" src/routes* src/app \
+  | grep -oP "(?<=path: ['\"]|route\(['\"])[^'\"']+" \
+  | sort -u
+```
+
+**Fallback — audit key pages manually:**
 - Homepage (`/`)
 - Main feature pages
 - High-traffic routes
@@ -44,7 +59,23 @@ For each URL, invoke `web-perf-ux` skill or run directly:
 lighthouse <url> --output=json --chrome-flags="--headless"
 ```
 
-### 3. Collect Metrics
+### 3. Validate Results
+
+Before proceeding, check that each audit completed successfully:
+
+```bash
+# Check exit code and presence of key fields
+if [ $? -ne 0 ] || [ -z "$(cat result.json | jq '.categories.performance')" ]; then
+  echo "Audit failed for <url> — retrying (attempt 2/3)..."
+  sleep 5
+  lighthouse <url> --output=json --chrome-flags="--headless"
+fi
+```
+
+- If an audit fails after 3 retries, mark that URL as `ERROR` and continue to the next.
+- Skip malformed or empty JSON results rather than including them in the aggregate.
+
+### 4. Collect Metrics
 
 Focus on Core Web Vitals:
 
@@ -60,9 +91,23 @@ Additional metrics:
 - Total Blocking Time
 - Speed Index
 
-### 4. Generate Report
+### 5. Generate Report
 
-Summary format:
+Aggregate all results and print summary:
+
+```bash
+# Aggregate scores from multiple JSON outputs
+for f in results/*.json; do
+  url=$(jq -r '.finalUrl' "$f")
+  score=$(jq '.categories.performance.score * 100 | round' "$f")
+  lcp=$(jq -r '.audits["largest-contentful-paint"].displayValue' "$f")
+  cls=$(jq -r '.audits["cumulative-layout-shift"].displayValue' "$f")
+  inp=$(jq -r '.audits["interaction-to-next-paint"].displayValue // "N/A"' "$f")
+  echo "$url | Score: $score | LCP: $lcp | CLS: $cls | INP: $inp"
+done
+```
+
+Example output:
 
 ```
 Performance Report
@@ -109,7 +154,8 @@ This skill works best with `web-perf-ux` plugin for detailed analysis.
 
 When running `--all`:
 
-1. Discover routes from sitemap or router config
+1. Discover routes from sitemap or router config (see Step 1 above)
 2. Queue pages for measurement
 3. Run sequentially (avoid overwhelming server)
-4. Aggregate results into single report
+4. Validate each result before aggregation (see Step 3 above)
+5. Aggregate results into single report using the script in Step 5

@@ -1,15 +1,15 @@
 ---
 name: push-pr
-description: 변경사항을 커밋하고 push한 뒤 GitHub PR을 자동 생성합니다. 메시지를 생략하면 자동 생성하며, --base로 base 브랜치를 지정할 수 있습니다.
+description: "변경사항을 커밋하고 push한 뒤 GitHub PR(pull request)을 자동 생성합니다. 메시지를 생략하면 Conventional Commits 규칙에 맞춰 자동 생성하며, --base로 base 브랜치를 지정할 수 있습니다. Use when: 작업 브랜치의 변경사항을 커밋·푸시하고 PR을 열고 싶을 때, \"PR 만들어줘\", \"push하고 pull request 생성\", \"submit changes\", \"create PR\", \"push and open PR\" 등의 요청 시 사용합니다."
 user-invocable: true
 disable-model-invocation: true
-argument-hint: [message] [--base <branch>]
+argument-hint: "[message] [--base <branch>]"
 allowed-tools: Bash(git status:*), Bash(git diff:*), Bash(git add:*), Bash(git reset:*), Bash(git commit:*), Bash(git branch:*), Bash(git log:*), Bash(git push:*), Bash(git switch:*), Bash(git fetch:*), Bash(git rev-parse:*), Bash(gh pr create:*), Bash(gh pr list:*)
 ---
 
 # /git:push-pr — Git Commit, Push & Create PR
 
-변경사항을 분석해 의미 있는 커밋 메시지를 생성(또는 전달받은 메시지 사용)하고, 현재 브랜치에 push한 뒤 GitHub Pull Request를 자동 생성합니다. 기본 base 브랜치는 `main`이며, `--base <branch>`로 변경할 수 있습니다. 참조: [Claude Code: Skills](https://code.claude.com/docs/en/skills)
+변경사항을 분석해 의미 있는 커밋 메시지를 생성(또는 전달받은 메시지 사용)하고, 현재 브랜치에 push한 뒤 GitHub Pull Request를 자동 생성합니다. 기본 base 브랜치는 `main`이며, `--base <branch>`로 변경할 수 있습니다.
 
 ## 사용법
 
@@ -100,8 +100,3 @@ allowed-tools: Bash(git status:*), Bash(git diff:*), Bash(git add:*), Bash(git r
 - `gh` CLI가 설치되어 있고 인증되어 있어야 합니다. (`gh auth status`로 확인)
 - main/master 브랜치에서는 실행할 수 없습니다. feature 브랜치에서 실행하세요.
 - 민감한 파일이나 대용량 파일이 의도치 않게 포함되지 않도록 커밋 전 `git status`를 반드시 확인하세요.
-
-## 참고
-
-- Skills 문서: [Claude Code Docs](https://code.claude.com/docs/en/skills)
-- GitHub CLI 문서: [GitHub CLI](https://cli.github.com/)

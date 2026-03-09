@@ -1,9 +1,9 @@
 ---
 name: push
-description: 변경사항을 Conventional Commit 타입별로 자동 분류하여 여러 커밋으로 분리 후 push합니다. 메시지를 제공하면 단일 커밋으로 처리합니다.
+description: "변경사항을 Conventional Commit 타입별로 자동 분류하여 여러 커밋으로 분리 후 push합니다. 메시지를 제공하면 단일 커밋으로 처리합니다. Use when: git push, commit and push, staged changes를 커밋, 변경사항 정리 후 push, split commits by type, auto-classify changes, organize commits, conventional commit으로 분리 커밋이 필요할 때."
 user-invocable: true
 disable-model-invocation: true
-argument-hint: [message] [--branch <name>]
+argument-hint: "[message] [--branch <name>]"
 allowed-tools: Bash(git status:*), Bash(git diff:*), Bash(git add:*), Bash(git reset:*), Bash(git commit:*), Bash(git branch:*), Bash(git log:*), Bash(git push:*), Bash(git switch:*), Bash(git fetch:*), Bash(git rev-parse:*), Bash(git show:*)
 ---
 
@@ -162,9 +162,7 @@ git status --short
 
 ## 주의사항
 
-- 이 커맨드는 저장소 루트에서 실행하는 것을 권장합니다.
 - 푸시 대상 원격은 `origin`, 브랜치는 기본적으로 `main`입니다.
-- 민감한 파일이나 대용량 파일이 의도치 않게 포함되지 않도록 커밋 전 `git status`를 확인하세요.
 
 ## 참고
 

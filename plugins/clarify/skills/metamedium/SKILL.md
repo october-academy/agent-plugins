@@ -1,6 +1,6 @@
 ---
 name: metamedium
-description: This skill should be used when the key question is whether to optimize content (what) or redesign form (how/medium). Trigger on "내용 vs 형식", "content vs form", "metamedium", "형식을 바꿔볼까", "새로운 포맷", "perspective shift", "diminishing returns". For requirement clarification use vague; for strategy blind spots use unknown.
+description: Analyzes whether a problem requires content optimization or structural format redesign, then delivers a labeled classification, branching recommendations, and a structured form-opportunity report for each path. Use when output quality improves slowly despite more effort, the same format keeps being reused, or you're deciding between incremental optimization vs structural redesign. Trigger on '내용 vs 형식', 'content vs form', 'metamedium', '형식을 바꿔볼까', '새로운 포맷', 'perspective shift', 'diminishing returns', 'should I change the format', 'is this a content problem', 'try a different approach', 'stuck in the same pattern'.
 user-invocable: true
 argument-hint: [work-or-plan]
 ---
@@ -25,6 +25,15 @@ For requirement clarification, use **vague**. For strategy blind spots, use **un
 Use this question when stuck:
 
 `What new form could make this recurring problem disappear?`
+
+## Classification Examples
+
+| Activity | Label | Reasoning |
+|----------|-------|-----------|
+| Writing this week's status report | `[CONTENT]` | One-off direct output |
+| Building a reusable report template | `[FORM]` | Enables repeated outputs |
+| Editing a blog post | `[CONTENT]` | Direct artifact |
+| Designing a content calendar | `[FORM]` | System that produces posts |
 
 ## Protocol
 
@@ -68,6 +77,23 @@ If hybrid:
 | New properties | ... |
 | Minimum test | ... |
 | Status | exploring / later / rejected |
+```
+
+**Example filled output** (user writing weekly reports → exploring form redesign):
+
+```markdown
+## Content/Form Analysis
+
+**Current work**: Writing weekly status reports for the team
+**Classification**: [CONTENT] — one-off direct output each week
+
+### Form Opportunity
+| Field | Detail |
+|-------|--------|
+| Alternative form | Async Loom video update + bullet summary doc |
+| New properties | Adds tone/nuance; reduces reading load; skimmable transcript |
+| Minimum test | Replace one written report with a 3-min video this Friday |
+| Status | exploring |
 ```
 
 ## Rules

@@ -1,6 +1,6 @@
 ---
 name: interview-spec
-description: Start iterative requirement clarification loop. Use this skill when the user has a vague requirement and wants to clarify it through structured questioning. Transforms unclear requirements into precise, actionable specifications.
+description: Conducts a structured, iterative interview to transform vague or unclear requirements into a precise, actionable SPEC.md specification document. Asks deep clarifying questions about scope, constraints, user personas, technical decisions, tradeoffs, and edge cases — then produces a complete specification file. Use when a user has an unclear scope, needs requirements gathering, wants to define requirements, wants to figure out exactly what they need, or says something like 'help me figure out what I want', 'I have a vague idea', or 'I'm not sure what to build'. Ideal for requirements clarification, project scoping, or discovery sessions.
 user-invocable: true
 argument-hint: [task description]
 allowed-tools: AskUserQuestion, Write, Edit, WebSearch

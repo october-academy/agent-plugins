@@ -1,6 +1,6 @@
 ---
 name: simplify
-description: Simplify and refine code for clarity, consistency, and maintainability
+description: "Runs a multi-agent workflow to clean up, refactor, and simplify code for clarity, consistency, and maintainability. Use when the user asks to clean up code, refactor for readability, simplify complex functions, remove code smells, improve naming, or make code easier to maintain. Concrete actions include: extracting repeated logic into functions, renaming unclear variables, removing dead code, simplifying nested conditionals and ternaries, eliminating redundant abstractions, and enforcing project-level patterns. Trigger phrases: \"clean up\", \"refactor\", \"make readable\", \"simplify this function\", \"code smell\", \"too complex\", \"hard to read\", \"improve maintainability\"."
 user-invocable: true
 argument-hint: [file or scope]
 ---
@@ -66,10 +66,26 @@ Scope:
 ### Parallel Execution
 
 ```
-Task(subagent_type="simplify:complexity-analyzer", ...)
-Task(subagent_type="simplify:pattern-checker", ...)
-Task(subagent_type="simplify:naming-reviewer", ...)
-Task(subagent_type="simplify:readability-analyzer", ...)
+Task(
+  subagent_type="simplify:complexity-analyzer",
+  prompt="Analyze the following files for nested ternaries, deep nesting, and over-abstraction. Files: src/utils/transform.ts, src/api/handler.ts. Report each issue with file path, line number, description, and a suggested fix.",
+  files=["src/utils/transform.ts", "src/api/handler.ts"]
+)
+Task(
+  subagent_type="simplify:pattern-checker",
+  prompt="Check the following files for violations of project coding standards and internal inconsistencies. Files: src/utils/transform.ts, src/api/handler.ts. Report each issue with file path, line number, description, and a suggested fix.",
+  files=["src/utils/transform.ts", "src/api/handler.ts"]
+)
+Task(
+  subagent_type="simplify:naming-reviewer",
+  prompt="Review variable and function names in the following files for clarity and consistency. Files: src/utils/transform.ts, src/api/handler.ts. Report each issue with file path, line number, current name, and a suggested replacement.",
+  files=["src/utils/transform.ts", "src/api/handler.ts"]
+)
+Task(
+  subagent_type="simplify:readability-analyzer",
+  prompt="Identify readability issues, unnecessary comments, and unclear logic in the following files. Files: src/utils/transform.ts, src/api/handler.ts. Report each issue with file path, line number, description, and a suggested fix.",
+  files=["src/utils/transform.ts", "src/api/handler.ts"]
+)
 ```
 
 | Agent | Role | Output |
@@ -103,20 +119,24 @@ If no issues found, report "No improvements needed" and end.
 For each issue, run an issue-simplifier agent in parallel:
 
 ```
-Task(subagent_type="simplify:issue-simplifier", prompt="""
-Issue: [Issue title]
-File: [file path]
-Location: [line numbers]
-Type: [issue type]
-Description: [description]
-Suggestion: [suggestion]
+Task(
+  subagent_type="simplify:issue-simplifier",
+  prompt="""
+Issue: Nested ternary in formatStatus()
+File: src/utils/transform.ts
+Location: lines 42-45
+Type: complexity
+Description: Three-level nested ternary is hard to follow at a glance.
+Suggestion: Replace with an if/else chain or switch statement.
 
 Read the file and provide the exact code change needed.
 Output format:
 - Original code block
 - Simplified code block
 - Brief explanation
-""")
+""",
+  files=["src/utils/transform.ts"]
+)
 ```
 
 **IMPORTANT:** Run ALL issue-simplifier agents in a single message with multiple Task calls.
