@@ -19,6 +19,7 @@ All use `assets/figure.css`. **핵심 원칙**: 텍스트는 최소한으로. �
 - 11. Journey
 - 12. Funnel
 - 13. Loop
+- *(14. Data Viz → patterns-dataviz-static.md)*
 - 15. Storyboard
 - 16. Terminal
 

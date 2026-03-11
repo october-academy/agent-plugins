@@ -384,7 +384,7 @@ document.fonts.ready.then(() => {
   ctx.fillStyle = '#2563EB';
   ctx.fill();
   ctx.fillStyle = '#ffffff';
-  ctx.font = `900 ${16 * S}px 'JetBrains Mono', monospace`;
+  ctx.font = `900 ${20 * S}px 'JetBrains Mono', monospace`;
   ctx.textAlign = 'center';
   ctx.fillText('95', lx + 344 * S, ly + sh - 2 * S);
 });
@@ -519,7 +519,7 @@ items.forEach((item, idx) => {
     x: cx + cellW - 20,
     y: cy + cellH - 18,
     'text-anchor': 'end',
-    'font-size': '18',
+    'font-size': '20',
     'font-weight': '700',
     class: 'mono',
     fill: delta >= 0 ? '#4d7c0f' : '#d6336c'

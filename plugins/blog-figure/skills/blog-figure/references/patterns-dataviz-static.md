@@ -79,9 +79,9 @@ Max: **2 카테고리**, 총 ~8단어 (범례 포함)
   <rect width="1440" height="810" fill="url(#dots)"/>
 
   <!-- Scale ticks -->
-  <text class="mono" x="350" y="112" text-anchor="middle" font-size="18" font-weight="700" fill="#737373">0</text>
-  <text class="mono" x="825" y="112" text-anchor="middle" font-size="18" font-weight="700" fill="#737373">50</text>
-  <text class="mono" x="1300" y="112" text-anchor="middle" font-size="18" font-weight="700" fill="#737373">100</text>
+  <text class="mono" x="350" y="112" text-anchor="middle" font-size="20" font-weight="700" fill="#737373">0</text>
+  <text class="mono" x="825" y="112" text-anchor="middle" font-size="20" font-weight="700" fill="#737373">50</text>
+  <text class="mono" x="1300" y="112" text-anchor="middle" font-size="20" font-weight="700" fill="#737373">100</text>
   <line x1="350" y1="120" x2="1300" y2="120" stroke="#d4d4d4" stroke-width="2"/>
 
   <!-- Waffle grid: 10x10 = 100 cells, 72 filled (#3B82F6), 28 empty (#e5e5e5) -->
@@ -93,7 +93,7 @@ Max: **2 카테고리**, 총 ~8단어 (범례 포함)
        - Cells 0-71 (first 72): fill="#3B82F6" (filled/active)
        - Cells 72-99 (remaining 28): fill="#e5e5e5" (empty/inactive)
        - So rows 0-6 col 0-9 are all #3B82F6
-       - Row 7 (y=477): cols 0-7 are #3B82F6 (last 2 filled), cols 8-9 are #e5e5e5
+       - Row 7 (y=477): cols 0-1 are #3B82F6 (last 2 filled), cols 2-9 are #e5e5e5
        - Rows 8-9: all #e5e5e5
   -->
   <!-- Example cells showing the pattern: -->
@@ -248,8 +248,8 @@ Max: **5 rows**, 라벨 max 3단어
   <line class="db-line" x1="1048" y1="174" x2="1165" y2="174"/>
   <circle class="db-dot" cx="1048" cy="174" r="12" fill="#3B82F6"/>
   <circle class="db-dot" cx="1165" cy="174" r="12" fill="#FF6B35"/>
-  <text class="mono" x="1030" y="153" text-anchor="end" font-size="18" font-weight="700" fill="#3B82F6">72</text>
-  <text class="mono" x="1185" y="153" font-size="18" font-weight="700" fill="#FF6B35">85</text>
+  <text class="mono" x="1030" y="153" text-anchor="end" font-size="20" font-weight="700" fill="#3B82F6">72</text>
+  <text class="mono" x="1185" y="153" font-size="20" font-weight="700" fill="#FF6B35">85</text>
   <text class="mono" x="1208" y="180" font-size="20" font-weight="700" fill="#4d7c0f">+13</text>
 
   <!-- Row 2: Vue — 2023: 45%, 2024: 62% → x: 805, 958 -->
@@ -257,8 +257,8 @@ Max: **5 rows**, 라벨 max 3단어
   <line class="db-line" x1="805" y1="304" x2="958" y2="304"/>
   <circle class="db-dot" cx="805" cy="304" r="12" fill="#3B82F6"/>
   <circle class="db-dot" cx="958" cy="304" r="12" fill="#FF6B35"/>
-  <text class="mono" x="787" y="283" text-anchor="end" font-size="18" font-weight="700" fill="#3B82F6">45</text>
-  <text class="mono" x="978" y="283" font-size="18" font-weight="700" fill="#FF6B35">62</text>
+  <text class="mono" x="787" y="283" text-anchor="end" font-size="20" font-weight="700" fill="#3B82F6">45</text>
+  <text class="mono" x="978" y="283" font-size="20" font-weight="700" fill="#FF6B35">62</text>
   <text class="mono" x="1000" y="310" font-size="20" font-weight="700" fill="#4d7c0f">+17</text>
 
   <!-- Row 3: Svelte — 2023: 28%, 2024: 55% → x: 652, 895 -->
@@ -266,8 +266,8 @@ Max: **5 rows**, 라벨 max 3단어
   <line class="db-line" x1="652" y1="434" x2="895" y2="434"/>
   <circle class="db-dot" cx="652" cy="434" r="12" fill="#3B82F6"/>
   <circle class="db-dot" cx="895" cy="434" r="12" fill="#FF6B35"/>
-  <text class="mono" x="634" y="413" text-anchor="end" font-size="18" font-weight="700" fill="#3B82F6">28</text>
-  <text class="mono" x="915" y="413" font-size="18" font-weight="700" fill="#FF6B35">55</text>
+  <text class="mono" x="634" y="413" text-anchor="end" font-size="20" font-weight="700" fill="#3B82F6">28</text>
+  <text class="mono" x="915" y="413" font-size="20" font-weight="700" fill="#FF6B35">55</text>
   <text class="mono" x="940" y="440" font-size="20" font-weight="700" fill="#4d7c0f">+27</text>
 
   <!-- Row 4: Angular — 2023: 60%, 2024: 42% → x: 940, 778 -->
@@ -275,8 +275,8 @@ Max: **5 rows**, 라벨 max 3단어
   <line class="db-line" x1="778" y1="564" x2="940" y2="564"/>
   <circle class="db-dot" cx="940" cy="564" r="12" fill="#3B82F6"/>
   <circle class="db-dot" cx="778" cy="564" r="12" fill="#FF6B35"/>
-  <text class="mono" x="960" y="543" font-size="18" font-weight="700" fill="#3B82F6">60</text>
-  <text class="mono" x="758" y="543" text-anchor="end" font-size="18" font-weight="700" fill="#FF6B35">42</text>
+  <text class="mono" x="960" y="543" font-size="20" font-weight="700" fill="#3B82F6">60</text>
+  <text class="mono" x="758" y="543" text-anchor="end" font-size="20" font-weight="700" fill="#FF6B35">42</text>
   <text class="mono" x="980" y="570" font-size="20" font-weight="700" fill="#d6336c">-18</text>
 
   <!-- Row 5: Solid — 2023: 10%, 2024: 35% → x: 490, 715 -->
@@ -284,8 +284,8 @@ Max: **5 rows**, 라벨 max 3단어
   <line class="db-line" x1="490" y1="664" x2="715" y2="664"/>
   <circle class="db-dot" cx="490" cy="664" r="12" fill="#3B82F6"/>
   <circle class="db-dot" cx="715" cy="664" r="12" fill="#FF6B35"/>
-  <text class="mono" x="472" y="643" text-anchor="end" font-size="18" font-weight="700" fill="#3B82F6">10</text>
-  <text class="mono" x="735" y="643" font-size="18" font-weight="700" fill="#FF6B35">35</text>
+  <text class="mono" x="472" y="643" text-anchor="end" font-size="20" font-weight="700" fill="#3B82F6">10</text>
+  <text class="mono" x="735" y="643" font-size="20" font-weight="700" fill="#FF6B35">35</text>
   <text class="mono" x="758" y="670" font-size="20" font-weight="700" fill="#4d7c0f">+25</text>
 </svg>
 </body>
@@ -358,15 +358,15 @@ Max: **3~4 charts** 수직 배치
   <text class="mono" x="889" y="567" font-size="20" font-weight="700" fill="#3B82F6">55</text>
 
   <!-- Range labels (single row) -->
-  <text x="350" y="720" font-size="18" font-weight="700" fill="#737373">정성 범위</text>
+  <text x="350" y="720" font-size="20" font-weight="700" fill="#737373">정성 범위</text>
   <rect x="470" y="700" width="24" height="20" fill="#a3a3a3"/>
-  <text x="506" y="717" font-size="18" font-weight="700" fill="#737373">부진</text>
+  <text x="506" y="717" font-size="20" font-weight="700" fill="#737373">부진</text>
   <rect x="576" y="700" width="24" height="20" fill="#d4d4d4"/>
-  <text x="612" y="717" font-size="18" font-weight="700" fill="#737373">보통</text>
+  <text x="612" y="717" font-size="20" font-weight="700" fill="#737373">보통</text>
   <rect x="682" y="700" width="24" height="20" fill="#e5e5e5"/>
-  <text x="718" y="717" font-size="18" font-weight="700" fill="#737373">양호</text>
+  <text x="718" y="717" font-size="20" font-weight="700" fill="#737373">양호</text>
   <line x1="816" y1="700" x2="816" y2="722" stroke="#0a0a0a" stroke-width="4"/>
-  <text x="834" y="717" font-size="18" font-weight="700" fill="#737373">목표</text>
+  <text x="834" y="717" font-size="20" font-weight="700" fill="#737373">목표</text>
 </svg>
 </body>
 ```

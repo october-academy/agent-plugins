@@ -363,7 +363,7 @@ Full design constraints are in [references/design-rules.md](references/design-ru
 | Architecture | **3레이어, 레이어당 3노드** (2노드면 너무 빈약) | 시스템 구조의 풍부함 |
 | Split 비교 | **양쪽 각 2~3카드** | 카드 크기 유지 |
 | Journey | **4단계** | dot 간 여백 확보 |
-| Schema | **2테이블, 테이블당 3필드** | 글자 크기 유지 |
+| Schema | **3테이블, 테이블당 3~4필드** | 글자 크기 유지 |
 | Terminal | **3카드, 카드당 옵션 2개 (max 3)** | 질문 max 12자 1줄, `<br>` 금지 |
 | Matrix | **2×2. 코너 4자 이내 또는 빈칸** | 축 라벨이 의미 전달 |
 | Waffle | **1 grid (10x10), 2 카테고리** | 총 ~8단어 (범례 포함) |

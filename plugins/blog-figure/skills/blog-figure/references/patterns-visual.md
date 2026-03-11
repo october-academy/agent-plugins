@@ -204,10 +204,10 @@ const P = {
 
 // Section A: Deterministic grid (left half)
 const gridNodes = [];
-for (let r = 0; r < 2; r++)
+for (let r = 0; r < 3; r++)
   for (let c = 0; c < 7; c++)
     gridNodes.push({
-      x: 150 + c * 76, y: 350 + r * 88, r: 26,
+      x: 150 + c * 76, y: 310 + r * 88, r: 26,
       color: P.card, label: (c + r) % 2 ? '1' : '0', opacity: 0.85
     });
 

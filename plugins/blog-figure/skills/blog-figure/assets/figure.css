@@ -553,7 +553,7 @@ body {
   text-align: center; gap: 0.5rem;
 }
 .matrix-corner {
-  background: var(--dark); color: var(--white);
+  background: var(--white); color: var(--dark);
   font-weight: 900;
   font-size: 1.5rem;
   display: flex; align-items: center; justify-content: center;
