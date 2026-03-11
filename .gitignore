@@ -25,3 +25,9 @@ __pycache__/
 
 # Skill workspaces (local test/eval artifacts)
 **/skills/*-workspace/
+
+# oh-my-codex
+.omx/
+
+# oh-my-claudecode
+.omc/
