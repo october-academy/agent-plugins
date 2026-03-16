@@ -170,6 +170,16 @@
       },
       "source": "./plugins/blog-figure",
       "category": "content"
+    },
+    {
+      "name": "trend-scout",
+      "description": "Reddit, Hacker News, Indie Hackers에서 1인 개발자/인디해커/솔로프리너 인기글을 수집하고 Threads 포스트용으로 큐레이션",
+      "version": "1.0.0",
+      "author": {
+        "name": "Yu Ho Gyun"
+      },
+      "source": "./plugins/trend-scout",
+      "category": "content"
     }
   ]
 }
