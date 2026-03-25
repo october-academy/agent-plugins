@@ -1,0 +1,15 @@
+{
+  "description": "Harness 워크플로우 컨텍스트 관리 훅",
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "${CLAUDE_PLUGIN_ROOT}/hooks/harness-stop.sh"
+          }
+        ]
+      }
+    ]
+  }
+}

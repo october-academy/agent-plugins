@@ -120,6 +120,7 @@ model: haiku  # haiku | sonnet | opus
 | sync | skills | `/sync` |
 | typescript-lsp | mcp | - |
 | web-perf-ux | skills | `/web-perf-ux` (auto) |
+| ship | skills, agents, hooks | `/ship` |
 | wrap | skills, agents, hooks | `/wrap` |
 
 ## Key Conventions
