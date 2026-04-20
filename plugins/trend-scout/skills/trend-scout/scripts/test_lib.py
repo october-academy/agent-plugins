@@ -119,6 +119,16 @@ class TestDedupeItems(unittest.TestCase):
         self.assertIsInstance(result, list)
         self.assertGreaterEqual(len(result), 1)
 
+    def test_short_title_no_false_merge(self):
+        # Short titles (< 15 chars after stripping non-word chars) must NOT trigger title-based dedup
+        items = [
+            self._item("https://site-a.com/post/1", "AI 소식", 5, "source_a"),
+            self._item("https://site-b.com/post/2", "AI 소식", 8, "source_b"),
+        ]
+        result = dedupe_items(items)
+        # Both items have different URLs and a short title — they must be kept separate
+        self.assertEqual(len(result), 2)
+
 
 # ---------------------------------------------------------------------------
 # TestEnrichSummary
