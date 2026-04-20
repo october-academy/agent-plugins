@@ -523,23 +523,76 @@ def normalized_item(
     return item
 
 
+TITLE_KEY_MIN_LENGTH = 15
+
+
 def dedupe_items(items):
     deduped = {}
     for item in items:
         url_key = re.sub(r"[?#].*$", "", item["url"]).rstrip("/").lower()
         title_key = re.sub(r"\W+", "", item["title"]).lower()
         key = url_key or title_key
+
+        title_key_usable = bool(title_key) and len(title_key) >= TITLE_KEY_MIN_LENGTH
+
         existing = deduped.get(key)
+        if not existing and title_key_usable:
+            existing = deduped.get(title_key)
+            if existing:
+                key = title_key
+
         if not existing or item["trend_score"] > existing["trend_score"]:
-            deduped[key] = item
+            winner = item
+            # Update all existing keys pointing to the old entry to point to winner
+            for k in list(deduped.keys()):
+                if deduped[k] is existing:
+                    deduped[k] = winner
+            deduped[key] = winner
+            if title_key_usable:
+                deduped[title_key] = winner
+            if url_key:
+                deduped[url_key] = winner
+
+    seen_ids = set()
+    unique = []
+    for item in deduped.values():
+        item_id = id(item)
+        if item_id in seen_ids:
+            continue
+        seen_ids.add(item_id)
+        unique.append(item)
+
     return sorted(
-        deduped.values(),
+        unique,
         key=lambda entry: (
             entry["trend_score"],
             parse_iso(entry.get("created_at")) or dt.datetime(1970, 1, 1, tzinfo=dt.timezone.utc),
         ),
         reverse=True,
     )
+
+
+def sidecar_google_news(site_name, limit=10):
+    """Google News RSS query for site_name as parallel fallback sidecar."""
+    query = urllib.parse.quote(f"{site_name} AI OR 개발 OR 오픈소스")
+    url = f"https://news.google.com/rss/search?q={query}&hl=ko&gl=KR&ceid=KR:ko"
+    try:
+        entries = parse_feed_entries(url)
+    except Exception:
+        return []
+    items = []
+    for i, entry in enumerate(entries[:limit]):
+        if matches_theme_signal(entry["title"], entry.get("summary", ""), entry["url"]):
+            items.append(normalized_item(
+                source="google_news",
+                channel=f"GoogleNews/{site_name}-sidecar",
+                title=entry["title"],
+                url=entry["url"],
+                score=position_score(i, 10),
+                created_at=entry.get("published"),
+                summary=entry.get("summary", ""),
+            ))
+    return items
 
 
 def position_score(index, ceiling=18):

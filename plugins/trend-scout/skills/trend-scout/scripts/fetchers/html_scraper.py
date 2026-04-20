@@ -11,6 +11,7 @@ from lib import (
     normalized_item, position_score,
     extract_links, extract_page_candidates,
     batch_enrich, naver_search_fallback, is_counter_text, title_excluded,
+    sidecar_google_news,
 )
 
 
@@ -61,7 +62,11 @@ def fetch_clien(config, period, limit, outdir, errors, fallback_events):
         chain = FallbackChain([_direct, _cffi, _naver], f"clien:{source['channel']}")
         matches, event = chain.execute(fallback_events=fallback_events)
         if matches is None:
-            errors.append(f"clien:{source['channel']}: all phases failed ({event['reason']})")
+            sidecar = sidecar_google_news("Clien", limit)
+            if sidecar:
+                items.extend(sidecar)
+            else:
+                errors.append(f"clien:{source['channel']}: all phases failed ({event['reason']})")
             raw[source["channel"]] = {"error": event["reason"]}
             continue
         raw[source["channel"]] = matches[: limit * 2]
@@ -110,7 +115,11 @@ def fetch_ruliweb(config, period, limit, outdir, errors, fallback_events):
         chain = FallbackChain([_direct, _cffi, _naver], f"ruliweb:{source['channel']}")
         matches, event = chain.execute(fallback_events=fallback_events)
         if matches is None:
-            errors.append(f"ruliweb:{source['channel']}: all phases failed ({event['reason']})")
+            sidecar = sidecar_google_news("Ruliweb", limit)
+            if sidecar:
+                items.extend(sidecar)
+            else:
+                errors.append(f"ruliweb:{source['channel']}: all phases failed ({event['reason']})")
             raw[source["channel"]] = {"error": event["reason"]}
             continue
         raw[source["channel"]] = matches[: limit * 2]
@@ -155,7 +164,11 @@ def fetch_ppomppu(config, period, limit, outdir, errors, fallback_events):
     chain = FallbackChain([_direct, _cffi, _naver], "ppomppu")
     matches, event = chain.execute(fallback_events=fallback_events)
     if matches is None:
-        errors.append(f"ppomppu: all phases failed ({event['reason']})")
+        sidecar = sidecar_google_news("Ppomppu", limit)
+        if sidecar:
+            items.extend(sidecar)
+        else:
+            errors.append(f"ppomppu: all phases failed ({event['reason']})")
         write_json(outdir, "ppomppu.json", {"error": event["reason"]})
         return items
     selected = [m for m in matches if matches_theme_signal(m["title"], "", m["url"])]
@@ -198,7 +211,11 @@ def fetch_dcinside(config, period, limit, outdir, errors, fallback_events):
     chain = FallbackChain([_direct, _cffi, _naver], "dcinside")
     matches, event = chain.execute(fallback_events=fallback_events)
     if matches is None:
-        errors.append(f"dcinside: all phases failed ({event['reason']})")
+        sidecar = sidecar_google_news("DCInside", limit)
+        if sidecar:
+            items.extend(sidecar)
+        else:
+            errors.append(f"dcinside: all phases failed ({event['reason']})")
         write_json(outdir, "dcinside.json", {"error": event["reason"]})
         return items
     selected = [m for m in matches if matches_theme_signal(m["title"], "", m["url"])]
