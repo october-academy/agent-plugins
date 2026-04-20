@@ -1931,59 +1931,60 @@ def fetch_arxiv():
     return items
 
 
-all_items = []
-all_items.extend(fetch_reddit())
-all_items.extend(fetch_hackernews())
-all_items.extend(fetch_lobsters())
-all_items.extend(fetch_devto())
-all_items.extend(fetch_github())
-all_items.extend(fetch_stackoverflow())
-all_items.extend(fetch_npm())
-all_items.extend(fetch_bluesky())
-all_items.extend(fetch_mastodon())
-all_items.extend(fetch_geeknews())
-all_items.extend(fetch_yozm())
-all_items.extend(fetch_google_news())
-all_items.extend(fetch_naver_blog())
-all_items.extend(fetch_clien())
-all_items.extend(fetch_ruliweb())
-all_items.extend(fetch_ppomppu())
-all_items.extend(fetch_dcinside())
-all_items.extend(fetch_fmkorea())
-all_items.extend(fetch_v2ex())
-all_items.extend(fetch_arxiv())
+if not globals().get("_TREND_SCOUT_TEST_MODE"):
+    all_items = []
+    all_items.extend(fetch_reddit())
+    all_items.extend(fetch_hackernews())
+    all_items.extend(fetch_lobsters())
+    all_items.extend(fetch_devto())
+    all_items.extend(fetch_github())
+    all_items.extend(fetch_stackoverflow())
+    all_items.extend(fetch_npm())
+    all_items.extend(fetch_bluesky())
+    all_items.extend(fetch_mastodon())
+    all_items.extend(fetch_geeknews())
+    all_items.extend(fetch_yozm())
+    all_items.extend(fetch_google_news())
+    all_items.extend(fetch_naver_blog())
+    all_items.extend(fetch_clien())
+    all_items.extend(fetch_ruliweb())
+    all_items.extend(fetch_ppomppu())
+    all_items.extend(fetch_dcinside())
+    all_items.extend(fetch_fmkorea())
+    all_items.extend(fetch_v2ex())
+    all_items.extend(fetch_arxiv())
 
-deduped = dedupe_items(all_items)
-raw_counts = {}
-for item in all_items:
-    raw_counts[item["source"]] = raw_counts.get(item["source"], 0) + 1
-deduped_counts = {}
-for item in deduped:
-    deduped_counts[item["source"]] = deduped_counts.get(item["source"], 0) + 1
-metadata = {
-    "generated_at": NOW.isoformat(),
-    "period": PERIOD,
-    "limit_per_source": LIMIT,
-    "cutoff": CUTOFF.isoformat(),
-    "output_dir": OUTDIR,
-    "sources": sorted(raw_counts),
-    "raw_counts": raw_counts,
-    "deduped_counts": deduped_counts,
-    "counts": {
-        "raw_items": len(all_items),
-        "deduped_items": len(deduped),
-        "raw_by_source": raw_counts,
-        "deduped_by_source": deduped_counts,
-    },
-    "errors": ERRORS,
-    "fallback_events": FALLBACK_EVENTS,
-}
-payload = {
-    "metadata": metadata,
-    "topics": deduped,
-    "meta": metadata,
-    "items": deduped,
-}
-write_json("all.json", payload)
-print(json.dumps(payload, ensure_ascii=False, indent=2))
+    deduped = dedupe_items(all_items)
+    raw_counts = {}
+    for item in all_items:
+        raw_counts[item["source"]] = raw_counts.get(item["source"], 0) + 1
+    deduped_counts = {}
+    for item in deduped:
+        deduped_counts[item["source"]] = deduped_counts.get(item["source"], 0) + 1
+    metadata = {
+        "generated_at": NOW.isoformat(),
+        "period": PERIOD,
+        "limit_per_source": LIMIT,
+        "cutoff": CUTOFF.isoformat(),
+        "output_dir": OUTDIR,
+        "sources": sorted(raw_counts),
+        "raw_counts": raw_counts,
+        "deduped_counts": deduped_counts,
+        "counts": {
+            "raw_items": len(all_items),
+            "deduped_items": len(deduped),
+            "raw_by_source": raw_counts,
+            "deduped_by_source": deduped_counts,
+        },
+        "errors": ERRORS,
+        "fallback_events": FALLBACK_EVENTS,
+    }
+    payload = {
+        "metadata": metadata,
+        "topics": deduped,
+        "meta": metadata,
+        "items": deduped,
+    }
+    write_json("all.json", payload)
+    print(json.dumps(payload, ensure_ascii=False, indent=2))
 PY
