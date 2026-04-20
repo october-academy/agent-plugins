@@ -1,63 +1,80 @@
 ---
 name: trend-scout
-description: "Reddit, Hacker News, Indie Hackers에서 어제~오늘 1인 개발자/인디해커/솔로프리너 관련 인기글을 수집하고 Threads 포스트용으로 큐레이션. 트리거: '트렌드', '인기글', 'trend scout', '쓰레드 리서치', 'threads 소재', '오늘 뭐 올리지', '콘텐츠 소재', 'reddit 인기글', 'HN 인기글', '해커뉴스', '트렌드 스카우트'. /trend-scout로 실행."
+description: "Reddit, HN, GitHub, RSS, npm, Bluesky, Mastodon, 한국 커뮤니티까지 어제~오늘 뜨는 빌더/AI/오픈소스 시그널을 수집하고 Threads 포스트용으로 큐레이션. GitHub는 gh CLI 우선, 없으면 공개 REST API로 폴백. 트리거: '트렌드', '인기글', 'trend scout', '쓰레드 리서치', 'threads 소재', '오늘 뭐 올리지', '콘텐츠 소재', 'reddit 인기글', 'HN 인기글', '깃허브 트렌드', '오픈소스 소재', '해커뉴스', '트렌드 스카우트', 'github trending', 'what is hot on hacker news', 'open source radar', 'reddit trending', 'trending packages', 'daily tech digest', 'tech news today', 'developer trends'. /trend-scout로 실행."
 ---
 
 # Trend Scout
 
-Reddit + Hacker News + Indie Hackers에서 어제~오늘 인기글을 수집하고 Threads 포스트로 큐레이션.
+`insane-search`의 공개 소스 전략을 벤치마킹해서, "지금 뜨는 것"을 Threads 포스트 후보로 정리한다.
 
 ## Workflow
 
 ### 1. 데이터 수집
 
-스크립트 실행으로 Reddit 8개 서브레딧 + Hacker News top stories 수집:
-
 ```bash
-bash {SKILL_DIR}/scripts/fetch-trends.sh day 10
+bash {SKILL_DIR}/scripts/fetch-trends.sh day 15
 ```
 
-결과: `/tmp/trend-scout/` JSON 파일들. 스크립트가 통합 JSON을 stdout으로 출력.
+결과:
+- `/tmp/trend-scout/all.json` — 정규화 + 중복 제거 + `trend_score` 정렬 결과
+- `/tmp/trend-scout/{source}.json` — 소스별 raw 응답
+- stdout — `all.json`과 동일한 통합 JSON
 
-### 2. Exa MCP 보강
+### 2. 1차 선별
 
-Indie Hackers 등 JSON API 없는 소스는 Exa로 보강. 어제 날짜를 `startPublishedDate`로 지정:
+기본은 `topics[]`를 본다. 호환용으로 `items[]`도 동일 내용을 가진다.
 
-```
-mcp__exa__web_search_advanced_exa({
-  query: "indie hacker launched revenue solopreneur",
-  includeDomains: ["indiehackers.com"],
-  startPublishedDate: "{어제 YYYY-MM-DD}",
-  numResults: 5
-})
-```
+- `source`: 어떤 채널에서 왔는지 (`reddit`, `hackernews`, `clien`, `npm`, `bluesky` 등)
+- `channel`: 서브레딧/피드/태그/보드
+- `trend_score`: 교차 소스 비교용 가중 점수
+- `summary`: selftext/description/본문 요약
 
-### 3. 필터링
+소스별 해석과 벤치마킹 메모는 [references/sources.md](references/sources.md) 참고.
 
-수집 결과에서 선별. 기준 ([references/sources.md](references/sources.md) 참고):
+### 3. 부족한 경우에만 보강
 
-- Reddit upvote 10+ (소규모 서브레딧 5+), HN score 50+
-- 제외: 스팸, 구인글, 구체성 없는 동기부여
+기본 큐로 부족할 때만 Exa 같은 외부 검색을 덧댄다.
+
+- 특정 버티컬만 더 필요할 때
+- 기본 큐에 없는 사이트를 명시적으로 섞어 달라고 했을 때
+- `insane-search`식 URL 우회/추출 계층이 필요한 경우
+
+### 4. 필터링
+
+기준:
+
+- Reddit upvote 10+ (소규모 서브레딧 5+)
+- HN score 50+
+- Lobsters score 8+
+- dev.to reactions 20+
+- GitHub 신규 repo stars floor 적용
+- 한국 커뮤니티/RSS는 위치 점수 + 주제성으로 선별
+- 제외: 스팸, 구인글, 공지, 구체성 없는 동기부여 글
 
 큐레이션 우선순위:
-1. 실제 숫자 (MRR, 유저 수, 매출)
+1. 실제 숫자 (MRR, 유저 수, 매출, 다운로드)
 2. 반직관적 인사이트
 3. 실행 가능한 전략
 4. 실패/교훈 사례
 
-### 4. Threads 포스트 작성
+### 5. Threads 포스트 작성
 
-포맷: [references/threads-format.md](references/threads-format.md)
+포맷은 [references/threads-format.md](references/threads-format.md) 참고.
 
-핵심: 500자 이내, 한국어 대화체, 핵심부터, 숫자 포함, 원문 링크 1개.
+핵심:
+- 500자 이내
+- 한국어 대화체
+- 핵심부터
+- 숫자/맥락 포함
+- 원문 링크 1개
 
-### 5. 출력
+### 6. 출력
 
 추천 포스트 3-5개:
 
-```
+```text
 ## 추천 #1: {주제}
-- 소스: {Reddit/HN/IH} | {서브레딧} | score {점수}
+- 소스: {source} | {channel} | score {trend_score}
 - 링크: {URL}
 
 ### Threads 초안
@@ -69,4 +86,5 @@ mcp__exa__web_search_advanced_exa({
 
 ## 날짜 범위
 
-기본 어제~오늘. Reddit `t=day`, HN은 실시간 top, Exa는 어제 날짜 `startPublishedDate`.
+- `day`: 최근 24시간
+- `week`: 최근 7일
