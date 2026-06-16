@@ -1,132 +1,46 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+This repository is a small plugin marketplace. Only four plugins are currently maintained:
 
-## Repository Purpose
+- `clarify`
+- `cp`
+- `blog-figure`
+- `trend-scout`
 
-Claude Code plugin marketplace. Each plugin lives in `plugins/<plugin-name>/`.
-
-## Commands
+## Useful Commands
 
 ```bash
-# Validate all plugins
+# Validate marketplace metadata and plugin structure
 ./scripts/validate-plugins.sh
 
-# Check JSON syntax
-cat plugins/<name>/.claude-plugin/plugin.json | jq .
+# Inspect marketplace JSON
+jq . .claude-plugin/marketplace.json
 
-# Verify version consistency
-grep -r '"version"' plugins/*/.claude-plugin/plugin.json .claude-plugin/marketplace.json
+# Inspect plugin metadata
+jq . plugins/<name>/.claude-plugin/plugin.json
 ```
 
-## Plugin Structure
+## Repository Layout
 
-```
+```text
 plugins/<plugin-name>/
-├── .claude-plugin/
-│   └── plugin.json          # Required: metadata
-├── README.md                 # Required: documentation
-├── commands/<cmd>.md         # Slash commands (/plugin:cmd)
-├── skills/<skill>/SKILL.md   # Skills (auto or /skill)
-├── agents/<agent>.md         # Agents (Task tool subagent_type)
-├── hooks/hooks.json          # Event hooks (Stop, PreToolUse, PostToolUse)
-└── .mcp.json                 # MCP server config
+├── .claude-plugin/plugin.json
+├── README.md
+├── skills/<skill>/SKILL.md
+└── hooks/hooks.json        # Optional
 ```
 
-## Creating a Plugin
+## Current Plugins
 
-1. Create `plugins/<name>/.claude-plugin/plugin.json`
-2. Create `plugins/<name>/README.md` with Installation section
-3. Add commands/, skills/, agents/, or hooks/ as needed
-4. Register in `.claude-plugin/marketplace.json`
-5. Run `./scripts/validate-plugins.sh` to verify
+| Plugin | Contents | Trigger |
+| --- | --- | --- |
+| `clarify` | 3 skills + stop hook | `/clarify:vague`, `/clarify:unknown`, `/clarify:metamedium` |
+| `cp` | 1 skill | `/cp` |
+| `blog-figure` | 1 skill | `/blog-figure` |
+| `trend-scout` | 1 skill | `/trend-scout` |
 
-See [PLUGIN_DEVELOPMENT.md](./PLUGIN_DEVELOPMENT.md) for detailed templates and best practices.
+## Maintenance Notes
 
-## File Formats
-
-### plugin.json (Required)
-
-```json
-{
-  "name": "plugin-name",
-  "version": "1.1.0",
-  "description": "Plugin description",
-  "author": { "name": "Author Name" }
-}
-```
-
-### commands/<cmd>.md
-
-```markdown
----
-description: Command description
-argument-hint: [optional arguments]
-allowed-tools: Bash(git:*), Read, Edit
----
-
-# Instructions...
-```
-
-### skills/<skill>/SKILL.md
-
-```markdown
----
-name: skill-name
-description: Skill description
-user-invocable: true
----
-
-# Instructions...
-```
-
-### agents/<agent>.md
-
-```markdown
----
-name: agent-name
-description: Agent description
-model: haiku  # haiku | sonnet | opus
----
-
-# Instructions...
-```
-
-### hooks/hooks.json
-
-```json
-{
-  "hooks": {
-    "Stop": [{ "hooks": [{ "type": "command", "command": "${CLAUDE_PLUGIN_ROOT}/hooks/stop-hook.sh" }] }]
-  }
-}
-```
-
-## Existing Plugins
-
-| Plugin | Type | Trigger |
-|--------|------|---------|
-| clarify | skills, hooks | `/clarify:vague`, `/clarify:unknown`, `/clarify:metamedium` |
-| cp | skills | `/cp` |
-| deploy | skills | `/deploy` |
-| feature-dev | skills, agents, hooks | `/feature-dev` |
-| frontend-design | skills | `/frontend-design` (auto) |
-| git | skills | `/git:push`, `/git:push-pr` |
-| interview-spec | skills | `/interview-spec` (auto) |
-| linear | mcp | - |
-| opsx | skills, commands | `/opsx:ship` |
-| perf | skills | `/perf` |
-| simplify | skills, agents, hooks | `/simplify` |
-| sync | skills | `/sync` |
-| typescript-lsp | mcp | - |
-| web-perf-ux | skills | `/web-perf-ux` (auto) |
-| ship | skills, agents, hooks | `/ship` |
-| wrap | skills, agents, hooks | `/wrap` |
-
-## Key Conventions
-
-- **Naming**: Short, action-oriented (`wrap` not `session-wrap`)
-- **Versioning**: Keep plugin.json and marketplace.json versions in sync
-- **README**: Always include standardized Installation section
-- **Hooks**: Make scripts executable (`chmod +x`)
-- **Agent models**: haiku (validation), sonnet (analysis), opus (architecture)
+- Keep `plugin.json` and `.claude-plugin/marketplace.json` versions in sync.
+- If the maintained plugin set changes, update `README.md`, this file, and `PLUGIN_DEVELOPMENT.md` together.
+- Do not overwrite unrelated edits inside plugin worktrees; `trend-scout` content may be edited independently.

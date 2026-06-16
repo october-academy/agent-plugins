@@ -1,489 +1,90 @@
 # Plugin Development Guide
 
-A comprehensive guide for creating plugins for Claude Code.
+이 저장소는 현재 `clarify`, `cp`, `blog-figure`, `trend-scout` 네 플러그인만 관리한다. 문서와 마켓플레이스를 작게 유지하는 것이 원칙이다.
 
-## Table of Contents
+## 기본 구조
 
-- [Overview](#overview)
-- [Plugin Types](#plugin-types)
-- [Directory Structure](#directory-structure)
-- [Creating a Plugin](#creating-a-plugin)
-- [Templates](#templates)
-- [Best Practices](#best-practices)
-- [Common Mistakes](#common-mistakes)
-
-## Overview
-
-Claude Code plugins extend functionality through commands, skills, agents, hooks, and MCP servers. Each plugin lives in its own directory under `plugins/`.
-
-## Plugin Types
-
-### Commands
-
-User-invoked slash commands (e.g., `/git:push`).
-
-- **When to use**: Direct user actions, one-shot operations
-- **Trigger**: User types `/plugin:command`
-- **Location**: `commands/<command>.md`
-
-### Skills
-
-Automatic or user-invocable capabilities.
-
-- **When to use**: Context-aware assistance, complex multi-step workflows
-- **Trigger**: Automatic detection or `/skill` invocation
-- **Location**: `skills/<skill>/SKILL.md`
-
-### Agents
-
-Specialized subagents for Task tool delegation.
-
-- **When to use**: Background processing, parallel analysis, specialized tasks
-- **Trigger**: Called via Task tool with `subagent_type`
-- **Location**: `agents/<agent>.md`
-
-### Hooks
-
-Event-driven scripts that run on specific triggers.
-
-- **When to use**: Automatic suggestions, validation, notifications
-- **Trigger**: Stop, PreToolUse, PostToolUse events
-- **Location**: `hooks/hooks.json` + scripts
-
-### MCP Servers
-
-External tool integrations via Model Context Protocol.
-
-- **When to use**: Third-party API integrations, external services
-- **Trigger**: Tool calls to MCP-provided tools
-- **Location**: `.mcp.json`
-
-## Decision Framework
-
-```
-Need direct user action?
-  └─ Yes → Command
-  └─ No  → Need automatic detection?
-              └─ Yes → Skill (auto-trigger)
-              └─ No  → Need background/parallel work?
-                          └─ Yes → Agent
-                          └─ No  → Need event-driven behavior?
-                                      └─ Yes → Hook
-                                      └─ No  → Need external API?
-                                                  └─ Yes → MCP Server
-```
-
-## Directory Structure
-
-```
+```text
 plugins/<plugin-name>/
 ├── .claude-plugin/
-│   └── plugin.json          # Required: metadata
-├── README.md                 # Required: documentation
-├── commands/                 # Slash commands
-│   └── <command>.md
-├── skills/                   # Skills
-│   └── <skill>/
-│       └── SKILL.md
-├── agents/                   # Agents
-│   └── <agent>.md
-├── hooks/                    # Hooks
-│   ├── hooks.json
-│   └── <hook-script>.sh
-└── .mcp.json                 # MCP server config
+│   └── plugin.json
+├── README.md
+├── skills/
+│   └── <skill>/SKILL.md
+└── hooks/
+    └── hooks.json          # 선택 사항
 ```
 
-## Creating a Plugin
+## 필수 파일
 
-### Step 1: Create Directory
-
-```bash
-mkdir -p plugins/<name>/.claude-plugin
-```
-
-### Step 2: Create plugin.json
+### `plugin.json`
 
 ```json
 {
   "name": "plugin-name",
   "version": "1.0.0",
-  "description": "Brief description of what the plugin does",
-  "author": {
-    "name": "Your Name",
-    "email": "your@email.com"
-  },
-  "keywords": ["productivity", "automation"],
-  "license": "MIT",
-  "repository": "https://github.com/user/repo"
+  "description": "Brief description",
+  "author": { "name": "Author Name" }
 }
 ```
 
-#### plugin.json Fields
-
-| Field | Required | Description |
-|-------|----------|-------------|
-| `name` | Yes | Plugin identifier |
-| `version` | Yes | Semantic version (major.minor.patch) |
-| `description` | Yes | Brief description |
-| `author` | Yes | Object with `name` (required), `email` (optional) |
-| `keywords` | No | Array of tags for discoverability |
-| `license` | No | License type (e.g., "MIT") |
-| `repository` | No | URL to source repository |
-
-### Step 3: Create README.md
-
-Include:
-- Installation instructions
-- Usage examples
-- Features list
-- Configuration (if any)
-
-### Step 4: Add to Marketplace
-
-Edit `.claude-plugin/marketplace.json`:
-
-```json
-{
-  "name": "plugin-name",
-  "description": "Plugin description",
-  "version": "1.0.0",
-  "author": { "name": "Your Name" },
-  "source": "./plugins/plugin-name",
-  "category": "productivity"
-}
-```
-
-Categories: `productivity`, `development`, `integration`
-
-### Step 5: Create Components
-
-Add commands, skills, agents, or hooks as needed.
-
-## Templates
-
-### Command Template
-
-```markdown
----
-description: Brief command description
-argument-hint: [optional arguments]
-allowed-tools: Bash(git:*), Read, Edit
----
-
-# Command Name
-
-Description of what the command does.
-
-## Usage
-
-\`\`\`
-/plugin:command [args]
-\`\`\`
-
-## Workflow
-
-1. Step one
-2. Step two
-3. Step three
-
-## Notes
-
-- Important considerations
-```
-
-### Skill Template
+### `SKILL.md`
 
 ```markdown
 ---
 name: skill-name
 description: Brief skill description
 user-invocable: true
-argument-hint: [optional arguments]
-allowed-tools: Bash(git:*), Read, Edit
-disable-model-invocation: false
 ---
 
 # Skill Name
-
-Description of what the skill does.
-
-## When to Trigger
-
-- Condition 1
-- Condition 2
-
-## Execution Flow
-
-1. Step one
-2. Step two
-3. Step three
-
-## Output
-
-What the skill produces.
 ```
 
-#### Skill Frontmatter Fields
+### `README.md`
 
-| Field | Required | Default | Description |
-|-------|----------|---------|-------------|
-| `name` | Yes | - | Skill identifier |
-| `description` | Yes | - | What the skill does |
-| `user-invocable` | No | `true` | Whether to show in `/` menu |
-| `argument-hint` | No | - | Hint for optional arguments |
-| `allowed-tools` | No | - | Tools the skill can use |
-| `disable-model-invocation` | No | `false` | Prevent auto-triggering by model |
+반드시 포함할 내용:
 
-### Agent Template
+- 설치 방법
+- 대표 호출 예시
+- 핵심 동작 요약
 
-```markdown
----
-name: agent-name
-description: Brief agent description
-model: haiku
-tools: ["Read", "Glob", "Grep"]
-color: blue
----
+## 마켓플레이스 등록
 
-# Agent Name
+`.claude-plugin/marketplace.json`에 플러그인을 추가하거나 제거할 때는 다음을 같이 맞춘다.
 
-Description of what the agent does.
+1. 루트 `README.md`
+2. `CLAUDE.md`
+3. 해당 플러그인 폴더
+4. 버전 일치 여부
 
-## Input
-
-What the agent expects as input.
-
-## Process
-
-1. Step one
-2. Step two
-
-## Output
-
-What the agent returns.
-```
-
-#### Agent Frontmatter Fields
-
-| Field | Required | Default | Description |
-|-------|----------|---------|-------------|
-| `name` | Yes | - | Agent identifier (used with `subagent_type`) |
-| `description` | Yes | - | What the agent specializes in |
-| `model` | No | - | Model to use: `haiku`, `sonnet`, `opus` |
-| `tools` | No | - | Array of tools the agent can use |
-| `color` | No | - | UI color hint (optional) |
-
-### Hook Template (hooks.json)
+예시 엔트리:
 
 ```json
 {
-  "description": "Hook description",
-  "hooks": {
-    "Stop": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "${CLAUDE_PLUGIN_ROOT}/hooks/stop-hook.sh"
-          }
-        ]
-      }
-    ]
-  }
+  "name": "cp",
+  "description": "커밋과 푸시를 한 번에 수행하는 단축 명령어",
+  "version": "1.0.0",
+  "author": { "name": "Yu Ho Gyun" },
+  "source": "./plugins/cp",
+  "category": "development"
 }
 ```
 
-Hook types: `Stop`, `PreToolUse`, `PostToolUse`
-
-## Best Practices
-
-### Naming
-
-- **Plugins**: Short, action-oriented verbs (`wrap`, `simplify`, `git`)
-- **Commands**: Verb-based (`push`, `commit`, `analyze`)
-- **Skills**: Noun or verb-noun (`frontend-design`, `web-perf-ux`)
-- **Agents**: Role-based (`doc-updater`, `learning-extractor`)
-
-### Documentation
-
-- Always include installation instructions in README
-- Provide usage examples
-- Document expected inputs and outputs
-- Keep descriptions concise but complete
-
-### Versioning
-
-- Use semantic versioning (major.minor.patch)
-- Bump minor version for new features
-- Bump patch version for bug fixes
-- Keep plugin.json and marketplace.json versions in sync
-
-### Agent Model Selection
-
-| Model | Use Case |
-|-------|----------|
-| `haiku` | Quick validation, simple checks, deduplication |
-| `sonnet` | Analysis, code review, complex reasoning |
-| `opus` | Critical decisions, architectural planning |
-
-### Command Namespacing
-
-Group related commands under one plugin:
-
-```
-/git:push
-/git:push-pr
-```
-
-Not:
-
-```
-/push
-/push-pr
-```
-
-## Common Mistakes
-
-### 1. Version Mismatch
-
-**Problem**: plugin.json shows v1.0.0, marketplace.json shows v1.1.0
-
-**Solution**: Always update both files together. Use grep to verify:
-
-```bash
-grep -r "version" plugins/<name>/.claude-plugin/ .claude-plugin/marketplace.json
-```
-
-### 2. Missing Installation Section
-
-**Problem**: Users don't know how to install the plugin
-
-**Solution**: Always include standardized installation instructions:
-
-```markdown
-## Installation
-
-\`\`\`bash
-# Recommended: install as Skills (Claude Code + Codex)
-npx skills add october-academy/agent-plugins -a claude-code -a codex --skill <plugin-name> -y
-\`\`\`
-
-\`\`\`bash
-# 1. Add marketplace (first time only)
-claude plugin marketplace add october-academy/agent-plugins
-
-# 2. Update marketplace
-claude plugin marketplace update
-
-# 3. Install plugin
-claude plugin install <plugin-name>@agent-plugins
-
-# 4. Restart Claude Code
-\`\`\`
-```
-
-### 3. Overly Verbose Plugin Names
-
-**Problem**: `/session-wrap` is harder to type than `/wrap`
-
-**Solution**: Use short, memorable names. Reserve descriptive text for documentation.
-
-### 4. Duplicate Functionality
-
-**Problem**: Creating a new skill that overlaps with existing agents
-
-**Solution**: Check existing plugins before creating new ones. Consider extending rather than duplicating.
-
-### 5. Missing Hook Permissions
-
-**Problem**: Hook script doesn't execute
-
-**Solution**: Make scripts executable:
-
-```bash
-chmod +x plugins/<name>/hooks/*.sh
-```
-
-### 6. Hardcoded Paths
-
-**Problem**: Scripts break on different machines
-
-**Solution**: Use `${CLAUDE_PLUGIN_ROOT}` variable in hooks.json
-
-## Testing
-
-### 1. Comprehensive Validation
-
-Run the complete plugin validation script:
+## 변경 체크리스트
 
 ```bash
 ./scripts/validate-plugins.sh
+jq . .claude-plugin/marketplace.json
+jq . plugins/<name>/.claude-plugin/plugin.json
 ```
 
-This validates:
-- **JSON syntax** for all plugin files (plugin.json, marketplace.json, hooks.json, .mcp.json)
-- **Required fields** (name, version, description, author)
-- **README.md** exists with Installation section
-- **YAML frontmatter** in commands, skills, and agents
-- **Cross-reference consistency** between marketplace and plugin directories
-- **Version consistency** between plugin.json and marketplace.json
+- 삭제된 플러그인을 가리키는 링크나 예시가 남지 않았는지 확인
+- 루트 문서와 개별 플러그인 README가 같은 이름/호출 방식을 쓰는지 확인
+- 훅 스크립트가 있으면 경로와 파일명이 실제 구조와 맞는지 확인
 
-Example output:
-```
-=== Validating plugins ===
---- Checking: wrap ---
-OK: plugin.json is valid JSON
-OK: README.md exists
-OK: README.md has Installation section
-OK: commands/wrap.md has frontmatter
-OK: skills/wrap/SKILL.md has frontmatter
-OK: agents/doc-updater.md has frontmatter
-OK: hooks/hooks.json is valid JSON
+## 현재 유지 범위
 
-=== Version consistency ===
-OK: wrap version match: 1.1.0
-
-==========================================
-Errors:   0
-Warnings: 0
-Validation PASSED
-```
-
-### 2. Quick Syntax Check
-
-Validate individual JSON files:
-
-```bash
-cat plugins/<name>/.claude-plugin/plugin.json | jq .
-cat .claude-plugin/marketplace.json | jq .
-```
-
-### 3. Integration Test
-
-Install and run the plugin locally:
-
-```bash
-claude plugin install <name>
-```
-
-### 4. Hook Test
-
-Verify hooks trigger correctly:
-
-1. Ensure scripts are executable: `chmod +x plugins/<name>/hooks/*.sh`
-2. Test hook behavior in Claude Code
-3. Check for execution errors in hook output
-
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Add your plugin following this guide
-4. Update marketplace.json
-5. Submit a pull request
-
-## Questions?
-
-- Check existing plugins for examples
-- Review CLAUDE.md for project-specific conventions
-- Open an issue for clarification
+- `clarify`: multi-skill clarification plugin
+- `cp`: commit/push shortcut
+- `blog-figure`: blog image generation
+- `trend-scout`: trend research and curation
