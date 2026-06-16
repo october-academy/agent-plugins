@@ -74,6 +74,22 @@ claude plugin install blog-figure@agent-plugins
 
 ## Validation
 
+### Figure Self-Check (lint before capture)
+
+Lints a generated figure's HTML against the machine-checkable design rules
+(min font ≥ 20px, no hardcoded hex in layout, no gradients, no blur shadows,
+word/component budgets) **before** spending a browser capture. SVG/Canvas/D3
+graphics are exempt from the hex rule.
+
+```bash
+python3 plugins/blog-figure/skills/blog-figure/scripts/validate_figure.py /tmp/blog-figure-{name}.html --pattern Funnel
+```
+
+- Exit 0 = no ERRORs (WARNINGs allowed); non-zero = fix required.
+- `--json` for machine-readable output; `--pattern Terminal` raises the word budget to 35.
+
+### Pattern Gallery
+
 ```bash
 python3 plugins/blog-figure/skills/blog-figure/scripts/render_pattern_previews.py --clean --output-dir /tmp/blog-figure-previews
 python3 -m http.server 8123 --directory /private/tmp

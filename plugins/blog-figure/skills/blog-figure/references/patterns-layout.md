@@ -346,36 +346,36 @@ Key classes: `.tree`, `.tree-node`, `.tree-level`, `.tree-branch`, `.tree-vline`
         <div class="tree-vline" style="height:32px"></div>
         <div class="tree-node" style="background:var(--tl-blue);min-width:200px;flex-direction:column;gap:0.25rem">
           <span>Product</span>
-          <span class="mono" style="font-size:1rem;color:var(--muted-fg)">core UX</span>
+          <span class="mono" style="font-size:1.25rem;color:var(--muted-fg)">core UX</span>
         </div>
         <div class="tree-vline" style="height:28px"></div>
         <div class="tree-level" style="gap:0.75rem">
-          <div class="tree-node" style="background:var(--white);min-width:132px;padding:0.9rem 1rem;font-size:1.1rem">온보딩</div>
-          <div class="tree-node" style="background:var(--white);min-width:132px;padding:0.9rem 1rem;font-size:1.1rem">리텐션</div>
+          <div class="tree-node" style="background:var(--white);min-width:132px;padding:0.9rem 1rem">온보딩</div>
+          <div class="tree-node" style="background:var(--white);min-width:132px;padding:0.9rem 1rem">리텐션</div>
         </div>
       </div>
       <div class="tree-branch">
         <div class="tree-vline" style="height:32px"></div>
         <div class="tree-node" style="background:var(--tl-lime);min-width:200px;flex-direction:column;gap:0.25rem">
           <span>Growth</span>
-          <span class="mono" style="font-size:1rem;color:var(--muted-fg)">top funnel</span>
+          <span class="mono" style="font-size:1.25rem;color:var(--muted-fg)">top funnel</span>
         </div>
         <div class="tree-vline" style="height:28px"></div>
         <div class="tree-level" style="gap:0.75rem">
-          <div class="tree-node" style="background:var(--white);min-width:132px;padding:0.9rem 1rem;font-size:1.1rem">획득</div>
-          <div class="tree-node" style="background:var(--white);min-width:132px;padding:0.9rem 1rem;font-size:1.1rem">활성화</div>
+          <div class="tree-node" style="background:var(--white);min-width:132px;padding:0.9rem 1rem">획득</div>
+          <div class="tree-node" style="background:var(--white);min-width:132px;padding:0.9rem 1rem">활성화</div>
         </div>
       </div>
       <div class="tree-branch">
         <div class="tree-vline" style="height:32px"></div>
         <div class="tree-node" style="background:var(--tl-orange);min-width:200px;flex-direction:column;gap:0.25rem">
           <span>Revenue</span>
-          <span class="mono" style="font-size:1rem;color:var(--muted-fg)">monetization</span>
+          <span class="mono" style="font-size:1.25rem;color:var(--muted-fg)">monetization</span>
         </div>
         <div class="tree-vline" style="height:28px"></div>
         <div class="tree-level" style="gap:0.75rem">
-          <div class="tree-node" style="background:var(--white);min-width:132px;padding:0.9rem 1rem;font-size:1.1rem">업그레이드</div>
-          <div class="tree-node" style="background:var(--white);min-width:132px;padding:0.9rem 1rem;font-size:1.1rem">확장</div>
+          <div class="tree-node" style="background:var(--white);min-width:132px;padding:0.9rem 1rem">업그레이드</div>
+          <div class="tree-node" style="background:var(--white);min-width:132px;padding:0.9rem 1rem">확장</div>
         </div>
       </div>
     </div>

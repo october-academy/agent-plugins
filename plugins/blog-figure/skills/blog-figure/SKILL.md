@@ -8,7 +8,7 @@ description: >
   is a blog post or MDX file. Also invoke when an MDX file references a missing image in
   /blog/images/, or when user says "이 섹션에 이미지", "한 장으로 보여줘", "블로그 그림",
   "figure 만들어", "블로그 이미지", "다이어그램". NOT for interactive UI components, web pages,
-  or app screens — those go to frontend-design.
+  or app screens.
 user-invocable: true
 ---
 
@@ -22,10 +22,11 @@ Generate Neo-Brutalism styled figure images for blog posts: HTML → browser →
 2. **Content Brief**: Extract the core concept to visualize and present to user for confirmation (see [Content Brief](#content-brief) below)
 3. **Suggest patterns**: Based on the confirmed brief, pick the **4 most fitting patterns** from 30 available, and present them via `AskUserQuestion` with ASCII art previews (see [Pattern Selection](#pattern-selection) below)
 4. **Create HTML**: Before writing HTML, read `references/design-rules.md` for all design constraints. Write standalone HTML to `/tmp/blog-figure-{name}.html` linking `assets/figure.css`
-5. **Capture PNG**: Open in browser, screenshot at 1440×810, save PNG
-6. **Save to project**: Move PNG to `apps/content/src/content/blog/images/{slug}/`
-7. **Insert into document**: If user provided a `.md` or `.mdx` file, insert the image tag at the contextually correct location (see [Document Insertion](#document-insertion) below)
-8. **Verify**: Read the saved PNG to visually confirm
+5. **Self-check before capture**: Run `scripts/validate_figure.py` on the HTML and fix every ERROR before spending a capture (see [Self-Check](#self-check) below). A browser screenshot won't tell you a font dropped to 14px or a color is hardcoded — the linter does, in a second, for free.
+6. **Capture PNG**: Open in browser, screenshot at 1440×810, save PNG
+7. **Save to project**: Move PNG to `apps/content/src/content/blog/images/{slug}/`
+8. **Insert into document**: If user provided a `.md` or `.mdx` file, insert the image tag at the contextually correct location (see [Document Insertion](#document-insertion) below)
+9. **Verify**: Read the saved PNG and judge it at a glance — picture it shrunk to 25% on a phone. Can you still recognize the pattern structure and the key keywords? If text is cramped or the pattern reads wrong, fix the HTML and re-run from step 5. Don't ship a figure you couldn't parse on a phone.
 
 ## Content Brief
 
@@ -88,6 +89,12 @@ AskUserQuestion({
 
 **중요**: 각 해석은 글의 **서로 다른 부분/관점**을 포착해야 한다. 같은 내용을 다른 말로 바꾼 3개가 아니라, 진짜로 다른 장면 3개를 제시하라.
 
+**`multiSelect: true`인 이유 — 장면 N개 = Figure N장**: 한 Figure에는 한 개의 핵심 개념만 담는다(One Idea Per Figure). 그래서 여러 장면을 한 장에 욱여넣는 대신, 사용자가 고른 장면 **하나하나에 대해 따로** 만든다.
+
+- 1개 선택 → Figure 1장.
+- 2개 이상 선택 → 고른 장면마다 Pattern Selection → HTML → Self-Check → Capture → 저장을 **장면별로 반복**한다. 파일명에 장면을 구분하는 접미사를 붙여 충돌을 막아라(`{slug}-{scene}.png`).
+- 사용자가 아무것도 안 고르거나 "알아서"라고 하면, 가장 근거가 강한 장면 1개만 진행하고 그 이유를 한 줄로 알린다.
+
 ### Content Brief → Pattern Selection 연결
 
 사용자가 Brief를 확인하면, 그 Brief의 **구조**가 패턴 선택을 자연스럽게 좁힌다:
@@ -98,6 +105,7 @@ AskUserQuestion({
 | 순서 (A→B→C) | Flow, Journey, Timeline, Storyboard |
 | 계층 (A⊃B⊃C) | Architecture, Hierarchy, Isometric, Schema |
 | 순환 (A↻B) | Loop, State, Graph |
+| 개념 관계/벤다이어그램 | Concept, Network, Matrix |
 | 수치 비교 | Data Viz, Funnel, Timeline, Waffle, Dumbbell, Bullet |
 | 비율/구성비 | Waffle, Treemap, Funnel |
 | 다차원 평가 | Radar, Matrix |
@@ -255,6 +263,23 @@ AskUserQuestion({
 ```
 
 Replace `{SKILL_DIR}` with the **absolute path to this skill's directory** (the directory containing this SKILL.md). Resolve via the file path of this skill file, e.g. if SKILL.md is at `/path/to/skills/blog-figure/SKILL.md`, then `{SKILL_DIR}` = `/path/to/skills/blog-figure`.
+
+## Self-Check
+
+캡처는 비싸다(브라우저 구동 + 스크린샷 + retina 처리). HTML을 정적 린터로 한 번 거르면, "모바일에서 안 읽히는 figure를 캡처한 뒤에야" 깨닫는 낭비를 막는다. 디자인 룰 중 **기계로 딱 떨어지게 점검 가능한 것**만 검사한다.
+
+```bash
+python3 {SKILL_DIR}/scripts/validate_figure.py /tmp/blog-figure-{name}.html --pattern {PatternName}
+```
+
+- **ERROR가 하나라도 남아 있으면 캡처하지 마라.** HTML을 고치고 다시 돌려, 깨끗해진 뒤에 캡처한다. (이미 캡처한 뒤 ERROR를 발견했다면 HTML 수정 → 재캡처.)
+- 점검 항목:
+  - `small-font` (ERROR) — 20px(1.25rem) 미만 폰트. 25% 축소 시 사라진다. SVG `font-size`, CSS `px`/`rem` 모두 검사.
+  - `hex-color` (ERROR) — 레이아웃에 하드코딩된 hex. `figure.css`의 `var(--*)`를 써라. **SVG/Canvas/D3 그래픽 내부의 hex는 정상이므로 잡지 않는다.**
+  - `gradient` / `blur-shadow` (ERROR) — Neo-Brutalism은 평면 단색 + blur 0 그림자만. `linear-gradient`, `box-shadow`의 3번째 값(blur)≠0, `filter:blur`, `createLinearGradient` 등.
+  - `word-count` / `component-cap` (WARNING) — 텍스트·컴포넌트 과다. 차단은 아니지만 거의 항상 줄이는 게 낫다.
+- `--pattern Terminal`을 주면 단어 한도가 20→35로 올라간다(Terminal만 예외). 다른 패턴은 `--pattern` 생략 가능.
+- 린터는 **렌더링하지 않는다.** 룰 위반만 잡는다 — "구조가 맞나·예쁜가·키워드가 한눈에 잡히나"는 9단계 육안 검수의 몫이다. 둘은 상호 보완이지 대체가 아니다.
 
 ## Capture (pick whichever is available)
 

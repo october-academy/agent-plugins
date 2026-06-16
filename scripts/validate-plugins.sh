@@ -120,6 +120,10 @@ for plugin_dir in "$PLUGINS_DIR"/*/; do
         for skill_dir in "$plugin_dir/skills"/*/; do
             [ -d "$skill_dir" ] || continue
             skill_name=$(basename "$skill_dir")
+            # Skip local eval/test workspaces (gitignored: **/skills/*-workspace/)
+            case "$skill_name" in
+                *-workspace) continue ;;
+            esac
             skill_file="$skill_dir/SKILL.md"
 
             if [ -f "$skill_file" ]; then

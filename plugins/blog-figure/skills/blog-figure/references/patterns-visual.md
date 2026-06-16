@@ -186,7 +186,7 @@ Config: `nodes` 배열과 `edges` 배열만 수정하면 내용 변경 가능.
   <meta name="viewport" content="width=1440">
   <link rel="stylesheet" href="file://{SKILL_DIR}/assets/figure.css">
 </head>
-<body style="margin:0;overflow:hidden;background:#f5f5f5">
+<body style="margin:0;overflow:hidden;background:var(--card)">
 <canvas id="c" width="2880" height="1620" style="width:1440px;height:810px;display:block"></canvas>
 <script>
 document.fonts.ready.then(() => {
