@@ -123,11 +123,23 @@ HTML 구현 시 반드시 참고할 디자인 제약 모음. SKILL.md Workflow 4
 ## File Naming
 
 ```
-apps/content/src/content/blog/images/{blog-slug}/{blog-slug}-{figure-name}.png
+blog/public/blog/images/{blog-slug}/{blog-slug}-{figure-name}.png
 ```
+
+Repo root(`agentic30-greenfield`) 기준 상대 경로다. 실행 중인 리포에 이 디렉터리가 없으면
+임의로 추측하지 말고 사용자에게 저장 위치를 물어라.
 
 ## MDX Usage
 
 ```mdx
 <Figure src="/blog/images/{slug}/{filename}.png" alt="..." caption="..." />
 ```
+
+## Output Spec
+
+- **해상도**: 출력 PNG는 2880×1620 (1440×810의 retina 2x)
+- **용량 가이드**: 300KB를 넘으면 압축을 고려하라
+  - `sips` 리샘플 예시: `sips -Z 1440 input.png --out output-resized.png`
+  - `cwebp` 예시: `cwebp -q 80 input.png -o output.webp`
+- 사진/스크린샷 성격의 콘텐츠는 WebP를 고려할 수 있다. 다이어그램(도형·텍스트 위주)은
+  선명도 손실을 피하기 위해 PNG를 유지하라

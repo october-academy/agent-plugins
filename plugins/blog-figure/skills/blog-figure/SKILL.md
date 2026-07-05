@@ -16,6 +16,10 @@ user-invocable: true
 
 Generate Neo-Brutalism styled figure images for blog posts: HTML → browser → PNG.
 
+이 스킬의 디자인 토큰(1440×810 캡처, retina 2x, Noto Sans KR weight 900, agentic30 사이트
+토큰)은 블로그 전용이며, PPT 지향의 구세대 neo-brutalism 문서(1920×1080, Black Han Sans,
+`image-design-system.md`)와는 다른 세대다 — 그 문서를 이 스킬 수정의 참고 자료로 쓰지 마라.
+
 ## Workflow
 
 1. **Understand context**: Read blog MDX/MD or user description to decide what to visualize
@@ -24,7 +28,7 @@ Generate Neo-Brutalism styled figure images for blog posts: HTML → browser →
 4. **Create HTML**: Before writing HTML, read `references/design-rules.md` for all design constraints. Write standalone HTML to `/tmp/blog-figure-{name}.html` linking `assets/figure.css`
 5. **Self-check before capture**: Run `scripts/validate_figure.py` on the HTML and fix every ERROR before spending a capture (see [Self-Check](#self-check) below). A browser screenshot won't tell you a font dropped to 14px or a color is hardcoded — the linter does, in a second, for free.
 6. **Capture PNG**: Open in browser, screenshot at 1440×810, save PNG
-7. **Save to project**: Move PNG to `apps/content/src/content/blog/images/{slug}/`
+7. **Save to project**: Move PNG to `blog/public/blog/images/{slug}/` (repo root인 `agentic30-greenfield` 기준 상대 경로). 실행 중인 리포에 이 디렉터리가 없으면 임의로 추측하지 말고 사용자에게 저장 위치를 물어라
 8. **Insert into document**: If user provided a `.md` or `.mdx` file, insert the image tag at the contextually correct location (see [Document Insertion](#document-insertion) below)
 9. **Verify**: Read the saved PNG and judge it at a glance — picture it shrunk to 25% on a phone. Can you still recognize the pattern structure and the key keywords? If text is cramped or the pattern reads wrong, fix the HTML and re-run from step 5. Don't ship a figure you couldn't parse on a phone.
 
@@ -245,6 +249,10 @@ AskUserQuestion({
 - 코드 블록(```) 내부에는 절대 삽입하지 않는다
 - frontmatter(`---`) 내부에는 삽입하지 않는다
 - 이미 동일 파일명의 Figure/image가 있으면 교체(중복 방지)
+- **덮어쓰기 가드**: 저장 경로에 동일 파일명이 이미 존재하면, 먼저
+  `sips -g pixelWidth -g pixelHeight <path>`로 기존 파일 해상도를 확인하라. 2880×1620이
+  아니면 blog-figure 산출물이 아닐 수 있다(스크린샷·OG 카드가 같은 디렉터리에 섞여 있던
+  사례가 있었다) — 덮어쓰기 전에 사용자 확인을 받아라
 
 ## HTML Template
 
@@ -282,6 +290,12 @@ python3 {SKILL_DIR}/scripts/validate_figure.py /tmp/blog-figure-{name}.html --pa
 - 린터는 **렌더링하지 않는다.** 룰 위반만 잡는다 — "구조가 맞나·예쁜가·키워드가 한눈에 잡히나"는 9단계 육안 검수의 몫이다. 둘은 상호 보완이지 대체가 아니다.
 
 ## Capture (pick whichever is available)
+
+**캡처 전 폰트 로드 확인 (필수)**: 캡처하기 전에 `document.fonts.ready`가 resolve되었는지,
+그리고 Noto Sans KR이 실제로 적용됐는지 확인하라(예: `document.fonts.check('900 24px "Noto Sans KR"')`).
+Google Fonts CDN 로드가 실패하면(오프라인 등) 시스템 fallback 폰트로 그대로 캡처하지 말고,
+네트워크 상태를 점검한 뒤 재시도하라. `validate_figure.py`는 정적 린트일 뿐이라 폰트 렌더링
+깨짐은 잡지 못한다 — 이건 육안 확인의 몫이다.
 
 **30개 패턴 전체 검수용 gallery**:
 ```bash

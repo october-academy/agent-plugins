@@ -2,6 +2,10 @@
 
 Neo-Brutalism style figure images (PNG) for blog posts. HTML → browser capture → PNG pipeline.
 
+이 스킬의 디자인 토큰(1440×810 캡처, retina 2x, Noto Sans KR weight 900, agentic30 사이트
+토큰)은 블로그 전용이며, PPT 지향의 구세대 neo-brutalism 문서(1920×1080, Black Han Sans,
+`image-design-system.md`)와는 다른 세대다 — 그 문서를 이 스킬 수정의 참고 자료로 쓰지 마라.
+
 ## Installation
 
 ```bash
@@ -125,6 +129,13 @@ npx playwright screenshot --viewport-size="1600,4200" --wait-for-selector="body[
 - **Fonts**: Noto Sans KR 900 (titles), Noto Sans KR 700 (body)
 - **Colors**: CSS variables only
 - **Graphics**: HTML 패턴은 emoji 가능, 시각 패턴은 inline SVG / Canvas / D3 사용
+
+## Changelog
+
+- **2.2.0** — 블로그가 `agentic30-greenfield` 리포의 `blog/` (Astro SSG)로 이전됨에 따라
+  저장 경로 계약을 `blog/public/blog/images/{slug}/`로 수정. 폰트 로드 확인(캡처 전
+  `document.fonts.ready`)과 동일 파일명 덮어쓰기 가드(`sips` 해상도 확인) 추가.
+  Output Spec 섹션(해상도·용량·포맷 가이드) 신설
 
 ## License
 
