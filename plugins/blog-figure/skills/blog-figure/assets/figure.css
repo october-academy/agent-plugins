@@ -21,7 +21,8 @@ body {
 }
 
 /* --- Color Tokens — agentic30 design system 기반
-   Source: docs/design-system.md, apps/web/src/app/globals.css --- */
+   Source: 구 monorepo(agentic30-private)의 docs/design-system.md, apps/web/src/app/globals.css에서
+   가져온 스냅샷. greenfield 이전 후에도 토큰 값의 기준은 이 파일이다 — 위 경로를 찾지 마라. --- */
 :root {
   /* ── Base (agentic30 site tokens) ── */
   --dark: #0a0a0a;              /* --foreground */

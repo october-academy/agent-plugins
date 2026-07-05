@@ -16,6 +16,10 @@ user-invocable: true
 
 Generate Neo-Brutalism styled figure images for blog posts: HTML → browser → PNG.
 
+이 스킬의 디자인 토큰(1440×810 캡처, retina 2x, Noto Sans KR weight 900, agentic30 사이트
+토큰)은 블로그 전용이며, PPT 지향의 구세대 neo-brutalism 문서(1920×1080, Black Han Sans,
+`image-design-system.md`)와는 다른 세대다 — 그 문서를 이 스킬 수정의 참고 자료로 쓰지 마라.
+
 ## Workflow
 
 1. **Understand context**: Read blog MDX/MD or user description to decide what to visualize
@@ -23,8 +27,8 @@ Generate Neo-Brutalism styled figure images for blog posts: HTML → browser →
 3. **Suggest patterns**: Based on the confirmed brief, pick the **4 most fitting patterns** from 30 available, and present them via `AskUserQuestion` with ASCII art previews (see [Pattern Selection](#pattern-selection) below)
 4. **Create HTML**: Before writing HTML, read `references/design-rules.md` for all design constraints. Write standalone HTML to `/tmp/blog-figure-{name}.html` linking `assets/figure.css`
 5. **Self-check before capture**: Run `scripts/validate_figure.py` on the HTML and fix every ERROR before spending a capture (see [Self-Check](#self-check) below). A browser screenshot won't tell you a font dropped to 14px or a color is hardcoded — the linter does, in a second, for free.
-6. **Capture PNG**: Open in browser, screenshot at 1440×810, save PNG
-7. **Save to project**: Move PNG to `apps/content/src/content/blog/images/{slug}/`
+6. **Capture PNG**: Open in browser, capture the 1440×810 layout at retina 2x (deviceScaleFactor 2) → save as 2880×1620 PNG. 2x를 못 내는 폴백 경로(Playwright)에서는 1440×810(1x)이 최후 수단 (see [Capture](#capture-pick-whichever-is-available))
+7. **Save to project**: Move PNG to `blog/public/blog/images/{slug}/` (repo root인 `agentic30-greenfield` 기준 상대 경로). 실행 중인 리포에 이 디렉터리가 없으면 임의로 추측하지 말고 사용자에게 저장 위치를 물어라
 8. **Insert into document**: If user provided a `.md` or `.mdx` file, insert the image tag at the contextually correct location (see [Document Insertion](#document-insertion) below)
 9. **Verify**: Read the saved PNG and judge it at a glance — picture it shrunk to 25% on a phone. Can you still recognize the pattern structure and the key keywords? If text is cramped or the pattern reads wrong, fix the HTML and re-run from step 5. Don't ship a figure you couldn't parse on a phone.
 
@@ -245,6 +249,13 @@ AskUserQuestion({
 - 코드 블록(```) 내부에는 절대 삽입하지 않는다
 - frontmatter(`---`) 내부에는 삽입하지 않는다
 - 이미 동일 파일명의 Figure/image가 있으면 교체(중복 방지)
+- **덮어쓰기 가드**: 저장 경로에 동일 파일명이 이미 존재하면, 먼저 기존 파일 해상도를 확인하라 —
+  macOS는 `sips -g pixelWidth -g pixelHeight <path>`, 그 외 환경은 ImageMagick
+  `identify -format '%wx%h' <path>` 또는 Python PIL. 2880×1620(retina 2x) 또는
+  1440×810(1x 폴백 캡처)이면 정상 blog-figure 산출물이다. 그 외 크기면 타 출처일 수
+  있다(스크린샷·OG 카드가 같은 디렉터리에 섞여 있던 사례가 있었다) — 덮어쓰기 전에
+  사용자 확인을 받아라. 해상도 확인 도구가 하나도 없으면 가드를 건너뛰되 그 사실을
+  사용자에게 알려라
 
 ## HTML Template
 
@@ -283,6 +294,22 @@ python3 {SKILL_DIR}/scripts/validate_figure.py /tmp/blog-figure-{name}.html --pa
 
 ## Capture (pick whichever is available)
 
+**캡처 전 폰트 로드 확인 (필수)**: `document.fonts.check()`로 검사하지 마라 — Google Fonts CSS
+로드 자체가 실패하면(@font-face 미등록) `check()`는 매칭 face가 없어도 true를 반환하므로, 정확히
+그 실패 모드(오프라인·CDN 차단)를 통과시킨다. 대신 페이지 컨텍스트에서 로드된 face의 존재를
+직접 단언하라:
+
+```js
+await document.fonts.ready;
+const noto = [...document.fonts].filter(f => f.family.replace(/["']/g, '') === 'Noto Sans KR');
+const ok = noto.some(f => f.status === 'loaded') && !noto.some(f => f.status === 'error');
+```
+
+`ok`가 false면 시스템 fallback 폰트로 그대로 캡처하지 말고, 네트워크 상태를 점검한 뒤 재시도하라.
+문서가 실제로 쓰는 weight(본문 700, 타이틀 900)는 사용 시점에 로드가 트리거되므로 실패하면
+`status === 'error'`로 잡힌다. `validate_figure.py`는 정적 린트일 뿐이라 폰트 렌더링 깨짐은 잡지
+못한다 — 이건 육안 확인의 몫이다.
+
 **30개 패턴 전체 검수용 gallery**:
 ```bash
 python3 {SKILL_DIR}/scripts/render_pattern_previews.py --clean --output-dir /tmp/blog-figure-previews
@@ -295,24 +322,28 @@ python3 {SKILL_DIR}/scripts/render_pattern_previews.py --clean --output-dir /tmp
 3. `mcp__chrome-devtools__take_screenshot` → `filePath: {target}.png`
 4. After capture: `mcp__chrome-devtools__emulate` → viewport `null` (reset)
 
-**Playwright MCP**:
+**Chrome CLI** (retina 2x 가능 — Chrome DevTools MCP 다음 순위. macOS 바이너리:
+`/Applications/Google Chrome.app/Contents/MacOS/Google Chrome`):
+```bash
+# 단일 figure — retina 2x (2880×1620)
+google-chrome --headless --disable-gpu --hide-scrollbars --force-device-scale-factor=2 --virtual-time-budget=5000 --window-size=1440,810 --screenshot={target}.png "file:///tmp/blog-figure-{name}.html"
+# 30-pattern gallery 검수
+google-chrome --headless --disable-gpu --hide-scrollbars --virtual-time-budget=5000 --window-size=1600,4200 --screenshot=/tmp/blog-figure-previews/gallery-chrome.png "file:///tmp/blog-figure-previews/index.html?density=detail"
+```
+
+**Playwright MCP** (deviceScaleFactor 지정 불가 → 1440×810 1x 산출. 최후 수단):
 1. `mcp__playwright__browser_resize` → 1440×810
 2. `mcp__playwright__browser_navigate` → `file:///tmp/blog-figure-{name}.html`
 3. `mcp__playwright__browser_take_screenshot` → `filename: {target}.png`
 
-**Playwright CLI**:
+**Playwright CLI** (`--scale`/`--device-scale-factor` 플래그 부재 → 1440×810 1x 산출. 최후 수단):
 ```bash
 npx playwright screenshot --viewport-size="1440,810" file:///tmp/blog-figure-{name}.html {target}.png
 npx playwright screenshot --viewport-size="1600,4200" --wait-for-selector="body[data-gallery-ready='1']" --wait-for-timeout=3000 "http://127.0.0.1:8123/blog-figure-previews/index.html?density=detail" /tmp/blog-figure-previews/gallery-playwright.png
 ```
 
-**Chrome CLI**:
-```bash
-google-chrome --headless --disable-gpu --hide-scrollbars --virtual-time-budget=5000 --window-size=1600,4200 --screenshot=/tmp/blog-figure-previews/gallery-chrome.png "file:///tmp/blog-figure-previews/index.html?density=detail"
-```
-
 **캡처 실패 시 복구**:
-1. Chrome DevTools 연결 실패 → Playwright MCP 시도 → Fallback CLI 시도
+1. Chrome DevTools 연결 실패 → Chrome CLI(retina 2x) 시도 → Playwright MCP/CLI(1x, 최후 수단) 시도
 2. 빈 PNG / 흰 화면 → HTML 파일을 `Read`로 확인 후 `file://` 경로가 올바른지 점검. `{SKILL_DIR}` 경로가 실제 figure.css 위치와 일치하는지 확인
 3. 폰트 깨짐 → Canvas/D3 패턴에서 `document.fonts.ready.then()` 래핑 누락 여부 확인
 4. 모든 방법 실패 → HTML 파일 경로를 사용자에게 알려주고 수동 캡처 요청
