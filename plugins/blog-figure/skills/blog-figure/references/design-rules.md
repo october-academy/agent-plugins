@@ -137,9 +137,15 @@ Repo root(`agentic30-greenfield`) 기준 상대 경로다. 실행 중인 리포�
 
 ## Output Spec
 
-- **해상도**: 출력 PNG는 2880×1620 (1440×810의 retina 2x)
-- **용량 가이드**: 300KB를 넘으면 압축을 고려하라
-  - `sips` 리샘플 예시: `sips -Z 1440 input.png --out output-resized.png`
-  - `cwebp` 예시: `cwebp -q 80 input.png -o output.webp`
+- **해상도**: 출력 PNG는 2880×1620 (1440×810의 retina 2x)이 표준. retina 캡처가 불가능한
+  폴백 경로(Playwright — deviceScaleFactor 지정 불가)에서는 1440×810(1x)을 최후 수단으로 허용
+- **용량 가이드**: 300KB를 넘으면 압축을 고려하라 — 단, 압축은 해상도를 보존해야 한다.
+  `sips -Z 1440` 같은 리샘플은 해상도를 절반(1440×810)으로 낮춰 규격을 깨므로 최종 산출물에
+  쓰지 마라
+  - PNG 팔레트 압축(해상도 유지, 평면 단색 다이어그램에 효과적): `pngquant --force --quality=65-80 input.png -o output.png`
+    (quality 하한 미달 시 exit 99로 파일을 저장하지 않는다 — 그땐 무손실 압축으로 폴백)
+  - 완전 무손실: `oxipng -o max input.png`
+  - 사진/스크린샷 성격 한정: `cwebp -q 80 input.png -o output.webp`
+  - 위 도구는 별도 설치가 필요할 수 있다 — 없으면 압축을 건너뛰고 사용자에게 고지하라
 - 사진/스크린샷 성격의 콘텐츠는 WebP를 고려할 수 있다. 다이어그램(도형·텍스트 위주)은
   선명도 손실을 피하기 위해 PNG를 유지하라
