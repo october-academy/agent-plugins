@@ -22,15 +22,24 @@ Generate Neo-Brutalism styled figure images for blog posts: HTML → browser →
 
 ## Workflow
 
+**기존 figure 수정 요청 시**: 대상 PNG 옆 `{filename}.src.html`을 먼저 찾아라. 있으면 신규
+파이프라인(1~4단계)을 다시 밟지 말고, 그 파일을 Edit → figure.css 링크의 `{SKILL_DIR}`를
+현재 스킬 절대 경로로 재해석 → Self-Check(5단계) → 재캡처(6단계부터)로 짧게 돈다. 없으면
+아래 신규 파이프라인.
+
 1. **Understand context**: Read blog MDX/MD or user description to decide what to visualize
 2. **Content Brief**: Extract the core concept to visualize and present to user for confirmation (see [Content Brief](#content-brief) below)
 3. **Suggest patterns**: Based on the confirmed brief, pick the **4 most fitting patterns** from 30 available, and present them via `AskUserQuestion` with ASCII art previews (see [Pattern Selection](#pattern-selection) below)
 4. **Create HTML**: Before writing HTML, read `references/design-rules.md` for all design constraints. Write standalone HTML to `/tmp/blog-figure-{name}.html` linking `assets/figure.css`
 5. **Self-check before capture**: Run `scripts/validate_figure.py` on the HTML and fix every ERROR before spending a capture (see [Self-Check](#self-check) below). A browser screenshot won't tell you a font dropped to 14px or a color is hardcoded — the linter does, in a second, for free.
 6. **Capture PNG**: Open in browser, capture the 1440×810 layout at retina 2x (deviceScaleFactor 2) → save as 2880×1620 PNG. 2x를 못 내는 폴백 경로(Playwright)에서는 1440×810(1x)이 최후 수단 (see [Capture](#capture-pick-whichever-is-available))
-7. **Save to project**: Move PNG to `blog/public/blog/images/{slug}/` (repo root인 `agentic30-greenfield` 기준 상대 경로). 실행 중인 리포에 이 디렉터리가 없으면 임의로 추측하지 말고 사용자에게 저장 위치를 물어라
+7. **Save to project**: Move PNG to `blog/public/blog/images/{slug}/` (repo root인 `agentic30-greenfield` 기준 상대 경로). 실행 중인 리포에 이 디렉터리가 없으면 임의로 추측하지 말고 사용자에게 저장 위치를 물어라. PNG 저장 시 소스 HTML도 같은 디렉터리에 `{filename}.src.html`로 복사한다 — 복사본에서는 figure.css 링크의 절대 경로를 리터럴 `file://{SKILL_DIR}/assets/figure.css`로 되돌려 저장하라(로컬 사용자 경로가 배포 사이트에 노출되지 않게). 이 복사본이 있어야 다음 세션의 "여백만 줄여줘"가 전체 재작성 대신 Edit 한 번 + 재캡처가 된다
 8. **Insert into document**: If user provided a `.md` or `.mdx` file, insert the image tag at the contextually correct location (see [Document Insertion](#document-insertion) below)
-9. **Verify**: Read the saved PNG and judge it at a glance — picture it shrunk to 25% on a phone. Can you still recognize the pattern structure and the key keywords? If text is cramped or the pattern reads wrong, fix the HTML and re-run from step 5. Don't ship a figure you couldn't parse on a phone.
+9. **Verify**: 저장된 PNG의 25% 축소본을 만들어 실제로 관찰한다 — 모바일 화면 폭 시뮬레이션:
+   ```bash
+   sips -Z 360 {saved}.png --out /tmp/blog-figure-verify-{name}.png   # macOS. 그 외: magick {saved}.png -resize 360x /tmp/blog-figure-verify-{name}.png
+   ```
+   축소본을 `Read`로 열어 판단하라: 패턴 구조가 형태로 인식되는가? 핵심 키워드가 읽히는가? 하나라도 아니면 HTML을 고쳐 5단계부터 재실행. 원본 크기 PNG로 판단하지 마라 — 원본에서 읽히는 것은 아무것도 증명하지 않는다.
 
 ## Content Brief
 
@@ -186,6 +195,15 @@ AskUserQuestion({
 4개 패턴을 결정한 뒤 `AskUserQuestion` 호출 **전에**
 `references/pattern-previews.md`를 읽고 해당 패턴의 ASCII art를 가져와라.
 
+### 실물 프리뷰 (요청 시에만)
+
+사용자가 ASCII만으로 판단을 망설이거나 "실제로 어떻게 생겼는지", "다른 패턴도"를 요청하면,
+새 HTML을 만들지 말고 기존 갤러리를 열어라 — `python3 {SKILL_DIR}/scripts/render_pattern_previews.py --clean`
+실행 후 `file:///tmp/blog-figure-previews/index.html`을 브라우저로 열고(캡처 도구 우선순위와
+동일: Chrome DevTools MCP → 안 되면 사용자에게 `file://` 경로 안내), 4개 후보의 패턴 번호/이름을
+알려준다. 갤러리는 제네릭 콘텐츠지만 Neo-Brutalism 색·보더·타이포·16:9 비례를 그대로 보여주므로
+패턴 선택에는 충분하다. 확인 후 다시 `AskUserQuestion`으로 돌아와 최종 확답을 받는다.
+
 ### Example: AskUserQuestion Call
 
 User가 "사용자 인터뷰 프로세스를 시각화해줘"라고 요청한 경우:
@@ -200,29 +218,29 @@ AskUserQuestion({
       {
         label: "Flow (추천)",
         description: "인터뷰 단계를 수직 플로우로 표현. 프로세스 시각화에 최적",
-        markdown: "┌──────────────────────────────────┐\n│        ┌──────────────┐          │\n│        │  맥락 확인    │          │\n│        └──────┬───────┘          │\n│               ▼                  │\n│        ┌──────────────┐          │\n│        │  사례 복기    │          │\n│        └──────┬───────┘          │\n│               ▼                  │\n│        ┌──────────────┐          │\n│        │  니즈 발견    │          │\n│        └──────────────┘          │\n└──────────────────────────────────┘"
+        markdown: "┌──────────────────────────────────┐\n│          ┌───────────┐           │\n│          │ 맥락 확인 │           │\n│          └─────┬─────┘           │\n│                ▼                 │\n│          ┌───────────┐           │\n│          │ 사례 복기 │           │\n│          └─────┬─────┘           │\n│                ▼                 │\n│          ┌───────────┐           │\n│          │ 니즈 발견 │           │\n│          └───────────┘           │\n└──────────────────────────────────┘"
       },
       {
         label: "Journey",
         description: "인터뷰이의 여정을 수평 터치포인트로 표현",
-        markdown: "┌──────────────────────────────────┐\n│  ①─────────②─────────③────────④  │\n│  준비     라포     질문     정리  │\n└──────────────────────────────────┘"
+        markdown: "┌──────────────────────────────────┐\n│  ①─────────②─────────③────────④  │\n│ 준비      라포      질문     정리│\n└──────────────────────────────────┘"
       },
       {
         label: "Timeline",
         description: "인터뷰 시간 배분을 비율로 시각화",
-        markdown: "┌──────────────────────────────────┐\n│ ┌────────┬──────────┬────────┐   │\n│ │  라포   │   질문    │  정리  │   │\n│ │  3min  │   5min   │  2min  │   │\n│ └────────┴──────────┴────────┘   │\n└──────────────────────────────────┘"
+        markdown: "┌──────────────────────────────────┐\n│ ┌────────┬──────────┬────────┐   │\n│ │  라포  │   질문   │  정리  │   │\n│ │  3min  │   5min   │  2min  │   │\n│ └────────┴──────────┴────────┘   │\n└──────────────────────────────────┘"
       },
       {
         label: "Comparison",
         description: "좋은 인터뷰 vs 나쁜 인터뷰를 좌우 대비",
-        markdown: "┌──────────────────────────────────┐\n│  ┌──────────┐  ┌──────────┐     │\n│  │ 나쁜방법  │VS│ 좋은방법  │     │\n│  │ ┌──────┐ │  │ ┌──────┐ │     │\n│  │ │평가요청│ │  │ │맥락확인│ │     │\n│  │ └──────┘ │  │ └──────┘ │     │\n│  └──────────┘  └──────────┘     │\n└──────────────────────────────────┘"
+        markdown: "┌──────────────────────────────────┐\n│ ┌────────────┐    ┌────────────┐ │\n│ │  나쁜방법  │ VS │  좋은방법  │ │\n│ │ ┌────────┐ │    │ ┌────────┐ │ │\n│ │ │평가요청│ │    │ │맥락확인│ │ │\n│ │ └────────┘ │    │ └────────┘ │ │\n│ └────────────┘    └────────────┘ │\n└──────────────────────────────────┘"
       }
     ]
   }]
 })
 ```
 
-**중요**: `markdown` 필드에는 해당 컨텍스트에 맞는 실제 키워드를 넣어라. 제네릭 플레이스홀더(Step 1, Card 1)가 아닌 실제 내용을 반영한 프리뷰를 보여줘야 사용자가 판단할 수 있다.
+**중요**: `markdown` 필드에는 해당 컨텍스트에 맞는 실제 키워드를 넣어라. 제네릭 플레이스홀더(Step 1, Card 1)가 아닌 실제 내용을 반영한 프리뷰를 보여줘야 사용자가 판단할 수 있다. 전각 문자(한글)는 **2칸**이다 — 치환 후 모든 줄의 박스 우변 `│`가 일직선인지 반드시 검산하라. 깨진 박스는 프리뷰가 아니라 소음이다.
 
 ## Document Insertion
 
@@ -265,6 +283,11 @@ AskUserQuestion({
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=1440">
+  <!-- blog-figure source
+    blog: {블로그 파일 경로}
+    scene: {Content Brief 핵심 메시지 1줄}
+    pattern: {패턴명}
+  -->
   <link rel="stylesheet" href="file://{SKILL_DIR}/assets/figure.css">
 </head>
 <body>

@@ -132,6 +132,14 @@ npx playwright screenshot --viewport-size="1600,4200" --wait-for-selector="body[
 
 ## Changelog
 
+- **2.3.0** — [html-effectiveness](https://thariqs.github.io/html-effectiveness/) 20개 데모
+  벤치마킹 결과 반영. ① ASCII 프리뷰 전각(한글=2칸) 정렬 결함 수정 — SKILL.md 예제 4개와
+  pattern-previews.md 템플릿 21개 교정, 전각 검산 규칙 명문화. ② 패턴 선택 시 요청하면
+  기존 30패턴 갤러리를 실물 프리뷰로 여는 배선 추가(신규 코드 0줄). ③ Verify 단계를
+  상상("25%로 줄었다고 상상하라")에서 관찰(`sips -Z 360` 축소본 생성 후 Read)로 교체.
+  ④ PNG 옆에 `{filename}.src.html` 소스 보존 + HTML 템플릿 provenance 주석
+  (blog/scene/pattern) + `validate_figure.py`에 provenance WARNING 규칙 — 다음 세션의
+  부분 수정이 전체 재작성 대신 Edit 한 번 + 재캡처가 되는 세션 간 재수정 계약
 - **2.2.0** — 블로그가 `agentic30-greenfield` 리포의 `blog/` (Astro SSG)로 이전됨에 따라
   저장 경로 계약을 `blog/public/blog/images/{slug}/`로 수정. 캡처 전 폰트 로드 검증 추가
   (`document.fonts.check()`는 CDN CSS 실패를 못 잡으므로 로드된 face status 단언 방식).

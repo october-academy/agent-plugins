@@ -211,6 +211,19 @@ def check_component_caps(html: str, findings: list) -> None:
             ))
 
 
+def check_provenance(html: str, findings: list) -> None:
+    """SKILL.md HTML Template의 provenance 주석(blog/scene/pattern) 존재 확인.
+
+    없어도 렌더링에는 무해하므로 WARNING — 단 다음 세션이 이 figure를 재수정할 때
+    어느 블로그의 어떤 장면인지 추적할 수 없게 된다."""
+    if "blog-figure source" not in html[:4096]:
+        findings.append((
+            "WARNING", "provenance", 0,
+            "provenance 주석(<!-- blog-figure source ... -->)이 없습니다 — "
+            "다음 세션에서 이 figure의 출처(블로그/장면/패턴)를 추적할 수 없습니다.",
+        ))
+
+
 def check_structure(html: str, findings: list) -> None:
     if "figure.css" not in html:
         findings.append((
@@ -237,6 +250,7 @@ def validate(html: str, pattern: str | None) -> list:
     budget = WORD_BUDGET_TERMINAL if (pattern or "").lower() == "terminal" else WORD_BUDGET_DEFAULT
     check_word_count(html, budget, findings)
     check_component_caps(html, findings)
+    check_provenance(html, findings)
     check_structure(html, findings)
     findings.sort(key=lambda f: (f[0] != "ERROR", f[2]))
     return findings
