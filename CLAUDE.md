@@ -1,10 +1,11 @@
 # CLAUDE.md
 
-This repository is a small plugin marketplace. Only four plugins are currently maintained:
+This repository is a small plugin marketplace. Only five plugins are currently maintained:
 
 - `clarify`
 - `cp`
 - `blog-figure`
+- `blog-humanize-fast`
 - `trend-scout`
 
 ## Useful Commands
@@ -37,6 +38,7 @@ plugins/<plugin-name>/
 | `clarify` | 3 skills + stop hook | `/clarify:vague`, `/clarify:unknown`, `/clarify:metamedium` |
 | `cp` | 1 skill | `/cp` |
 | `blog-figure` | 1 skill | `/blog-figure` |
+| `blog-humanize-fast` | 1 skill + bundled workflow | `/blog-humanize-fast` |
 | `trend-scout` | 1 skill | `/trend-scout` |
 
 ## Maintenance Notes

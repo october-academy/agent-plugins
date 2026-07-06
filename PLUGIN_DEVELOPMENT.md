@@ -1,6 +1,6 @@
 # Plugin Development Guide
 
-이 저장소는 현재 `clarify`, `cp`, `blog-figure`, `trend-scout` 네 플러그인만 관리한다. 문서와 마켓플레이스를 작게 유지하는 것이 원칙이다.
+이 저장소는 현재 `clarify`, `cp`, `blog-figure`, `blog-humanize-fast`, `trend-scout` 다섯 플러그인만 관리한다. 문서와 마켓플레이스를 작게 유지하는 것이 원칙이다.
 
 ## 기본 구조
 
@@ -87,4 +87,5 @@ jq . plugins/<name>/.claude-plugin/plugin.json
 - `clarify`: multi-skill clarification plugin
 - `cp`: commit/push shortcut
 - `blog-figure`: blog image generation
+- `blog-humanize-fast`: fast conservative blog prose humanization
 - `trend-scout`: trend research and curation

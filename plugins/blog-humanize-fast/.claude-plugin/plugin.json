@@ -1,0 +1,8 @@
+{
+  "name": "blog-humanize-fast",
+  "version": "1.0.0",
+  "description": "블로그 최종 윤문을 위한 병렬 strict 워크플로. humanize-korean strict의 검증 분리를 유지하면서 청크 병렬화로 wall-clock을 줄인다.",
+  "author": {
+    "name": "Yu Ho Gyun"
+  }
+}

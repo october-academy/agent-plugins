@@ -1,7 +1,7 @@
 {
   "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
   "name": "agent-plugins",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "Claude Code/Codex용 curated plugin marketplace",
   "owner": {
     "name": "october",
@@ -36,6 +36,16 @@
         "name": "Yu Ho Gyun"
       },
       "source": "./plugins/blog-figure",
+      "category": "content"
+    },
+    {
+      "name": "blog-humanize-fast",
+      "description": "블로그 최종 윤문을 위한 병렬 strict 워크플로. humanize-korean strict의 검증 분리를 유지하면서 청크 병렬화로 wall-clock을 줄인다.",
+      "version": "1.0.0",
+      "author": {
+        "name": "Yu Ho Gyun"
+      },
+      "source": "./plugins/blog-humanize-fast",
       "category": "content"
     },
     {

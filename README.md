@@ -1,10 +1,11 @@
 # Agent Plugins
 
-Claude Code와 Codex에서 함께 쓰는 경량 플러그인 저장소다. 현재 이 저장소는 아래 네 플러그인만 유지한다.
+Claude Code와 Codex에서 함께 쓰는 경량 플러그인 저장소다. 현재 이 저장소는 아래 다섯 플러그인만 유지한다.
 
 - [clarify](./plugins/clarify)
 - [cp](./plugins/cp)
 - [blog-figure](./plugins/blog-figure)
+- [blog-humanize-fast](./plugins/blog-humanize-fast)
 - [trend-scout](./plugins/trend-scout)
 
 ## 설치
@@ -32,6 +33,7 @@ claude plugin install <plugin-name>@agent-plugins
 | [clarify](./plugins/clarify) | 모호한 요구사항, 전략 맹점, content-vs-form 판단을 세 가지 렌즈로 정리 | `/clarify:vague`, `/clarify:unknown`, `/clarify:metamedium` |
 | [cp](./plugins/cp) | 변경사항을 스테이징, 커밋, 푸시까지 한 번에 처리 | `/cp` |
 | [blog-figure](./plugins/blog-figure) | 블로그용 정적 figure 이미지를 HTML→브라우저 캡처→PNG 파이프라인으로 생성 | `/blog-figure` |
+| [blog-humanize-fast](./plugins/blog-humanize-fast) | 블로그 최종 원고를 청크 병렬 strict 워크플로로 보수 윤문 | `/blog-humanize-fast` |
 | [trend-scout](./plugins/trend-scout) | Reddit, HN, GitHub, 한국 커뮤니티, RSS 등에서 Threads 소재를 수집/큐레이션 | `/trend-scout` |
 
 ## 빠른 예시
@@ -42,6 +44,7 @@ claude plugin install <plugin-name>@agent-plugins
 /clarify:metamedium "콘텐츠는 많은데 성과가 정체됨"
 /cp "docs: prune plugin marketplace"
 /blog-figure
+/blog-humanize-fast web/src/content/blog/example.mdx
 /trend-scout
 ```
 
@@ -52,6 +55,7 @@ agent-plugins/
 ├── .claude-plugin/marketplace.json
 ├── plugins/
 │   ├── blog-figure/
+│   ├── blog-humanize-fast/
 │   ├── clarify/
 │   ├── cp/
 │   └── trend-scout/
