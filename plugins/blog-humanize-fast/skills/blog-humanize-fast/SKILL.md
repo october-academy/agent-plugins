@@ -31,8 +31,10 @@ user-invocable: true
 2. Workflow 도구가 있으면 `workflows/blog-humanize-fast.js`를 실행한다.
    - `workflowPath`: `{SKILL_DIR}/workflows/blog-humanize-fast.js`
    - `args`: `{ inputPath, genre: "블로그", intensity: "보수", quickRulesPath: "{SKILL_DIR}/references/quick-rules.md" }`
-3. Workflow 도구가 없으면 사용자에게 Claude Code에서 이 플러그인을 설치/재시작한 뒤
-   다시 실행하라고 명시한다. 일반 채팅 답변으로 윤문을 흉내 내지 않는다.
+3. Workflow 도구가 없으면(Codex 등 다른 런타임 포함) 이 스킬은 실행할 수 없다.
+   사용자에게 Claude Code에서 실행하라고 명시하고, 현재 런타임에 `humanize-korean`
+   스킬이 있으면 그 Fast Path를 대안으로 안내한다. 일반 채팅 답변으로 윤문을
+   흉내 내지 않는다.
 
 ## 동작 계약
 

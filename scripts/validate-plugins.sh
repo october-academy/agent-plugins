@@ -90,6 +90,15 @@ for plugin_dir in "$PLUGINS_DIR"/*/; do
             [ -z "$version" ] && warning "plugin.json missing 'version' field"
             [ -z "$description" ] && warning "plugin.json missing 'description' field"
 
+            # Codex keys its plugin cache by version and requires strict semver
+            if [ -n "$version" ]; then
+                if echo "$version" | grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+([-+][0-9A-Za-z.-]+)?$'; then
+                    success "plugin.json version is strict semver"
+                else
+                    error "plugin.json version '$version' is not strict semver (required for Codex plugin cache)"
+                fi
+            fi
+
             # Check plugin.json name matches directory name
             if [ -n "$name" ]; then
                 if [ "$name" = "$plugin_name" ]; then
@@ -176,6 +185,20 @@ for plugin_dir in "$PLUGINS_DIR"/*/; do
     if [ -f "$hooks_json" ]; then
         if jq empty "$hooks_json" 2>/dev/null; then
             success "hooks/hooks.json is valid JSON"
+
+            # Hook events must stay within the set both Claude Code and Codex support
+            CODEX_HOOK_EVENTS=" PreToolUse PermissionRequest PostToolUse PreCompact PostCompact SessionStart UserPromptSubmit SubagentStart SubagentStop Stop "
+            while IFS= read -r event_name; do
+                [ -n "$event_name" ] || continue
+                case "$CODEX_HOOK_EVENTS" in
+                    *" $event_name "*)
+                        success "hooks.json event '$event_name' is supported by Claude Code and Codex"
+                        ;;
+                    *)
+                        warning "hooks.json event '$event_name' is not in the Codex-supported hook event set"
+                        ;;
+                esac
+            done < <(jq -r '(.hooks // {}) | keys[]' "$hooks_json" 2>/dev/null)
 
             # Check referenced hook scripts exist (resolve ${CLAUDE_PLUGIN_ROOT})
             plugin_root="${plugin_dir%/}"
