@@ -178,9 +178,9 @@ def render_index(patterns: list[Pattern]) -> str:
       --bg: #f5f5f5;
       --card: #ffffff;
       --line: #0a0a0a;
-      --muted: #737373;
-      --accent: #ff6b35;
-      --success: #a3e635;
+      --muted: #616161;
+      --accent: #0968F6;
+      --success: #288034;
       --shadow: 6px 6px 0px var(--line);
     }}
 

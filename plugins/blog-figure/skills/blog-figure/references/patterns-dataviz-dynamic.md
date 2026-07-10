@@ -22,7 +22,7 @@ All use `assets/figure.css`. **핵심 원칙**:
 
 Best for: 면적 비례 구성비, 카테고리별 비중, 2D 면적으로 비율 비교
 
-Approach: **D3 v7 CDN** — `d3.treemap().tile(d3.treemapSquarify)`. flat data `{children: [{name, value, color}]}`.
+Approach: **D3 v7 CDN** — `d3.treemap().tile(d3.treemapSquarify)`. **위계 데이터** `{children: [{name, children: [{name, value, color}]}]}` — treemap은 위계(그룹⊃항목)를 면적으로 보여주는 차트다. **위계 없는 flat 구성비는 바 차트(Data Viz)를 써라** — flat 5~8조각이면 길이 비교(바)가 면적 비교(사각형)보다 정확하게 읽힌다.
 
 Max: **6~8 leaf nodes**, 라벨 1단어. 라벨이 안 들어갈 만큼 작은 항목은 **"기타"로 병합** — 모든 셀이 라벨을 가져야 한다. threshold 숨김은 최후 방어선이지, 무라벨 색면을 정당화하지 않는다.
 
@@ -40,7 +40,7 @@ Max: **6~8 leaf nodes**, 라벨 1단어. 라벨이 안 들어갈 만큼 작은 �
     .cell-label { font-family: 'Noto Sans KR', sans-serif; font-weight: 900; font-size: 28px;
                   fill: #0a0a0a; dominant-baseline: hanging; }
     .cell-value { font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 22px;
-                  fill: rgba(10,10,10,0.72); dominant-baseline: hanging; }
+                  fill: #0a0a0a; dominant-baseline: hanging; }
   </style>
 </head>
 <body>
@@ -54,14 +54,23 @@ Max: **6~8 leaf nodes**, 라벨 1단어. 라벨이 안 들어갈 만큼 작은 �
 </svg>
 <script>
 // === CONFIG: Modify for your content ===
-// 작은 잔여 항목(Solid 5 + Qwik 2)은 '기타'로 병합 — 라벨 없는 정체불명 색면을 남기지 않는다
+// 위계 데이터: 그룹 = hue, 자식 = 같은 hue의 명도 스텝(값이 클수록 진하게).
+// 작은 잔여 항목(마케팅 잡무 등)은 '기타'로 병합 — 라벨 없는 정체불명 색면을 남기지 않는다
 const data = {
   children: [
-    { name: 'React', value: 40, color: '#3B82F6' },
-    { name: 'Vue',   value: 25, color: '#a3e635' },
-    { name: 'Svelte',value: 18, color: '#FF6B35' },
-    { name: 'Angular',value:10, color: '#ff5c8d' },
-    { name: '기타',  value: 7,  color: '#a3a3a3' },
+    { name: '개발', children: [
+      { name: '기능',   value: 30, color: '#84B4FB' },  // Blue300
+      { name: '버그',   value: 14, color: '#E0ECFE' },  // Blue200
+    ]},
+    { name: '운영', children: [
+      { name: '응대',   value: 18, color: '#A6F0A5' },  // Green300
+      { name: '배포',   value: 8,  color: '#E0FAE0' },  // Green200
+    ]},
+    { name: '마케팅', children: [
+      { name: '콘텐츠', value: 15, color: '#FFC382' },  // Orange300
+      { name: '리서치', value: 8,  color: '#FFEAD3' },  // Orange200
+      { name: '기타',   value: 7,  color: '#F7F7F7' },  // Neutral200
+    ]},
   ]
 };
 
@@ -72,9 +81,19 @@ const H = 810 - margin.top - margin.bottom;
 
 const g = svg.append('g').attr('transform', `translate(${margin.left},${margin.top})`);
 
-data.children.sort((a, b) => d3.descending(a.value, b.value));
-const root = d3.hierarchy(data).sum(d => d.value);
-d3.treemap().size([W, H]).tile(d3.treemapSquarify).paddingInner(8).paddingOuter(0)(root);
+const root = d3.hierarchy(data)
+  .sum(d => d.value)
+  .sort((a, b) => d3.descending(a.value, b.value));
+// paddingTop(52)이 그룹 라벨 띠 공간 — 위계가 형태로 보인다
+d3.treemap().size([W, H]).tile(d3.treemapSquarify)
+  .paddingInner(8).paddingOuter(4).paddingTop(52)(root);
+
+// Group labels (위계 1단계 — 그룹명을 그룹 영역 상단 띠에 직접)
+g.selectAll('.group-label').data(root.children).join('text')
+  .attr('x', d => d.x0 + 6).attr('y', d => d.y0 + 36)
+  .attr('font-family', "'Noto Sans KR', sans-serif")
+  .attr('font-weight', 900).attr('font-size', 26).attr('fill', '#0a0a0a')
+  .text(d => d.data.name);
 
 // Draw cell shadows (hard shadow)
 g.selectAll('.shadow').data(root.leaves()).join('rect')
@@ -109,7 +128,7 @@ cells.append('text')
 </body>
 ```
 
-Notes: D3 treemap은 `d3.treemapSquarify` 타일링으로 정사각형에 가까운 셀을 생성. `data.children` 배열만 수정하면 내용 변경 가능. Hard shadow는 offset된 검정 rect (opacity 0.08). **중앙 정렬보다 좌상단 직접 라벨**이 면적 비교에 더 자연스럽다. **라벨이 숨겨질 크기의 항목은 데이터 단계에서 "기타"(#a3a3a3 gray)로 병합**하라 — threshold 숨김 규칙에 기대면 독자가 해석할 수 없는 무라벨 색면이 남는다. threshold는 병합 실수를 잡는 최후 방어선일 뿐이다. lime #a3e635은 여기서 채움면 + `--dark` 라벨(13:1)이라 허용된다.
+Notes: D3 treemap은 `d3.treemapSquarify` 타일링으로 정사각형에 가까운 셀을 생성. `data.children` 배열만 수정하면 내용 변경 가능. Hard shadow는 offset된 검정 rect (opacity 0.08). **위계를 색으로도 말한다** — 그룹마다 hue 하나(Blue/Green/Orange), 그룹 안 자식은 같은 hue의 200~300 명도 스텝(값이 클수록 진하게, dark 라벨 9~17:1). 서로 다른 hue를 leaf마다 무작위 배정하면 위계가 사라진다. **중앙 정렬보다 좌상단 직접 라벨**이 면적 비교에 더 자연스럽다. **라벨이 숨겨질 크기(80px 미만)의 항목은 숨기지 말고 데이터 단계에서 "기타"(Neutral 회색)로 병합**하라 — threshold 숨김 규칙에 기대면 독자가 해석할 수 없는 무라벨 색면이 남는다. threshold는 병합 실수를 잡는 최후 방어선일 뿐이다. **flat 구성비(위계 없음)라면 이 패턴 대신 바 차트를 권하라.**
 
 ---
 
@@ -135,8 +154,8 @@ Max: **5축**, 1~2 data series, 축 라벨 1단어
   <defs>
     <style>
       text { font-family: 'Noto Sans KR', sans-serif; fill: #0a0a0a; }
-      .guide { fill: none; stroke: #a3a3a3; stroke-width: 1.5; }
-      .axis { stroke: #a3a3a3; stroke-width: 1.5; }
+      .guide { fill: none; stroke: #8F8F8F; stroke-width: 1.5; }
+      .axis { stroke: #8F8F8F; stroke-width: 1.5; }
       .data-poly { stroke-width: 3; }
       .data-dot { stroke: #0a0a0a; stroke-width: 2.5; }
       .benchmark { fill: none; stroke-width: 3; stroke-dasharray: 10 8; }
@@ -150,8 +169,8 @@ Max: **5축**, 1~2 data series, 축 라벨 1단어
 <script>
 // === CONFIG ===
 const axes = ['속도', 'DX', '생태계', '유연성', '안정성'];
-const focus = { name: 'React', values: [0.7, 0.8, 0.95, 0.85, 0.9], color: '#3B82F6' };
-const benchmark = { name: 'Benchmark', values: [0.65, 0.72, 0.75, 0.7, 0.78], color: '#737373' };
+const focus = { name: 'React', values: [0.7, 0.8, 0.95, 0.85, 0.9], color: '#0968F6' };
+const benchmark = { name: 'Benchmark', values: [0.65, 0.72, 0.75, 0.7, 0.78], color: '#616161' };
 
 const svg = document.getElementById('radar');
 const ns = 'http://www.w3.org/2000/svg';
@@ -179,7 +198,7 @@ function polyPoints(values, radius) {
   ringLabel.setAttribute('y', cy - pct * R + 7);
   ringLabel.setAttribute('font-size', '22');
   ringLabel.setAttribute('font-weight', '700');
-  ringLabel.setAttribute('fill', '#737373');
+  ringLabel.setAttribute('fill', '#616161');
   ringLabel.textContent = Math.round(pct * 100);
   svg.appendChild(ringLabel);
 });
@@ -210,7 +229,7 @@ axes.forEach((label, i) => {
 const focusPoly = document.createElementNS(ns, 'polygon');
 focusPoly.setAttribute('class', 'data-poly');
 focusPoly.setAttribute('points', polyPoints(focus.values, R));
-focusPoly.setAttribute('fill', 'rgba(59,130,246,0.2)');
+focusPoly.setAttribute('fill', 'rgba(9,104,246,0.15)');
 focusPoly.setAttribute('stroke', focus.color);
 svg.appendChild(focusPoly);
 
@@ -230,31 +249,32 @@ focus.values.forEach((v, i) => {
   svg.appendChild(dot);
 });
 
-// Legend (bottom center, grouped directly under the chart)
-const legendY = 748;
-[
-  { name: focus.name, color: focus.color, dashed: false, x: 565 },
-  { name: benchmark.name, color: benchmark.color, dashed: true, x: 721 },
-].forEach(s => {
-  const line = document.createElementNS(ns, 'line');
-  line.setAttribute('x1', s.x); line.setAttribute('y1', legendY);
-  line.setAttribute('x2', s.x + 30); line.setAttribute('y2', legendY);
-  line.setAttribute('stroke', s.color);
-  line.setAttribute('stroke-width', '4');
-  if (s.dashed) line.setAttribute('stroke-dasharray', '10 8');
-  svg.appendChild(line);
+// 직접 라벨 (범례 금지): 시리즈명을 각 시리즈의 최대값 꼭짓점 옆에 시리즈 색으로 부착.
+// 두 시리즈의 최대 축이 겹치면 dy를 조정해 분리한다.
+// 시리즈명을 해당 시리즈 선의 "변(edge) 중간점" 바깥에 부착한다 — 꼭짓점은 축 라벨과
+// 겹치기 쉽다. i–j: 라벨을 얹을 변의 두 축 인덱스(빈 사분면 쪽 변을 고른다).
+function edgeLabel(series, i, j, push, anchor) {
+  const [x1, y1] = pt(i, series.values[i] * R);
+  const [x2, y2] = pt(j, series.values[j] * R);
+  const mx = (x1 + x2) / 2, my = (y1 + y2) / 2;
+  const len = Math.hypot(mx - cx, my - cy) || 1;
+  const x = cx + (mx - cx) * (1 + push / len), y = cy + (my - cy) * (1 + push / len);
   const txt = document.createElementNS(ns, 'text');
-  txt.setAttribute('x', s.x + 42); txt.setAttribute('y', legendY + 7);
-  txt.setAttribute('font-size', '22'); txt.setAttribute('font-weight', '700');
-  txt.textContent = s.name;
+  txt.setAttribute('x', x); txt.setAttribute('y', y);
+  txt.setAttribute('text-anchor', anchor);
+  txt.setAttribute('font-size', '24'); txt.setAttribute('font-weight', '900');
+  txt.setAttribute('fill', series.color);
+  txt.textContent = series.name;
   svg.appendChild(txt);
-});
+}
+edgeLabel(focus, 1, 2, 48, 'start');     // DX–생태계 변(동쪽 빈 공간) 바깥
+edgeLabel(benchmark, 3, 4, 48, 'end');   // 유연성–안정성 변(서쪽 빈 공간) 바깥
 </script>
 </body>
 </html>
 ```
 
-Notes: `pt(i, r)` 함수로 극좌표→직교좌표 변환. `-PI/2` offset으로 12시 방향 시작. Radar는 **같은 스케일의 축**만 섞고, **focus 1개 + benchmark 1개** 정도로 제한하는 편이 읽기 쉽다. 보조 시리즈는 **dashed outline**만 쓰고, 핵심 시리즈만 fill을 주면 겹침이 줄어든다.
+Notes: `pt(i, r)` 함수로 극좌표→직교좌표 변환. `-PI/2` offset으로 12시 방향 시작. Radar는 **같은 스케일의 축**만 섞고, **focus 1개 + benchmark 1개** 정도로 제한하는 편이 읽기 쉽다. 보조 시리즈는 **dashed outline**만 쓰고, 핵심 시리즈만 fill을 주면 겹침이 줄어든다. **범례를 두지 말고 직접 라벨** — 시리즈명을 해당 시리즈의 최대값 꼭짓점 옆에 시리즈 색 텍스트로 붙이면(24px 900) 색↔이름 왕복 없이 바로 읽힌다. 실선/점선 구분이 이미 시리즈를 나누므로 색이 죽는 CVD에서도 생존한다.
 
 ---
 
@@ -297,7 +317,7 @@ document.fonts.ready.then(() => {
     [0.1, 0.2, 0.3, 0.3, 0.15, 0.05, 0.02],
   ];
 
-  const palette = ['#E5E7EB', '#BFDBFE', '#93C5FD', '#60A5FA', '#2563EB'];
+  const palette = ['#E5E5E5', '#E0ECFE', '#84B4FB', '#0968F6', '#0049B8'];
 
   function cellColor(v) {
     if (v >= 0.85) return palette[4];
@@ -334,7 +354,7 @@ document.fonts.ready.then(() => {
 
   // Row headers
   ctx.font = `700 ${20 * S}px 'JetBrains Mono', monospace`;
-  ctx.fillStyle = '#737373';
+  ctx.fillStyle = '#616161';
   ctx.textAlign = 'right';
   rows.forEach((r, j) => {
     ctx.fillText(r, ox - 20 * S, oy + j * (cellH + gap) + cellH / 2 + 8 * S);
@@ -371,21 +391,21 @@ document.fonts.ready.then(() => {
   });
 
   ctx.font = `700 ${20 * S}px 'Noto Sans KR', sans-serif`;
-  ctx.fillStyle = '#737373';
+  ctx.fillStyle = '#616161';
   ctx.textAlign = 'left';
   ctx.fillText('낮음', lx, ly + sh + 30 * S);
   ctx.textAlign = 'right';
   ctx.fillText('높음', lx + 5 * (sw + sg) - sg, ly + sh + 30 * S);
 
   // Hotspot legend: 그리드 셀과 같은 "사각형" 미니 셀 — 심볼과 실제 셀의 형태를 일치시킨다
-  ctx.fillStyle = '#2563EB';
+  ctx.fillStyle = '#0049B8';
   ctx.fillRect(lx + 326 * S, ly - 3 * S, 36 * S, 30 * S);
   ctx.strokeRect(lx + 326 * S, ly - 3 * S, 36 * S, 30 * S);
   ctx.fillStyle = '#ffffff';
   ctx.font = `900 ${20 * S}px 'JetBrains Mono', monospace`;
   ctx.textAlign = 'center';
   ctx.fillText('95', lx + 344 * S, ly + 19 * S);
-  ctx.fillStyle = '#737373';
+  ctx.fillStyle = '#616161';
   ctx.font = `700 ${20 * S}px 'Noto Sans KR', sans-serif`;
   ctx.textAlign = 'left';
   ctx.fillText('핫스팟', lx + 376 * S, ly + 19 * S);
@@ -433,14 +453,16 @@ Max: **6 sparklines** (3x2 grid), 항목당 라벨 1단어 + 값 1개
 </svg>
 <script>
 // === CONFIG ===
-// 선 색은 선 팔레트만 (blue/orange/pink/purple/dark green + dark).
-// lime #a3e635·yellow #fde047은 흰 카드 위 1.3~1.5:1이라 선(stroke) 금지 — lime 슬롯은 dark green으로.
+// 선 색은 선 팔레트만: Blue500 #0968F6 · Green600 #288034 · Orange600 #C15100 ·
+// Pink500 #DE458E · Purple500 #583AEE · dark (흰 카드 위 실측 3.9~6.5:1).
+// Yellow 계열(#FFE58A·#EEBB04)과 Green500·Teal500·Orange500 등 밝은 500스텝은
+// 흰 카드 위 1.2~3.0:1이라 선(stroke) 금지 — 그 hue의 선이 필요하면 600스텝으로.
 const items = [
-  { name: 'React',   values: [60,65,70,68,75,80,82,85], color: '#3B82F6' },
-  { name: 'Vue',     values: [40,42,45,50,52,55,58,62], color: '#4d7c0f' },
-  { name: 'Svelte',  values: [15,20,28,35,40,45,50,55], color: '#FF6B35' },
-  { name: 'Angular', values: [70,68,65,60,55,50,48,42], color: '#ff5c8d' },
-  { name: 'Solid',   values: [5,8,12,18,22,28,32,35],   color: '#8B5CF6' },
+  { name: 'React',   values: [60,65,70,68,75,80,82,85], color: '#0968F6' },
+  { name: 'Vue',     values: [40,42,45,50,52,55,58,62], color: '#288034' },
+  { name: 'Svelte',  values: [15,20,28,35,40,45,50,55], color: '#C15100' },
+  { name: 'Angular', values: [70,68,65,60,55,50,48,42], color: '#DE458E' },
+  { name: 'Solid',   values: [5,8,12,18,22,28,32,35],   color: '#583AEE' },
   { name: 'Qwik',    values: [2,3,5,8,10,12,15,18],     color: '#0a0a0a' },
 ];
 const cols = 3, rows = 2;
@@ -493,7 +515,7 @@ items.forEach((item, idx) => {
     y1: chartY + chartH,
     x2: chartX + chartW,
     y2: chartY + chartH,
-    stroke: '#d4d4d4',
+    stroke: '#e5e5e5',
     'stroke-width': '2'
   }));
 
@@ -514,7 +536,7 @@ items.forEach((item, idx) => {
   svg.appendChild(label);
 
   // Current value (top-right of card)
-  const valText = el('text', { x: cx + cellW - 20, y: cy + 36, 'text-anchor': 'end', 'font-size': '22', 'font-weight': '700', class: 'mono', fill: '#737373' });
+  const valText = el('text', { x: cx + cellW - 20, y: cy + 36, 'text-anchor': 'end', 'font-size': '22', 'font-weight': '700', class: 'mono', fill: '#616161' });
   valText.textContent = vals[vals.length - 1];
   svg.appendChild(valText);
 
@@ -526,7 +548,7 @@ items.forEach((item, idx) => {
     'font-size': '20',
     'font-weight': '700',
     class: 'mono',
-    fill: delta >= 0 ? '#4d7c0f' : '#d6336c'
+    fill: delta >= 0 ? '#288034' : '#D50B0B'
   });
   deltaText.textContent = `${delta >= 0 ? '+' : ''}${delta}`;
   svg.appendChild(deltaText);
@@ -536,6 +558,6 @@ items.forEach((item, idx) => {
 </html>
 ```
 
-Notes: 3x2 그리드로 6개 sparkline 배치. 각 셀은 white 카드 + hard shadow. `<polygon>`으로 area fill (opacity 0.15) + `<polyline>`으로 트렌드 선. 마지막 데이터 포인트에 큰 dot (r=8)을 배치하여 모바일 25% 축소에서도 인식 가능. **선 색은 선 팔레트만** — lime/yellow는 흰 카드 위에서 선이 사라진다(1.3~1.5:1). 6번째 시리즈가 필요하면 `--dark`(#0a0a0a)를 쓴다. **비교 목적의 small multiple은 shared scale**을 써야 카드 간 높이 차이가 의미를 가진다. 변화량은 작은 delta 라벨로 직접 붙이고, 축은 카드 안 baseline 정도로만 남긴다.
+Notes: 3x2 그리드로 6개 sparkline 배치. 각 셀은 white 카드 + hard shadow. `<polygon>`으로 area fill (opacity 0.15) + `<polyline>`으로 트렌드 선. 마지막 데이터 포인트에 큰 dot (r=8)을 배치하여 모바일 25% 축소에서도 인식 가능. **선 색은 선 팔레트만** — Blue500·Pink500·Purple500·Red500은 선 가능, Green·Orange는 600(#288034/#C15100)으로 승급, Yellow·Teal 500은 선 금지. 6번째 시리즈가 필요하면 `--dark`(#0a0a0a)를 쓴다. **비교 목적의 small multiple은 shared scale**을 써야 카드 간 높이 차이가 의미를 가진다. 변화량은 작은 delta 라벨로 직접 붙이고, 축은 카드 안 baseline 정도로만 남긴다.
 
 ---

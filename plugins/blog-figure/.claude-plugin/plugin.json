@@ -1,6 +1,6 @@
 {
   "name": "blog-figure",
-  "version": "2.5.0",
+  "version": "3.0.0",
   "description": "Neo-Brutalism 스타일 블로그 Figure 이미지(PNG) 생성. HTML → 브라우저 캡처 → PNG 파이프라인",
   "author": {
     "name": "Yu Ho Gyun"

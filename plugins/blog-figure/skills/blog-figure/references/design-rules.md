@@ -12,8 +12,9 @@ HTML 구현 시 반드시 참고할 디자인 제약 모음. SKILL.md Workflow 4
 - **Title font**: Noto Sans KR 900 (headings/labels only)
 - **Body font**: Noto Sans KR, weight 700 (bold default). Use 400 only for minor annotations
 - **Code/number font**: JetBrains Mono (`.mono`, `.code`, `.tag`)
-- **Colors**: CSS variables only — never hardcode hex in HTML (Canvas/D3 패턴은 JS 내 hex 허용)
-- **Contrast**: 유색 면 위 텍스트는 `--dark` 기본 (white는 진한 accent 위만). `--muted-fg`는 흰·연회색 배경 전용 — [색상 대비](#색상-대비--유색-면-위-텍스트) 참조
+- **Colors**: CSS variables only — never hardcode hex in HTML (Canvas/D3 패턴은 JS 내 hex 허용).
+  팔레트는 AGENTIC v1.2 — 면·텍스트·선 조합은 [색 문법](#색-문법--agentic-v12-면텍스트-조합-ssot) 참조
+- **Contrast**: 유색 면 위 텍스트는 `--dark` 기본 — 단 **Blue·Purple 500 면과 600 강조면(`--good-card`/`--bad-card`/`--info-card`) 위는 `--white`**. `--muted-fg`는 흰·연회색 배경 전용 — [색상 대비](#색상-대비--금지-조합) 참조
 - **Connectors**: 화살표·연결선 샤프트 ≥6px + 화살촉 ≥20px — [커넥터](#커넥터--화살표연결선-두께) 참조
 - **No**: gradients, blur shadows, soft edges
 
@@ -71,7 +72,7 @@ HTML 구현 시 반드시 참고할 디자인 제약 모음. SKILL.md Workflow 4
 | Waffle | **1 grid (10x10), 2 카테고리 (범례 2)** | 총 ~8단어 (범례 포함) |
 | Typographic | **1 primary text (max 8단어)** | attribution max 4단어 |
 | Slope | **max 5항목, 2시점** | 항목명 1단어 |
-| Treemap | **max 6~8 cells** | 라벨 1단어. 작은 잔여 항목은 "기타"로 병합 — 무라벨 색면 금지 |
+| Treemap | **max 6~8 cells** | **위계(그룹⊃항목) 데이터 전용 — flat 비율은 바 차트 권장.** 그룹=hue·자식=명도 스텝. 라벨 1단어. 작은 잔여 항목은 "기타"로 병합 — 무라벨 색면 금지 |
 | Radar | **max 5축, 1~2 series** | 축 라벨 1단어 |
 | Dumbbell | **max 5 rows** | 라벨 max 3단어 |
 | Heatmap | **max 7x5 grid (35 cells)** | 셀 ~110x90px |
@@ -103,24 +104,67 @@ HTML 구현 시 반드시 참고할 디자인 제약 모음. SKILL.md Workflow 4
 | 부연/보조 (드물게 사용) | 400 | 긴 설명이 불가피할 때만 |
 | Display titles | Noto Sans KR 900 | `.figure-title`, `.section-label` |
 
-## 색상 대비 — 유색 면 위 텍스트
+**v1.2 타이포 컨셉 이식** (폰트 교체 아님 — Domaine/Geist/Departure Mono는 한글 미지원):
+- **48px+ 대형 타이틀은 음수 트래킹** — `.figure-title`/`.text-4xl`(−0.01em),
+  `.text-5xl`(−0.015em)에 내장돼 있다. 인라인 대형 텍스트를 만들 때도 동일하게 적용
+- **영문 마이크로 라벨(eyebrow)은 `.micro-label`** — JetBrains Mono·uppercase·자간 0.08em.
+  v1.2의 Departure Mono 대문자 라벨 문법의 이식. 한글에는 uppercase가 무의미하므로
+  영문 보조 라벨("STEP 1", "BEFORE/AFTER" 등)에만 쓴다
+
+## 색 문법 — AGENTIC v1.2 면·텍스트 조합 (SSoT)
+
+토큰 출처: AGENTIC DESIGN SYSTEM v1.2 (Figma `Bq6kNw42yQEA8swB5Vpa6c` →
+`agentic30-greenfield/docs/design/agentic-ui-v1.2/tokens.css`). figure.css의 `:root`가
+이 팔레트의 스냅샷이고, **면·텍스트 조합 규칙은 이 섹션이 SSoT다.** (WCAG 실측 수치 병기)
+
+| 역할 | 스텝 조합 | 실측 대비 | figure.css 토큰 |
+|------|----------|----------|----------------|
+| 배지·워시 면 | **200 면 + 700 텍스트** | 7.9~16.8:1 | `--good-bg`+`--good-accent` 등 |
+| 카테고리 채움면 | **500 면 + `--dark`** (예외: Blue·Purple 500은 `--white`) | 4.3~11.8:1 | `--tl-*` |
+| 강조면 (경고·성공 카드) | **600 면 + `--white`** | 4.7~9.6:1 (전 hue 통과) | `--bad-card`/`--good-card` |
+| 선(stroke) | Blue·Pink·Purple·Red는 **500**, Green·Orange·Teal은 **600 승급** | ≥3.6:1 | 아래 선 팔레트 |
+| 보조 텍스트 | `--muted-fg`(#616161)는 **흰·연회색 배경 전용** | 6.2:1 on white | — |
+| 형광펜·하이라이트 | **Yellow300 `--highlight` 등 연면 전용 + `--dark`** — 선·글자색 금지 | 15.9:1 | `--highlight`, `.mark-*` |
+
+**색은 인코딩 수단이다 — 장식이 아니다.** 색을 칠하기 전에 "이 색이 어떤 데이터 차이를
+인코딩하는가"에 답하라:
+
+- **위치·길이가 이미 구분하는 단일 계열**(바 차트의 행, Funnel 스테이지, Journey 단계,
+  Flow 순서)에는 **단색 + 강조 1색**만 쓴다. 항목마다 다른 hue를 입히면 존재하지 않는
+  범주를 발명하는 것이다. 강조 1색은 "어디를 봐야 하는가"에만 쓴다.
+- **다색은 실제 범주 구분이 있을 때만** — 서로 다른 시리즈(Slope·Sparkline의 항목),
+  위계 그룹(Treemap), 시맨틱(good/bad). 이때도 4 hue 이내로 제한하고, 같은 대상은
+  figure 세트 전체에서 같은 색을 유지한다(같은 항목 = 같은 색).
+- **good/bad 병치는 색에만 의존 금지** — Green600 vs Red600은 명도가 사실상 같아(1.09:1)
+  적록 색각이상에서 hue가 죽으면 구분이 소멸한다. 반드시 아이콘(✓/✗)·라벨·위치·방향
+  같은 비색채 채널을 병행하라. 200 tint 쌍(Green200/Red200)은 정상 시각에서도 서로
+  1.13:1이라 나란히 두면 안 된다.
+- **카테고리 다색의 CVD 인접 금지 쌍**: Blue500↔Purple500, Green500↔Red500↔Orange500은
+  deuteranopia에서 가장 먼저 뭉개진다(ΔE 10~16). 3~4색만 쓸 때는 **Blue → Orange →
+  Green(선은 600) → Pink** 순서로 뽑으면 CVD 거리가 가장 멀다.
+
+## 색상 대비 — 금지 조합
 
 25% 축소에서 살아남는 것은 대비뿐이다. WCAG 실측 기준으로 지킬 것:
 
-- **유색 면 위 `--muted-fg` 금지.** `--muted-fg`(#737373)는 `--white`/`--card`/`--muted` 같은
-  흰·연회색 배경 전용이다. 유색 카드·노드 위 보조 텍스트는 `--dark`가 기본이고, 배경이 진한
-  accent(`--info-accent`, `--bad-accent`, `--good-accent`, `--dark`)일 때만 `--white`를 쓴다.
-  실측: blue #3B82F6 위 muted-fg = **1.29:1** — 사실상 안 보인다.
-- **accent 텍스트 색(`.text-bad`/`.text-good`/`.text-info`)은 흰색·tint 배경 전용.** 같은 계열
-  카드 색 위에 올리면 무너진다 — `--bad-card` 위 `--bad-accent` = **1.58:1**.
-- **lime(#a3e635)·yellow(#fde047)는 선(stroke)·글자색 금지.** 연회색 배경(#f5f5f5) 위
-  1.38:1/1.21:1이라 선이 통째로 사라진다. 이 둘은 **채움면 + `--dark` 텍스트** 조합
-  전용(13~15:1). **선 팔레트**: blue #3B82F6 · orange #FF6B35 · pink #ff5c8d · purple #8B5CF6 ·
-  dark green #4d7c0f — lime 슬롯의 선 버전이 dark green이다(6번째가 필요하면 `--dark`).
+- **유색 면 위 `--muted-fg` 금지.** `--muted-fg`(#616161)는 `--white`/`--card`/`--muted` 같은
+  흰·연회색 배경 전용이다. 유색 카드·노드 위 보조 텍스트는 `--dark`가 기본이고, 배경이
+  Blue·Purple 계열(500+)이거나 600 강조면·`--dark`일 때만 `--white`를 쓴다.
+  실측: Blue500 #0968F6 위 muted-fg = **1.27:1** — 사실상 안 보인다.
+- **accent 텍스트 색(`.text-bad`/`.text-good`/`.text-info`)은 흰색·tint(200) 배경 전용.** 같은
+  계열 강조면 위에 올리면 무너진다 — `--bad-card`(Red600) 위 `--bad-accent`(Red700) = **1.9:1**.
+- **Yellow(#FFE58A·#EEBB04)와 밝은 500(Green #3CC14E·Teal #1BBFCA)은 선(stroke)·글자색 금지.**
+  연회색 배경(#f5f5f5) 위 1.7~2.2:1이라 선이 통째로 사라진다. 이들은 **채움면 + `--dark`
+  텍스트** 조합 전용(8.9~16.8:1). **선 팔레트**: Blue500 #0968F6 · Pink500 #DE458E ·
+  Purple500 #583AEE · Red500 #F02D2D · Green600 #288034 · Orange600 #C15100 ·
+  Teal600 #006F93 (Orange500 #EC7303은 2.79:1, Teal500 #1BBFCA는 2.06:1 미달 —
+  선은 600 승급. 더 필요하면 `--dark`).
 - **핵심 수치는 가장 큰 시각 무게.** Content Brief의 강조점(예: "0건", 전환 %)은 figure에서
   가장 크고 진해야 한다 — 크게 + `--dark` 900 (어두운 면 위면 `--white` 900). 핵심 수치가
   라벨보다 작거나 muted로 들어가는 **강조 역전 금지** — Journey의 %, Comparison의 대비 수치가
   대표 사례다.
+- **다크 배경(Terminal)은 스텝을 승급한다**: muted-fg→Neutral500 #8F8F8F, accent→Blue400
+  #70A9FF, good→Green500 #3CC14E — figure.css `.terminal` 블록이 재정의를 갖고 있다.
 
 ## 커넥터 — 화살표·연결선 두께
 
@@ -172,7 +216,7 @@ HTML 구현 시 반드시 참고할 디자인 제약 모음. SKILL.md Workflow 4
 
 **Matrix (2×2)**
 - **열별 색상 통일**: 1열은 하나의 색상 계열, 2열은 다른 색상 계열. 같은 열의 셀은 모두 동일 색상
-- **헤더 ≠ 셀**: 헤더(`.matrix-label-x`)는 진한 톤(`--good-card`, `--info-card`), 본문 셀은 연한 톤(`--good-bg`, `--info-bg`)
+- **헤더 ≠ 셀**: 헤더(`.matrix-label-x`)는 진한 톤(`--good-card`, `--info-card`) + **`--white` 텍스트**(600 강조면), 본문 셀은 연한 톤(`--good-bg`, `--info-bg`) + `--dark` 텍스트
 - **셀 구분선**: `.matrix`에 `background:var(--dark);gap:3px` 적용 (grid gap 기법). 개별 셀에 border 넣지 마라 — 이중 테두리가 생긴다
 - 예: 1열 헤더 `--good-card` → 1열 셀 `--good-bg`, 2열 헤더 `--info-card` → 2열 셀 `--info-bg`
 - **코너(좌상단)는 흰색**: `background:var(--white)`. 검은색 금지
@@ -182,14 +226,19 @@ HTML 구현 시 반드시 참고할 디자인 제약 모음. SKILL.md Workflow 4
 - 프롬프트에 2개만 명시되어 있어도, 맥락상 추가 가능한 노드를 보충하라 (예: Client 레이어에 Web, Mobile 외 CLI 추가)
 
 **Funnel**
-- 각 스테이지 폭은 **값에 비례**한다 — 100→60→25면 폭도 그 비율로 좁아져 전환 손실이 형태로 보인다
-- 단, 라벨 가독을 위해 **최소폭 하한**을 허용한다: 값이 아주 작아도 스테이지 라벨(단계명·수치)이
-  읽히는 폭 아래로는 줄이지 마라. 비례가 우선이되 하한에서 클램프
-- 스테이지는 상단 중앙 정렬로 쌓아 좌우 대칭 사다리꼴을 유지(한쪽만 정렬해 기울지 않게)
+- 각 스테이지 폭은 **값에 정비례**한다 — 비례가 이 패턴의 존재 이유다(proportional ink).
+  **최소폭 클램프 금지**: 1.8%가 26% 폭으로 그려지면 figure가 데이터에 대해 거짓말을 한다.
+  1.8%는 실처럼 가늘게 보이는 것이 정답이고, 그 가늘어짐이 전달하려는 충격이다
+- 라벨·수치는 **바 내부가 아니라 바 오른쪽 바깥에** 단다(같은 행). 좁은 스테이지도 라벨이
+  온전히 읽히고, 모든 행의 라벨 시작점이 정렬돼 비교가 쉬워진다
+- 스테이지는 **좌측 정렬**로 쌓는다(공통 베이스라인 = 왼쪽 변) — 폭 비교의 기준선이 생긴다.
+  순서는 시간·단계 순서 유지, 값 크기로 재정렬 금지
 
 **Waffle (SVG)**
 - 제목은 **한국어**로, 그리드 상단 또는 좌측에 배치. 영문 부제목/서브타이틀 금지
-- 범례(legend)는 그리드 우측에 컴팩트하게. 범례 텍스트도 한국어
+- **분리형 범례 금지 — 직접 라벨**: 그리드 우측에 스와치 + **큰 수치(40px 900) + 짧은
+  한국어 라벨**을 한 덩어리로 밀착시켜, 범례가 아니라 "숫자가 주인공인 직접 라벨"로 읽히게
+  한다. 채움 색과 수치가 한 시선에 붙어 있어야 왕복이 없다
 
 **Typographic Statement (SVG)**
 - 인용문은 캔버스(1440×810) 기준 **수직·수평 모두 중앙 정렬**

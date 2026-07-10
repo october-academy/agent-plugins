@@ -20,66 +20,83 @@ body {
   align-items: center; justify-content: center;
 }
 
-/* --- Color Tokens — agentic30 design system 기반
-   Source: 구 monorepo(agentic30-private)의 docs/design-system.md, apps/web/src/app/globals.css에서
-   가져온 스냅샷. greenfield 이전 후에도 토큰 값의 기준은 이 파일이다 — 위 경로를 찾지 마라. --- */
+/* --- Color Tokens — AGENTIC DESIGN SYSTEM v1.2 (LIGHT) 기반
+   Source: agentic30-greenfield/docs/design/agentic-ui-v1.2/tokens.css (Figma 변수 추출 정본).
+   구세대(주황 액센트·lime/핑크 시맨틱) 스냅샷을 v1.2 팔레트로 리매핑 — 토큰 값의 기준은
+   이 파일이다. 색 문법(면·텍스트 조합 규칙)은 design-rules.md "색 문법"이 SSoT. --- */
 :root {
-  /* ── Base (agentic30 site tokens) ── */
-  --dark: #0a0a0a;              /* --foreground */
-  --white: #ffffff;             /* --background */
-  --accent: #FF6B35;            /* --accent (primary orange) */
-  --highlight: #fde047;         /* --highlight (text underline yellow) */
-  --card: #f5f5f5;              /* --card */
-  --muted: #e5e5e5;             /* --muted, --border */
-  --muted-fg: #737373;          /* --muted-foreground */
-  --warm-bg: #fffbf5;           /* --hero-card (warm cream) */
+  /* ── Base ── */
+  --dark: #0a0a0a;              /* foreground */
+  --white: #ffffff;             /* background */
+  --accent: #0968F6;            /* Blue500 — primary accent (구 #FF6B35 주황 폐기) */
+  --highlight: #FFE58A;         /* Yellow300 — 형광펜. 면 전용, 선·텍스트 금지 */
+  --card: #f5f5f5;              /* card */
+  --muted: #e5e5e5;             /* Neutral300 — muted, border */
+  --muted-fg: #616161;          /* Neutral600 — 보조 텍스트 (on white 6.19:1) */
+  --warm-bg: #FFF9F5;           /* Orange100 — warm cream hero card */
 
   /* Backward-compat aliases */
-  --orange: var(--accent);
+  --orange: var(--tl-orange);   /* "orange"는 이제 액센트가 아니라 Orange500을 가리킨다 */
   --yellow: var(--highlight);
   --gray-100: var(--card);
 
-  /* ── Phase Colors (agentic30 curriculum) ── */
-  --phase-1: #ff8f50;           /* Week 1 — orange */
-  --phase-2: #ff5c8d;           /* Week 2 — pink */
-  --phase-3: #a3e635;           /* Week 3 — lime */
+  /* ── Phase Colors (agentic30 curriculum, v1.2 500스텝 정렬) ── */
+  --phase-1: #EC7303;           /* Week 1 — Orange500 */
+  --phase-2: #DE458E;           /* Week 2 — Pink500 */
+  --phase-3: #3CC14E;           /* Week 3 — Green500 */
   --phase-4: var(--dark);       /* Week 4 — black */
 
-  /* ── Semantic (derived from phases) ── */
-  --bad-bg: #FFD5E0;            /* phase-2 tint */
-  --bad-card: var(--phase-2);   /* #ff5c8d */
-  --bad-accent: #d6336c;        /* dark pink for text */
+  /* ── Semantic — v1.2 배지 문법: 200 면(bg) / 600 강조면(card, white 텍스트) / 700 텍스트(accent)
+     *-card 강조면 위 텍스트는 반드시 white (dark는 3.7~4.0:1 미달, same-hue accent는 1.9:1 붕괴) ── */
+  --bad-bg: #FFDEDE;            /* Red200 (+Red700 텍스트 11.8:1) */
+  --bad-card: #D50B0B;          /* Red600 (+white 5.4:1) */
+  --bad-accent: #570303;        /* Red700 — 텍스트·라벨 배경(white와 12:1) */
 
-  --good-bg: #D9F99D;           /* phase-3 tint */
-  --good-card: var(--phase-3);  /* #a3e635 */
-  --good-accent: #4d7c0f;       /* dark lime for text */
+  --good-bg: #E0FAE0;           /* Green200 (+Green700 텍스트 7.9:1) */
+  --good-card: #288034;         /* Green600 (+white 5.0:1 — Green500은 white와 2.35:1이라 금지) */
+  --good-accent: #1B561A;       /* Green700 */
 
-  --info-bg: #BFDBFE;           /* blue tint */
-  --info-card: #3B82F6;         /* blue-500 */
-  --info-accent: #1D4ED8;       /* blue-700 for text */
+  --info-bg: #E0ECFE;           /* Blue200 (+Blue700 텍스트 11.5:1) */
+  --info-card: #0968F6;         /* Blue500 (+white 4.9:1) */
+  --info-accent: #002A69;       /* Blue700 */
 
-  /* ── Palette (timeline, funnel, bars)
-     Site colors first, then supplements ── */
-  --tl-orange: var(--accent);   /* #FF6B35 */
-  --tl-amber: var(--phase-1);   /* #ff8f50 */
-  --tl-pink: var(--phase-2);    /* #ff5c8d */
-  --tl-lime: var(--phase-3);    /* #a3e635 */
-  --tl-yellow: var(--highlight);/* #fde047 */
-  --tl-blue: #3B82F6;           /* supplement: info contrast */
-  --tl-purple: #8B5CF6;         /* supplement: variety */
+  /* ── Category Palette (timeline, funnel, bars) — v1.2 8 hue × 500스텝.
+     면+텍스트: green/orange/yellow/teal/pink/red 면은 --dark(4.8~11:1),
+     blue/purple 면은 white(4.9~6.5:1 — dark는 미달). 선(stroke)용 변형은
+     design-rules.md 선 팔레트 참조(Green→600, Orange→600, Teal→600). ── */
+  --tl-blue: #0968F6;
+  --tl-green: #3CC14E;
+  --tl-red: #F02D2D;
+  --tl-orange: #EC7303;
+  --tl-yellow: #EEBB04;
+  --tl-purple: #583AEE;
+  --tl-teal: #1BBFCA;
+  --tl-pink: #DE458E;
+  /* 구세대 호환 alias */
+  --tl-lime: var(--tl-green);
+  --tl-amber: var(--tl-orange);
 }
 
 /* --- Typography --- */
 .title { font-family: 'Noto Sans KR', sans-serif; font-weight: 900; }
 .mono { font-family: 'JetBrains Mono', monospace; }
+/* v1.2 마이크로 라벨 컨셉(Departure Mono 대문자) 이식 — 영문 라벨 전용 옵션.
+   한글에는 uppercase가 무의미하므로 영문 눈썹 라벨(eyebrow)에만 쓴다. */
+.micro-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 1.25rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
 .text-sm { font-size: 1.5rem; }
 .text-base { font-size: 1.5rem; }
 .text-lg { font-size: 1.75rem; }
 .text-xl { font-size: 2rem; }
 .text-2xl { font-size: 2.25rem; }
 .text-3xl { font-size: 2.75rem; }
-.text-4xl { font-size: 3.25rem; }
-.text-5xl { font-size: 4rem; }
+.text-4xl { font-size: 3.25rem; letter-spacing: -0.01em; } /* 48px+ 음수 트래킹 */
+.text-5xl { font-size: 4rem; letter-spacing: -0.015em; }
 .font-normal { font-weight: 400; }
 .font-bold { font-weight: 700; }
 .font-black { font-weight: 900; }
@@ -116,6 +133,7 @@ body {
 .figure-title {
   font-weight: 900;
   font-size: 3rem;
+  letter-spacing: -0.01em; /* 48px+ 대형 타이틀 음수 트래킹 (v1.2 타이포 컨셉) */
   background: var(--white);
   border: 3px solid var(--dark);
   box-shadow: 4px 4px 0px var(--dark);
@@ -169,9 +187,10 @@ body {
   display: flex; align-items: center; justify-content: center;
   font-size: 1.6rem; flex-shrink: 0;
 }
-.icon.bad { background: var(--bad-card); color: var(--bad-accent); }
-.icon.good { background: var(--good-card); color: var(--good-accent); }
-.icon.info { background: var(--info-card); color: var(--info-accent); }
+/* 600 강조면 위 same-hue accent는 1.9:1로 붕괴 — white만 허용 */
+.icon.bad { background: var(--bad-card); color: var(--white); }
+.icon.good { background: var(--good-card); color: var(--white); }
+.icon.info { background: var(--info-card); color: var(--white); }
 
 /* --- Arrows ---
    커넥터 규칙(design-rules.md): 샤프트 ≥6px, 화살촉 ≥20px.
@@ -240,13 +259,14 @@ body {
 }
 .arrow-dashed-line {
   width: 60px; height: 0;
-  border-top: 6px dashed var(--orange);
+  /* 선 색은 선 팔레트만 — Orange500은 연회색 위 2.7:1이라 선 금지, 액센트 Blue500(4.5:1) 사용 */
+  border-top: 6px dashed var(--accent);
 }
 .arrow-dashed-head {
   width: 0; height: 0;
   border-top: 12px solid transparent;
   border-bottom: 12px solid transparent;
-  border-left: 18px solid var(--orange);
+  border-left: 18px solid var(--accent);
 }
 
 /* --- Timeline (horizontal blocks) --- */
@@ -280,6 +300,7 @@ body {
 /* --- Data Card (for stats) --- */
 .data-card {
   background: var(--bad-card);
+  color: var(--white); /* Red600 위 dark는 3.7:1 미달 — 핵심 수치는 white 900 */
   border: 3px solid var(--dark);
   padding: 1.25rem 2.5rem;
   display: flex; justify-content: space-between;
@@ -303,6 +324,7 @@ body {
 /* --- Quote Card --- */
 .quote-card {
   background: var(--info-card);
+  color: var(--white); /* Blue500 위 dark는 4.1:1 미달 */
   border: 3px solid var(--dark);
   border-radius: 8px;
   padding: 1.25rem 2rem;
@@ -358,8 +380,8 @@ body {
   display: flex; align-items: center; justify-content: center;
   border-right: 3px solid var(--dark);
   min-width: 160px;
-  /* 기본 --dark: 표준 배경(--tl-blue/lime/orange)에서 5.4~13:1.
-     white는 lime 위 1.5:1로 무너진다 — 진한 accent 배경일 때만 인라인으로 white. */
+  /* 기본 --dark: 밝은 hue 면(--tl-green/orange/yellow/teal/pink/red)에서 4.8~11:1.
+     --tl-blue/purple 면은 dark가 4.1/3.1로 미달 — 그 두 hue 배경일 때만 인라인 white. */
   color: var(--dark);
 }
 .arch-nodes {
@@ -455,8 +477,8 @@ body {
   align-items: center; gap: 0.25rem;
 }
 .state-node.active { background: var(--yellow); }
-.state-node.initial { background: var(--good-card); }
-.state-node.final { background: var(--bad-card); }
+.state-node.initial { background: var(--good-card); color: var(--white); }
+.state-node.final { background: var(--bad-card); color: var(--white); }
 .state-transition {
   display: flex; flex-direction: column;
   align-items: center; padding: 0 0.5rem;
@@ -500,6 +522,7 @@ body {
 }
 .schema-fk {
   background: var(--info-card);
+  color: var(--white); /* Blue500 위 dark 미달 */
   border: 2px solid var(--dark);
   border-radius: 4px;
   padding: 0.1rem 0.6rem;
@@ -615,21 +638,38 @@ body {
   max-width: 180px;
 }
 
-/* --- Funnel (conversion stages) --- */
+/* --- Funnel (conversion stages) ---
+   Wilke 비례 잉크: 스테이지 폭 = 값 비례(클램프 금지), 좌정렬 스택.
+   좁은 스테이지 라벨은 바 안이 아니라 .funnel-out으로 바 밖 우측에. */
 .funnel {
   display: flex; flex-direction: column;
-  align-items: center; gap: 0;
+  align-items: flex-start; gap: 0;
   width: 90%;
+}
+.funnel-row {
+  display: flex; align-items: center;
+  width: 100%;
+}
+.funnel-row + .funnel-row .funnel-stage {
+  border-top: none;
 }
 .funnel-stage {
   display: flex; align-items: center;
   justify-content: space-between;
-  padding: 1.25rem 2.5rem;
+  padding: 0 2.5rem;
+  min-height: 110px;
   border: 3px solid var(--dark);
   font-weight: 700; font-size: 1.75rem;
+  flex-shrink: 0;
+  overflow: hidden; /* 폭이 라벨보다 좁아도 비례 폭 유지 — 라벨은 .funnel-out으로 */
 }
 .funnel-stage + .funnel-stage {
   border-top: none;
+}
+.funnel-out {
+  margin-left: 1.5rem;
+  font-weight: 900; font-size: 1.75rem;
+  white-space: nowrap;
 }
 .funnel-label {
   font-weight: 900;
@@ -739,16 +779,17 @@ body {
 .bg-white { background: var(--white); }
 .bg-card { background: var(--card); }
 .bg-dark { background: var(--dark); color: var(--white); }
-.bg-accent { background: var(--accent); }
+.bg-accent { background: var(--accent); color: var(--white); } /* Blue500 — white 텍스트 동반 */
 .bg-highlight { background: var(--highlight); }
 .bg-muted { background: var(--muted); }
 .bg-warm { background: var(--warm-bg); }
 .bg-good { background: var(--good-bg); }
 .bg-bad { background: var(--bad-bg); }
 .bg-info { background: var(--info-bg); }
-.bg-good-card { background: var(--good-card); }
-.bg-bad-card { background: var(--bad-card); }
-.bg-info-card { background: var(--info-card); }
+/* 600 강조면 유틸은 white 텍스트를 함께 강제 — dark·same-hue 텍스트는 대비 붕괴 */
+.bg-good-card { background: var(--good-card); color: var(--white); }
+.bg-bad-card { background: var(--bad-card); color: var(--white); }
+.bg-info-card { background: var(--info-card); color: var(--white); }
 
 /* --- Text Colors --- */
 .text-dark { color: var(--dark); }
@@ -963,11 +1004,12 @@ body {
   );
   padding: 0 0.2rem;
 }
+/* 형광펜은 연면(200) 전용 — 600 강조면·500 액센트를 dark 텍스트 뒤에 깔면 대비 붕괴 */
 .mark-accent {
   background: linear-gradient(
     transparent 55%,
-    var(--accent) 55%,
-    var(--accent) 90%,
+    var(--info-bg) 55%,
+    var(--info-bg) 90%,
     transparent 90%
   );
   padding: 0 0.2rem;
@@ -975,8 +1017,8 @@ body {
 .mark-good {
   background: linear-gradient(
     transparent 55%,
-    var(--good-card) 55%,
-    var(--good-card) 90%,
+    var(--good-bg) 55%,
+    var(--good-bg) 90%,
     transparent 90%
   );
   padding: 0 0.2rem;
@@ -984,8 +1026,8 @@ body {
 .mark-bad {
   background: linear-gradient(
     transparent 55%,
-    var(--bad-card) 55%,
-    var(--bad-card) 90%,
+    var(--bad-bg) 55%,
+    var(--bad-bg) 90%,
     transparent 90%
   );
   padding: 0 0.2rem;
@@ -1021,6 +1063,13 @@ body {
 
 /* --- Terminal (dark CLI mockup) --- */
 .terminal {
+  /* 다크 배경 전용 재정의 — LIGHT 토큰을 그대로 쓰면 대비가 역전된다:
+     N600 #616161은 dark 위 3.1:1(→N500 6.0:1), Blue500은 4.0:1(→Blue400 8.2:1),
+     Green600은 3.2:1(→Green500 8.4:1). v1.2 스케일 내 밝은 스텝으로 승급. */
+  --muted-fg: #8F8F8F;   /* Neutral500 */
+  --t-accent: #70A9FF;   /* Blue400 */
+  --t-good: #3CC14E;     /* Green500 */
+  --t-purple: #AE9EFF;   /* Purple400 — Purple500은 dark 위 2.5:1 미달 */
   width: 1440px; height: 810px;
   padding: 0 60px;
   display: flex; flex-direction: column;
@@ -1091,9 +1140,9 @@ body {
 
 .terminal-card-tag {
   font-size: 1.4rem;
-  color: var(--accent);
+  color: var(--t-accent);
   font-weight: 700;
-  background: rgba(255, 107, 53, 0.12);
+  background: rgba(112, 169, 255, 0.12);
   padding: 4px 14px;
   border-radius: 5px;
 }
@@ -1121,8 +1170,8 @@ body {
   color: var(--muted-fg);
 }
 .terminal-option.selected {
-  background: rgba(163, 230, 53, 0.08);
-  border-color: rgba(163, 230, 53, 0.25);
+  background: rgba(60, 193, 78, 0.08);
+  border-color: rgba(60, 193, 78, 0.25);
   color: var(--white);
 }
 
@@ -1133,12 +1182,12 @@ body {
   flex-shrink: 0;
   position: relative;
 }
-.terminal-radio.checked { border-color: var(--good-card); }
+.terminal-radio.checked { border-color: var(--t-good); }
 .terminal-radio.checked::after {
   content: '';
   position: absolute; top: 3px; left: 3px;
   width: 9px; height: 9px;
-  background: var(--good-card);
+  background: var(--t-good);
   border-radius: 50%;
 }
 
@@ -1152,7 +1201,7 @@ body {
   display: flex; align-items: flex-start; gap: 10px;
   margin-top: 16px;
   font-size: 1.4rem;
-  color: var(--good-card);
+  color: var(--t-good);
   font-family: 'Noto Sans KR', sans-serif;
   font-weight: 600;
   line-height: 1.5;

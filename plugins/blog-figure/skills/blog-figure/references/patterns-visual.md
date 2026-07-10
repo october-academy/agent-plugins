@@ -43,33 +43,33 @@ Max: **4 블록**. 블록당 라벨 1단어.
 
   <!-- Layer 1: Data platform (bottom, largest). Label on front-left face. -->
   <g transform="translate(360, 570)">
-    <polygon class="iso" fill="#BFDBFE" points="0,-70 360,-170 720,-70 360,30"/>
-    <polygon class="iso" fill="#93C5FD" points="0,-70 0,70 360,170 360,30"/>
-    <polygon class="iso" fill="#60A5FA" points="360,30 360,170 720,70 720,-70"/>
+    <polygon class="iso" fill="#84B4FB" points="0,-70 360,-170 720,-70 360,30"/>
+    <polygon class="iso" fill="#70A9FF" points="0,-70 0,70 360,170 360,30"/>
+    <polygon class="iso" fill="#0968F6" points="360,30 360,170 720,70 720,-70"/>
     <text x="180" y="50" text-anchor="middle" dominant-baseline="central" font-size="34" font-weight="900">데이터</text>
   </g>
 
   <!-- Layer 2: Backend -->
   <g transform="translate(470, 430)">
-    <polygon class="iso" fill="#D9F99D" points="0,-60 250,-125 500,-60 250,5"/>
-    <polygon class="iso" fill="#BEF264" points="0,-60 0,50 250,115 250,5"/>
-    <polygon class="iso" fill="#A3E635" points="250,5 250,115 500,50 500,-60"/>
+    <polygon class="iso" fill="#A6F0A5" points="0,-60 250,-125 500,-60 250,5"/>
+    <polygon class="iso" fill="#89F598" points="0,-60 0,50 250,115 250,5"/>
+    <polygon class="iso" fill="#3CC14E" points="250,5 250,115 500,50 500,-60"/>
     <text x="125" y="28" text-anchor="middle" dominant-baseline="central" font-size="30" font-weight="900">백엔드</text>
   </g>
 
   <!-- Layer 3: API -->
   <g transform="translate(550, 300)">
-    <polygon class="iso" fill="#FFE7A3" points="0,-48 170,-100 340,-48 170,4"/>
-    <polygon class="iso" fill="#FDE047" points="0,-48 0,35 170,87 170,4"/>
-    <polygon class="iso" fill="#FACC15" points="170,4 170,87 340,35 340,-48"/>
+    <polygon class="iso" fill="#FFE58A" points="0,-48 170,-100 340,-48 170,4"/>
+    <polygon class="iso" fill="#FFBD14" points="0,-48 0,35 170,87 170,4"/>
+    <polygon class="iso" fill="#EEBB04" points="170,4 170,87 340,35 340,-48"/>
     <text x="85" y="20" text-anchor="middle" dominant-baseline="central" font-size="28" font-weight="900">API</text>
   </g>
 
   <!-- Layer 4: UI -->
   <g transform="translate(600, 195)">
-    <polygon class="iso" fill="#FFD5E0" points="0,-42 120,-82 240,-42 120,-2"/>
-    <polygon class="iso" fill="#FCA5B8" points="0,-42 0,24 120,64 120,-2"/>
-    <polygon class="iso" fill="#FF5C8D" points="120,-2 120,64 240,24 240,-42"/>
+    <polygon class="iso" fill="#F79CC8" points="0,-42 120,-82 240,-42 120,-2"/>
+    <polygon class="iso" fill="#F155A0" points="0,-42 0,24 120,64 120,-2"/>
+    <polygon class="iso" fill="#DE458E" points="120,-2 120,64 240,24 240,-42"/>
     <text x="60" y="11" text-anchor="middle" dominant-baseline="central" font-size="24" font-weight="900">UI</text>
   </g>
 </svg>
@@ -115,8 +115,8 @@ Max: **4 노드**, **4 커넥터**. 아이콘은 기본 SVG 도형으로 구성 
     <rect class="box-sh" x="4" y="4" width="210" height="160" rx="12"/>
     <rect class="box" width="210" height="160" rx="12"/>
     <!-- Person icon: head + shoulders -->
-    <circle cx="105" cy="45" r="20" fill="none" stroke="#3B82F6" stroke-width="3"/>
-    <path d="M70 95 Q105 72 140 95" fill="none" stroke="#3B82F6" stroke-width="3"/>
+    <circle cx="105" cy="45" r="20" fill="none" stroke="#0968F6" stroke-width="3"/>
+    <path d="M70 95 Q105 72 140 95" fill="none" stroke="#0968F6" stroke-width="3"/>
     <text x="105" y="138" text-anchor="middle" font-size="28" font-weight="900">사용자</text>
   </g>
 
@@ -125,8 +125,8 @@ Max: **4 노드**, **4 커넥터**. 아이콘은 기본 SVG 도형으로 구성 
     <rect class="box-sh" x="4" y="4" width="220" height="170" rx="12"/>
     <rect class="box" width="220" height="170" rx="12"/>
     <!-- Gear icon: circle + center dot — 아이콘 선도 선 팔레트(lime 금지 → dark green) -->
-    <circle cx="110" cy="52" r="26" fill="none" stroke="#4d7c0f" stroke-width="3"/>
-    <circle cx="110" cy="52" r="8" fill="#4d7c0f"/>
+    <circle cx="110" cy="52" r="26" fill="none" stroke="#288034" stroke-width="3"/>
+    <circle cx="110" cy="52" r="8" fill="#288034"/>
     <text x="110" y="144" text-anchor="middle" font-size="28" font-weight="900">Gateway</text>
   </g>
 
@@ -134,8 +134,8 @@ Max: **4 노드**, **4 커넥터**. 아이콘은 기본 SVG 도형으로 구성 
   <g transform="translate(520, 474)">
     <rect class="box-sh" x="4" y="4" width="220" height="160" rx="12"/>
     <rect class="box" width="220" height="160" rx="12"/>
-    <rect x="70" y="34" width="80" height="52" rx="8" fill="none" stroke="#8B5CF6" stroke-width="3"/>
-    <path d="M70 60 h80" fill="none" stroke="#8B5CF6" stroke-width="3"/>
+    <rect x="70" y="34" width="80" height="52" rx="8" fill="none" stroke="#583AEE" stroke-width="3"/>
+    <path d="M70 60 h80" fill="none" stroke="#583AEE" stroke-width="3"/>
     <text x="110" y="138" text-anchor="middle" font-size="28" font-weight="900">Queue</text>
   </g>
 
@@ -144,23 +144,23 @@ Max: **4 노드**, **4 커넥터**. 아이콘은 기본 SVG 도형으로 구성 
     <rect class="box-sh" x="4" y="4" width="210" height="170" rx="12"/>
     <rect class="box" width="210" height="170" rx="12"/>
     <!-- Cylinder icon: ellipse + body -->
-    <ellipse cx="105" cy="42" rx="34" ry="14" fill="none" stroke="#FF6B35" stroke-width="3"/>
-    <path d="M71 42 v40 a34 14 0 0 0 68 0 v-40" fill="none" stroke="#FF6B35" stroke-width="3"/>
+    <ellipse cx="105" cy="42" rx="34" ry="14" fill="none" stroke="#C15100" stroke-width="3"/>
+    <path d="M71 42 v40 a34 14 0 0 0 68 0 v-40" fill="none" stroke="#C15100" stroke-width="3"/>
     <text x="105" y="144" text-anchor="middle" font-size="28" font-weight="900">DB</text>
   </g>
 
   <!-- Connectors with arrow markers -->
   <line class="conn" x1="370" y1="374" x2="520" y2="259" marker-end="url(#arr)"/>
-  <text x="445" y="289" text-anchor="middle" font-size="20" font-weight="700" fill="#737373">요청</text>
+  <text x="445" y="289" text-anchor="middle" font-size="20" font-weight="700" fill="#616161">요청</text>
 
   <line class="conn" x1="740" y1="259" x2="1070" y2="394" marker-end="url(#arr)"/>
-  <text x="915" y="299" text-anchor="middle" font-size="20" font-weight="700" fill="#737373">쿼리</text>
+  <text x="915" y="299" text-anchor="middle" font-size="20" font-weight="700" fill="#616161">쿼리</text>
 
   <line class="conn" x1="740" y1="554" x2="1070" y2="434" marker-end="url(#arr)"/>
-  <text x="915" y="514" text-anchor="middle" font-size="20" font-weight="700" fill="#737373">이벤트</text>
+  <text x="915" y="514" text-anchor="middle" font-size="20" font-weight="700" fill="#616161">이벤트</text>
 
   <line class="conn" x1="630" y1="344" x2="630" y2="474" marker-end="url(#arr)"/>
-  <text x="660" y="416" font-size="20" font-weight="700" fill="#737373">비동기 처리</text>
+  <text x="660" y="416" font-size="20" font-weight="700" fill="#616161">비동기 처리</text>
 </svg>
 </body>
 ```
@@ -196,9 +196,9 @@ const S = 2; // retina scale
 
 // === PALETTE (matches figure.css tokens) ===
 const P = {
-  dark:'#0a0a0a', muted:'#737373', bg:'#f5f5f5', card:'#e5e5e5',
-  blue:'#3B82F6', lime:'#a3e635', orange:'#FF6B35',
-  purple:'#8B5CF6', pink:'#ff5c8d', yellow:'#fde047'
+  dark:'#0a0a0a', muted:'#616161', bg:'#f5f5f5', card:'#e5e5e5',
+  blue:'#0968F6', lime:'#3CC14E', orange:'#EC7303',
+  purple:'#583AEE', pink:'#DE458E', yellow:'#FFE58A'
 };
 
 // === CONFIG: Modify nodes/edges for your content ===
@@ -365,7 +365,7 @@ const links = [
   { source: '지표',     target: '검증' },
   { source: '개발',     target: '지표' },
 ];
-const groupColor = { 1: '#3B82F6', 2: '#a3e635', 3: '#FF6B35' };
+const groupColor = { 1: '#0968F6', 2: '#3CC14E', 3: '#EC7303' };
 
 const svg = d3.select('svg');
 const W = 1440, H = 810;
@@ -451,7 +451,7 @@ Max: **primary text max 8단어**, attribution max 4단어. 총 ~12단어.
   <defs>
     <style>
       text { font-family: 'Noto Sans KR', sans-serif; fill: #0a0a0a; }
-      .attr { font-family: 'JetBrains Mono', monospace; fill: #737373; }
+      .attr { font-family: 'JetBrains Mono', monospace; fill: #616161; }
     </style>
     <pattern id="dots" width="16" height="16" patternUnits="userSpaceOnUse">
       <circle cx="8" cy="8" r="1" fill="rgba(10,10,10,0.06)"/>
@@ -467,7 +467,7 @@ Max: **primary text max 8단어**, attribution max 4단어. 총 ~12단어.
   <text x="312" y="452" font-family="Georgia, serif" font-size="240" font-weight="700" fill="#0a0a0a" opacity="0.07">&#8220;</text>
 
   <!-- Highlight bar: background BEHIND key line, aligned to its glyph body -->
-  <rect x="502" y="392" width="436" height="46" fill="#fde047" opacity="0.7"/>
+  <rect x="502" y="392" width="436" height="46" fill="#FFE58A" opacity="0.7"/>
 
   <!-- Primary text (multi-line with tspan), vertically centered in card -->
   <text x="720" y="360" text-anchor="middle" font-size="56" font-weight="900">
@@ -481,6 +481,6 @@ Max: **primary text max 8단어**, attribution max 4단어. 총 ~12단어.
 </body>
 ```
 
-Notes: 장식적 큰따옴표(Georgia, opacity 0.07)는 카드 **위에** 그려 top-left corner 워터마크로 두되 카드 보더 안쪽에 배치한다 — 보더에 걸치면 흰 카드에 잘려 흐릿해진다. Neo-Brutalism 카드: white rect + 3px border + 4px offset hard shadow. 인용문은 카드의 **수직·수평 정중앙**에 배치한다. 강조 바(highlight bar)는 텍스트를 **가로지르는 취소선이 아니라** 핵심 라인 뒤 배경으로, 텍스트보다 먼저 그리고 해당 라인의 glyph body(폭·높이)에 맞춘다 (`#fde047` yellow). `<tspan>`으로 multi-line 텍스트 구현. Attribution은 JetBrains Mono. 텍스트 길이에 따라 short (1줄, 120px) vs medium (2줄, 56px) 선택.
+Notes: 장식적 큰따옴표(Georgia, opacity 0.07)는 카드 **위에** 그려 top-left corner 워터마크로 두되 카드 보더 안쪽에 배치한다 — 보더에 걸치면 흰 카드에 잘려 흐릿해진다. Neo-Brutalism 카드: white rect + 3px border + 4px offset hard shadow. 인용문은 카드의 **수직·수평 정중앙**에 배치한다. 강조 바(highlight bar)는 텍스트를 **가로지르는 취소선이 아니라** 핵심 라인 뒤 배경으로, 텍스트보다 먼저 그리고 해당 라인의 glyph body(폭·높이)에 맞춘다 (`#FFE58A` yellow). `<tspan>`으로 multi-line 텍스트 구현. Attribution은 JetBrains Mono. 텍스트 길이에 따라 short (1줄, 120px) vs medium (2줄, 56px) 선택.
 
 ---

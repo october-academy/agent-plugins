@@ -18,9 +18,10 @@ user-invocable: true
 
 Generate Neo-Brutalism styled figure images for blog posts: HTML → browser → PNG.
 
-이 스킬의 디자인 토큰(1440×810 캡처, retina 2x, Noto Sans KR weight 900, agentic30 사이트
-토큰)은 블로그 전용이며, PPT 지향의 구세대 neo-brutalism 문서(1920×1080, Black Han Sans,
-`image-design-system.md`)와는 다른 세대다 — 그 문서를 이 스킬 수정의 참고 자료로 쓰지 마라.
+이 스킬의 디자인 토큰(1440×810 캡처, retina 2x, Noto Sans KR weight 900, AGENTIC v1.2
+팔레트 — figure.css `:root` + design-rules.md "색 문법"이 SSoT)은 블로그 전용이며, PPT 지향의
+구세대 neo-brutalism 문서(1920×1080, Black Han Sans, `image-design-system.md`)와는 다른
+세대다 — 그 문서를 이 스킬 수정의 참고 자료로 쓰지 마라.
 
 런타임 노트: 이 문서의 `AskUserQuestion`은 Claude Code 도구명이다. Codex에서는 같은
 질문·옵션 구조로 `request_user_input`을 쓰되, `preview` 필드가 없는 런타임에서는 ASCII

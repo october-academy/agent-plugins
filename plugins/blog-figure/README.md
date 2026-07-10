@@ -135,6 +135,25 @@ npx playwright screenshot --viewport-size="1600,4200" --wait-for-selector="body[
 
 ## Changelog
 
+- **3.0.0** — **AGENTIC 디자인 시스템 v1.2 정렬 + Wilke 원칙 보강** (breaking: 산출물 팔레트가
+  구세대 주황에서 v1.2 파랑으로 전면 교체 — 기존 블로그 figure와 색이 달라진다).
+  ① **토큰 리매핑**(정본: `agentic30-greenfield/docs/design/agentic-ui-v1.2/tokens.css`):
+  액센트 #FF6B35 → Blue500 `#0968F6`, good/bad 시맨틱 lime·핑크 폐기 → Green/Red의
+  200(면)·600(강조면+white)·700(텍스트) 3단 배지 문법, `--highlight` → Yellow300 `#FFE58A`,
+  `--muted-fg` → Neutral600 `#616161`, 카테고리 `--tl-*` 8 hue×500스텝(Teal 신설, lime·amber는
+  alias). 600 강조면 위 텍스트는 white로 재배선(`.data-card`·`.quote-card`·`.icon.*`·
+  `.state-node.*`·`.schema-fk`·`.mark-*`·matrix 헤더), tl-blue/purple 면 위도 white(dark 4.1/3.1
+  미달). Terminal 다크 스코프는 스텝 승급(N500·Blue400·Green500·Purple400).
+  ② **색 문법 3규칙 명문화**(design-rules "색 문법"): 배지 200+700(실측 7.9~16.8) / 강조면
+  600+white(4.7~9.6) 조합만 허용, lime·yellow류 선·텍스트 금지(선 팔레트 7종 실측 3.6~5.9),
+  **색은 인코딩 수단** — 단일 계열은 단색+강조 1색, good/bad 병치는 색에만 의존 금지
+  (Green600 vs Red600 명도 1.09:1 — deuteranopia 시뮬로 검증, 아이콘·라벨 병행 필수).
+  ③ **Wilke 보강**: Funnel 폭=값 정비례 강제+클램프 금지+바 밖 우측 라벨+단색, Treemap을
+  위계 데이터(그룹=hue, 자식=명도 스텝)로 재작성+"flat 비율엔 바 차트" 명시, Data Viz 바
+  단색(`--dark`)+강조 1색, Waffle·Radar·Dumbbell 범례 → 직접 라벨(edge-midpoint·첫 행
+  endpoint), Journey dot 단일 계열+마지막 강조. ④ **타이포 컨셉 이식**: 48px+ 타이틀 음수
+  트래킹(−0.01~−0.015em), 영문 마이크로 라벨용 `.micro-label`(JetBrains Mono uppercase).
+  30패턴 재렌더·validate 전건 통과, deuteranopia/protanopia 스와치 검증 완료.
 - **2.5.0** — 30패턴 갤러리 apple-design 평가에서 실측된 시스템 결함 해소(WCAG 대비율 기준).
   ① **유색 면 위 저대비 텍스트**: Hierarchy 부제의 `--muted-fg`(blue 위 1.29:1) → `--dark`,
   `.arch-label` 기본색 white → `--dark`(lime 위 1.5:1 방지), design-rules에 "유색 면 위
