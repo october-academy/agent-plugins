@@ -51,6 +51,7 @@ COMPONENT_CAPS = {
     "story-panel": (4, "Storyboard 패널"),
     "bar-row": (4, "Bar chart 행"),
     "journey-step": (4, "Journey 단계"),
+    "loop-node": (4, "Loop 노드"),
     "arch-layer": (3, "Architecture 레이어"),
     "terminal-card": (3, "Terminal 카드"),
     "matrix-cell": (4, "Matrix 셀 (2×2)"),
