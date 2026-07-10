@@ -253,11 +253,12 @@ HTML 구현 시 반드시 참고할 디자인 제약 모음. SKILL.md Workflow 4
 ## File Naming
 
 ```
-blog/public/blog/images/{blog-slug}/{blog-slug}-{figure-name}.png
+web/public/blog/images/{blog-slug}/{blog-slug}-{figure-name}.png
 ```
 
-Repo root(`agentic30-greenfield`) 기준 상대 경로다. 실행 중인 리포에 이 디렉터리가 없으면
-임의로 추측하지 말고 사용자에게 저장 위치를 물어라.
+Repo root(`agentic30-greenfield`) 기준 상대 경로다 (2026-07-05 web/ 통합 — 구경로
+`blog/public/…`은 폐기). 실행 중인 리포에 이 디렉터리가 없으면 임의로 추측하지 말고
+사용자에게 저장 위치를 물어라.
 
 ## MDX Usage
 
