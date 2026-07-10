@@ -1,6 +1,6 @@
 ---
 name: interview
-description: This skill should be used when the user's request or requirement is ambiguous and needs an iterative interview to become actionable. Trigger on "clarify requirements", "refine requirements", "요구사항 명확히", "요구사항 정리", "요구사항 인터뷰", "인터뷰해줘", "interview me", "ask me questions before building", "make this clearer", "spec this out", "scope this", "/clarify:interview". Turns vague inputs into concrete specs and surfaces considerations the user hasn't thought of. For strategy blind spots use unknown; for content-vs-form reframing use metamedium.
+description: This skill should be used when the user's request or requirement is ambiguous and needs an iterative interview to become actionable — vague feature requests ("add notifications"), incomplete bug reports ("the export is broken"), underspecified tasks and migrations ("make it faster", "convert this to TypeScript"), or any build request the user hasn't fully thought through. Trigger on "clarify requirements", "refine requirements", "요구사항 명확히", "요구사항 정리", "요구사항 인터뷰", "인터뷰해줘", "interview me", "ask me questions before building", "make this clearer", "spec this out", "scope this", "/clarify:interview". Turns vague inputs into concrete specs and surfaces considerations the user hasn't thought of. For strategy blind spots use unknown; for content-vs-form reframing use metamedium.
 user-invocable: true
 argument-hint: [requirement]
 ---
@@ -84,6 +84,7 @@ Runtime note: AskUserQuestion is the Claude Code tool name. On Codex, use `reque
 2. **Shape each question:** 2–4 options, each a plausible hypothesis of intent that would genuinely change what gets built; one ambiguity axis per question; neutral framing (don't make one option "obviously right" by wording); concrete, implementation-relevant language, in the conversation's language.
    - Bad: `What kind of login do you want?`
    - Good: `OAuth / Email+Password / SSO / Magic link`
+   - For requests that change an existing system (migrate, convert, adopt, rewrite): include adoption strategy among the hypotheses — incremental, big-bang, tooling/check-only — not just end-state variants. End-state-only options force users to smuggle "gradually, please" through Other.
    - When you have a sensible default, put it first labeled `(Recommended)`. Use `multiSelect: true` when choices aren't mutually exclusive.
 3. **Batch independent questions** — up to 4 per round, one AskUserQuestion call. If a question's options depend on another question's answer, defer it to the next round: options designed blind degrade into guesses.
 4. **After each round, append the outcomes to the state file** under `## Clarification Progress`. Keep `iteration` equal to the round you are currently asking — bump it as you start a round, not after the last one. Sessions get compacted and interrupted; the state file is what lets the loop resume without re-asking.
@@ -93,9 +94,9 @@ Runtime note: AskUserQuestion is the Claude Code tool name. On Codex, use `reque
 - [axis]: [outcome] — decided | assumed (recommended default) | still open
 ```
 
-5. **Handle "I don't know" / free-text answers:** when the user defers ("잘 모르겠어요, 추천해주세요"), adopt your recommended option and record it as **assumed**, not decided. A custom "Other" answer is an explicit user statement — record it as decided; it usually opens a fresh hypothesis, so follow up next round only if material.
+5. **Handle "I don't know" / free-text answers:** when the user defers ("잘 모르겠어요, 추천해주세요"), adopt your recommended option and record it as **assumed**, not decided. A custom "Other" answer is an explicit user statement — record it as decided; it usually opens a fresh hypothesis, so follow up next round only if material. When the answer defers to an absent authority ("그건 대표님이 정하셔야 해요"), the requester is a proxy: record your recommended default as **assumed — pending [owner]'s confirmation**, or put the item in Still Open naming the owner and how it gets resolved. Never present it as decided.
    - Greenfield caveat: if the project is empty but the request implies an existing system elsewhere, ask where this will integrate — an unknown integration point blocks the build, so it belongs in the interview, not in Still Open.
-6. **Offer an exit honestly.** When remaining ambiguities are optional depth, add a final option meaning "clarification complete — proceed with current understanding" (wording localized, e.g. `여기까지 — 현재 이해로 진행`) to the round's last question. When material ambiguities clearly remain, don't offer a premature exit; when none remain, don't ask another round at all — summarize.
+6. **Offer an exit honestly.** When remaining ambiguities are optional depth, add a final option meaning "clarification complete — proceed with current understanding" (wording localized, e.g. `여기까지 — 현재 이해로 진행`) to the round's last question — or as its own question in the same round when that question needs all its option slots for real hypotheses. When material ambiguities clearly remain, don't offer a premature exit; when none remain, don't ask another round at all — summarize.
 
 ### Phase 4: Completion Check
 
@@ -106,13 +107,15 @@ Summarize when any of these holds:
 - User signals cancellation (see Cancellation)
 - Final round's answers are in and `max_iterations` is reached
 
+Hitting `max_iterations` with material axes still unasked is triage, not completion: spend the final round on correctness-critical axes first, and record each unasked axis as an assumption explicitly labeled un-asked (e.g. `미질문 — 라운드 예산 소진`) — never as something the user delegated.
+
 ### Cancellation
 
 If the user signals they want to cancel or stop the loop (e.g. "cancel", "stop", "그만", "중단"), delete `.claude/clarify-interview.local.md` and end the loop without a summary.
 
 ### Phase 5: Before/After Summary
 
-Every line of the After spec must trace to a user answer, a fact you verified in the territory, or a listed assumption — a spec line with no source is fabrication.
+Every line of the After spec must trace to a user answer, a fact you verified in the territory, or a listed assumption — a spec line with no source is fabrication. Before emitting the promise, audit the After spec claim by claim — parentheticals included (volumes, thresholds, counts, quotes) — and name each claim's source to yourself; anything sourceless gets rewritten as an assumption or dropped. Context can carry facts nobody said (an earlier plan, a pasted doc, your own hypothesis options); the audit is what keeps them out of the spec.
 
 ```markdown
 ## Requirement Clarification Summary
