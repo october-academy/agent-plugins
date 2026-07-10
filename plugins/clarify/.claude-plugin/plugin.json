@@ -1,6 +1,6 @@
 {
   "name": "clarify",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "세 가지 렌즈(vague/unknown/metamedium)로 요구사항, 전략 맹점, content-vs-form 의사결정을 명확화",
   "author": {
     "name": "Yu Ho Gyun"

@@ -137,7 +137,7 @@ _RUNTIME = {
 
 def plugin_version():
     """Read the plugin version from .claude-plugin/plugin.json (fallback constant)."""
-    fallback = "1.6.0"
+    fallback = "1.7.0"
     manifest = os.path.join(
         os.path.dirname(__file__), "..", "..", "..", ".claude-plugin", "plugin.json"
     )

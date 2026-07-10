@@ -1,6 +1,6 @@
 {
   "name": "trend-scout",
-  "version": "1.6.0",
+  "version": "1.7.0",
   "description": "Reddit, HN, GitHub, 한국 커뮤니티, RSS, 패키지 레지스트리까지 빌더/AI/오픈소스 시그널을 수집해 Threads 포스트용으로 큐레이션",
   "author": {
     "name": "Yu Ho Gyun"

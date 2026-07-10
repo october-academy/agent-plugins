@@ -63,10 +63,10 @@ git add src/component.tsx src/utils.ts
 **Secret scan** — after staging, check what's actually going into the commit:
 
 ```bash
-git diff --staged | grep -iEn 'api[_-]?key|secret|password|token|BEGIN (RSA|EC|OPENSSH|PGP) PRIVATE KEY'
+git diff --staged | grep -iEn "(api[_-]?key|secret|password|passwd|token)[a-z0-9_-]*[\"']?[[:space:]]*[:=][[:space:]]*[\"']?[a-z0-9_/+.-]{6,}|ghp_[a-z0-9]{20,}|github_pat_[a-z0-9_]{20,}|(^|[^a-z0-9])sk-[a-z0-9-]{16,}|AKIA[0-9A-Z]{16}|xox[baprs]-[a-z0-9-]+|BEGIN (RSA|EC|OPENSSH|PGP) PRIVATE KEY"
 ```
 
-If this matches anything, stop and confirm with the user before committing.
+The pattern matches assignment context (`KEY=value`, `key: value`, JSON pairs) with a 6+ char value, well-known token prefixes (GitHub `ghp_`/`github_pat_`, OpenAI `sk-`, AWS `AKIA`, Slack `xox*`), and private key blocks — prose like "password reset guide" or identifiers like `tokenizer` don't trip it. If this matches anything, stop and confirm with the user before committing.
 
 ### 4. Generate Commit Message
 
