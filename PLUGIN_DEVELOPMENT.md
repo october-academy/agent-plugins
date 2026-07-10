@@ -40,6 +40,9 @@ user-invocable: true
 # Skill Name
 ```
 
+`user-invocable: true`는 이 저장소의 모든 스킬이 쓰는 표준이다 — 새 스킬을 추가할 때
+빠뜨리지 않는다.
+
 ### `README.md`
 
 반드시 포함할 내용:
@@ -81,6 +84,8 @@ jq . plugins/<name>/.claude-plugin/plugin.json
 - 삭제된 플러그인을 가리키는 링크나 예시가 남지 않았는지 확인
 - 루트 문서와 개별 플러그인 README가 같은 이름/호출 방식을 쓰는지 확인
 - 훅 스크립트가 있으면 경로와 파일명이 실제 구조와 맞는지 확인
+- description 파리티: `plugin.json`의 `description`과 `marketplace.json` 해당 엔트리의
+  `description`이 글자 그대로 일치하는지 확인
 
 ## 현재 유지 범위
 

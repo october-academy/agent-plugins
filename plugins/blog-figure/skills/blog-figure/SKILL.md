@@ -8,7 +8,9 @@ description: >
   is a blog post or MDX file. Also invoke when an MDX file references a missing image in
   /blog/images/, or when user says "이 섹션에 이미지", "한 장으로 보여줘", "블로그 그림",
   "figure 만들어", "블로그 이미지", "다이어그램". NOT for interactive UI components, web pages,
-  or app screens.
+  or app screens. 인터랙티브 차트·대시보드·재사용 UI 컴포넌트는 대상이 아니다(dataviz·디자인
+  스킬 영역) — 산출물은 발행용 정적 PNG다. 편집 가능한 다이어그램 소스(.excalidraw·mermaid)가
+  목적이면 diagram 계열 스킬을 써라.
 user-invocable: true
 ---
 
@@ -32,7 +34,7 @@ Generate Neo-Brutalism styled figure images for blog posts: HTML → browser →
 3. **Suggest patterns**: Based on the confirmed brief, pick the **4 most fitting patterns** from 30 available, and present them via `AskUserQuestion` with ASCII art previews (see [Pattern Selection](#pattern-selection) below)
 4. **Create HTML**: Before writing HTML, read `references/design-rules.md` for all design constraints. Write standalone HTML to `/tmp/blog-figure-{name}.html` linking `assets/figure.css`
 5. **Self-check before capture**: Run `scripts/validate_figure.py` on the HTML and fix every ERROR before spending a capture (see [Self-Check](#self-check) below). A browser screenshot won't tell you a font dropped to 14px or a color is hardcoded — the linter does, in a second, for free.
-6. **Capture PNG**: Open in browser, capture the 1440×810 layout at retina 2x (deviceScaleFactor 2) → save as 2880×1620 PNG. 2x를 못 내는 폴백 경로(Playwright)에서는 1440×810(1x)이 최후 수단 (see [Capture](#capture-pick-whichever-is-available))
+6. **Capture PNG**: Open in browser, capture the 1440×810 layout at retina 2x (deviceScaleFactor 2) → save as 2880×1620 PNG. 2x를 못 내는 폴백 경로(Playwright)에서는 1440×810(1x)이 최후 수단 (see [Capture](#capture))
 7. **Save to project**: Move PNG to `blog/public/blog/images/{slug}/` (repo root인 `agentic30-greenfield` 기준 상대 경로). 실행 중인 리포에 이 디렉터리가 없으면 임의로 추측하지 말고 사용자에게 저장 위치를 물어라. PNG 저장 시 소스 HTML도 같은 디렉터리에 `{filename}.src.html`로 복사한다 — 복사본에서는 figure.css 링크의 절대 경로를 리터럴 `file://{SKILL_DIR}/assets/figure.css`로 되돌려 저장하라(로컬 사용자 경로가 배포 사이트에 노출되지 않게). 이 복사본이 있어야 다음 세션의 "여백만 줄여줘"가 전체 재작성 대신 Edit 한 번 + 재캡처가 된다
 8. **Insert into document**: If user provided a `.md` or `.mdx` file, insert the image tag at the contextually correct location (see [Document Insertion](#document-insertion) below)
 9. **Verify**: 저장된 PNG의 25% 축소본을 만들어 실제로 관찰한다 — 모바일 화면 폭 시뮬레이션:
@@ -77,23 +79,23 @@ Generate Neo-Brutalism styled figure images for blog posts: HTML → browser →
 AskUserQuestion({
   questions: [{
     question: "어떤 장면을 Figure로 만들까요?",
-    header: "Content Brief",
+    header: "장면 선택",
     multiSelect: true,
     options: [
       {
         label: "해석 A: {1줄 핵심 메시지}",
         description: "키워드: {단어1}, {단어2}, {단어3}",
-        markdown: "**구조**: {관계 유형}\n**강조점**: {가장 눈에 띄어야 할 것}\n**근거**: 블로그에서 이 부분이 Figure로 적합한 이유 1줄"
+        preview: "**구조**: {관계 유형}\n**강조점**: {가장 눈에 띄어야 할 것}\n**근거**: 블로그에서 이 부분이 Figure로 적합한 이유 1줄"
       },
       {
         label: "해석 B: {1줄 핵심 메시지}",
         description: "키워드: {단어1}, {단어2}, {단어3}",
-        markdown: "**구조**: {관계 유형}\n**강조점**: {가장 눈에 띄어야 할 것}\n**근거**: 블로그에서 이 부분이 Figure로 적합한 이유 1줄"
+        preview: "**구조**: {관계 유형}\n**강조점**: {가장 눈에 띄어야 할 것}\n**근거**: 블로그에서 이 부분이 Figure로 적합한 이유 1줄"
       },
       {
         label: "해석 C: {1줄 핵심 메시지}",
         description: "키워드: {단어1}, {단어2}, {단어3}",
-        markdown: "**구조**: {관계 유형}\n**강조점**: {가장 눈에 띄어야 할 것}\n**근거**: 블로그에서 이 부분이 Figure로 적합한 이유 1줄"
+        preview: "**구조**: {관계 유형}\n**강조점**: {가장 눈에 띄어야 할 것}\n**근거**: 블로그에서 이 부분이 Figure로 적합한 이유 1줄"
       }
     ]
   }]
@@ -134,7 +136,7 @@ AskUserQuestion({
 
 ## Pattern Selection
 
-After understanding context, use `AskUserQuestion` to let the user pick from the 4 most relevant patterns. Each option MUST include a `markdown` field with an ASCII art preview showing the pattern's layout structure.
+After understanding context, use `AskUserQuestion` to let the user pick from the 4 most relevant patterns. Each option MUST include a `preview` field with an ASCII art preview showing the pattern's layout structure. `preview`는 markdown으로 렌더되므로, ASCII art는 세 backtick 코드펜스로 감싸(``` … ```) monospace 정렬을 보존하라 — 코드펜스 밖에 두면 비례 폰트로 렌더돼 박스가 어긋난다.
 
 ### How to pick the 4 patterns
 
@@ -182,7 +184,7 @@ AskUserQuestion({
       {
         label: "{Pattern 1 이름}",
         description: "{왜 이 패턴이 적합한지 1줄 설명}",
-        markdown: "{ASCII art preview}"
+        preview: "```\n{ASCII art preview}\n```"
       },
       // ... 3개 더
     ]
@@ -218,29 +220,29 @@ AskUserQuestion({
       {
         label: "Flow (추천)",
         description: "인터뷰 단계를 수직 플로우로 표현. 프로세스 시각화에 최적",
-        markdown: "┌──────────────────────────────────┐\n│          ┌───────────┐           │\n│          │ 맥락 확인 │           │\n│          └─────┬─────┘           │\n│                ▼                 │\n│          ┌───────────┐           │\n│          │ 사례 복기 │           │\n│          └─────┬─────┘           │\n│                ▼                 │\n│          ┌───────────┐           │\n│          │ 니즈 발견 │           │\n│          └───────────┘           │\n└──────────────────────────────────┘"
+        preview: "```\n┌──────────────────────────────────┐\n│          ┌───────────┐           │\n│          │ 맥락 확인 │           │\n│          └─────┬─────┘           │\n│                ▼                 │\n│          ┌───────────┐           │\n│          │ 사례 복기 │           │\n│          └─────┬─────┘           │\n│                ▼                 │\n│          ┌───────────┐           │\n│          │ 니즈 발견 │           │\n│          └───────────┘           │\n└──────────────────────────────────┘\n```"
       },
       {
         label: "Journey",
         description: "인터뷰이의 여정을 수평 터치포인트로 표현",
-        markdown: "┌──────────────────────────────────┐\n│  ①─────────②─────────③────────④  │\n│ 준비      라포      질문     정리│\n└──────────────────────────────────┘"
+        preview: "```\n┌──────────────────────────────────┐\n│  ①─────────②─────────③────────④  │\n│ 준비      라포      질문     정리│\n└──────────────────────────────────┘\n```"
       },
       {
         label: "Timeline",
         description: "인터뷰 시간 배분을 비율로 시각화",
-        markdown: "┌──────────────────────────────────┐\n│ ┌────────┬──────────┬────────┐   │\n│ │  라포  │   질문   │  정리  │   │\n│ │  3min  │   5min   │  2min  │   │\n│ └────────┴──────────┴────────┘   │\n└──────────────────────────────────┘"
+        preview: "```\n┌──────────────────────────────────┐\n│ ┌────────┬──────────┬────────┐   │\n│ │  라포  │   질문   │  정리  │   │\n│ │  3min  │   5min   │  2min  │   │\n│ └────────┴──────────┴────────┘   │\n└──────────────────────────────────┘\n```"
       },
       {
         label: "Comparison",
         description: "좋은 인터뷰 vs 나쁜 인터뷰를 좌우 대비",
-        markdown: "┌──────────────────────────────────┐\n│ ┌────────────┐    ┌────────────┐ │\n│ │  나쁜방법  │ VS │  좋은방법  │ │\n│ │ ┌────────┐ │    │ ┌────────┐ │ │\n│ │ │평가요청│ │    │ │맥락확인│ │ │\n│ │ └────────┘ │    │ └────────┘ │ │\n│ └────────────┘    └────────────┘ │\n└──────────────────────────────────┘"
+        preview: "```\n┌──────────────────────────────────┐\n│ ┌────────────┐    ┌────────────┐ │\n│ │  나쁜방법  │ VS │  좋은방법  │ │\n│ │ ┌────────┐ │    │ ┌────────┐ │ │\n│ │ │평가요청│ │    │ │맥락확인│ │ │\n│ │ └────────┘ │    │ └────────┘ │ │\n│ └────────────┘    └────────────┘ │\n└──────────────────────────────────┘\n```"
       }
     ]
   }]
 })
 ```
 
-**중요**: `markdown` 필드에는 해당 컨텍스트에 맞는 실제 키워드를 넣어라. 제네릭 플레이스홀더(Step 1, Card 1)가 아닌 실제 내용을 반영한 프리뷰를 보여줘야 사용자가 판단할 수 있다. 전각 문자(한글)는 **2칸**이다 — 치환 후 모든 줄의 박스 우변 `│`가 일직선인지 반드시 검산하라. 깨진 박스는 프리뷰가 아니라 소음이다.
+**중요**: `preview` 필드에는 해당 컨텍스트에 맞는 실제 키워드를 넣어라. 제네릭 플레이스홀더(Step 1, Card 1)가 아닌 실제 내용을 반영한 프리뷰를 보여줘야 사용자가 판단할 수 있다. 전각 문자(한글)는 **2칸**이다 — 치환 후 모든 줄의 박스 우변 `│`가 일직선인지 반드시 검산하라. 깨진 박스는 프리뷰가 아니라 소음이다.
 
 ## Document Insertion
 
@@ -315,61 +317,13 @@ python3 {SKILL_DIR}/scripts/validate_figure.py /tmp/blog-figure-{name}.html --pa
 - `--pattern Terminal`을 주면 단어 한도가 20→35로 올라간다(Terminal만 예외). 다른 패턴은 `--pattern` 생략 가능.
 - 린터는 **렌더링하지 않는다.** 룰 위반만 잡는다 — "구조가 맞나·예쁜가·키워드가 한눈에 잡히나"는 9단계 육안 검수의 몫이다. 둘은 상호 보완이지 대체가 아니다.
 
-## Capture (pick whichever is available)
+## Capture
 
-**캡처 전 폰트 로드 확인 (필수)**: `document.fonts.check()`로 검사하지 마라 — Google Fonts CSS
-로드 자체가 실패하면(@font-face 미등록) `check()`는 매칭 face가 없어도 true를 반환하므로, 정확히
-그 실패 모드(오프라인·CDN 차단)를 통과시킨다. 대신 페이지 컨텍스트에서 로드된 face의 존재를
-직접 단언하라:
+**캡처 단계에서 [references/capture.md](references/capture.md)를 읽어라.** 폰트 로드 확인(필수),
+갤러리 검수, 도구별 절차, 실패 복구가 모두 거기에 있다.
 
-```js
-await document.fonts.ready;
-const noto = [...document.fonts].filter(f => f.family.replace(/["']/g, '') === 'Noto Sans KR');
-const ok = noto.some(f => f.status === 'loaded') && !noto.some(f => f.status === 'error');
-```
-
-`ok`가 false면 시스템 fallback 폰트로 그대로 캡처하지 말고, 네트워크 상태를 점검한 뒤 재시도하라.
-문서가 실제로 쓰는 weight(본문 700, 타이틀 900)는 사용 시점에 로드가 트리거되므로 실패하면
-`status === 'error'`로 잡힌다. `validate_figure.py`는 정적 린트일 뿐이라 폰트 렌더링 깨짐은 잡지
-못한다 — 이건 육안 확인의 몫이다.
-
-**30개 패턴 전체 검수용 gallery**:
-```bash
-python3 {SKILL_DIR}/scripts/render_pattern_previews.py --clean --output-dir /tmp/blog-figure-previews
-```
-검수용 gallery는 `file:///tmp/blog-figure-previews/index.html` 이다. Playwright MCP/CLI는 `file://`를 차단할 수 있으니 필요하면 `python3 -m http.server 8123 --directory /private/tmp` 후 `http://127.0.0.1:8123/blog-figure-previews/index.html`로 연다. 상세 검수는 `?density=detail` 쿼리를 붙여 2열 확대 모드로 본다. 상단 ready counter가 `30 / 30 ready`가 된 뒤 캡처하라.
-
-**Chrome DevTools MCP** (preferred when Chrome is open):
-1. `mcp__chrome-devtools__emulate` → viewport `{width:1440, height:810, deviceScaleFactor:2}` (retina 2880×1620)
-2. `mcp__chrome-devtools__navigate_page` → `file:///tmp/blog-figure-{name}.html`
-3. `mcp__chrome-devtools__take_screenshot` → `filePath: {target}.png`
-4. After capture: `mcp__chrome-devtools__emulate` → viewport `null` (reset)
-
-**Chrome CLI** (retina 2x 가능 — Chrome DevTools MCP 다음 순위. macOS 바이너리:
-`/Applications/Google Chrome.app/Contents/MacOS/Google Chrome`):
-```bash
-# 단일 figure — retina 2x (2880×1620)
-google-chrome --headless --disable-gpu --hide-scrollbars --force-device-scale-factor=2 --virtual-time-budget=5000 --window-size=1440,810 --screenshot={target}.png "file:///tmp/blog-figure-{name}.html"
-# 30-pattern gallery 검수
-google-chrome --headless --disable-gpu --hide-scrollbars --virtual-time-budget=5000 --window-size=1600,4200 --screenshot=/tmp/blog-figure-previews/gallery-chrome.png "file:///tmp/blog-figure-previews/index.html?density=detail"
-```
-
-**Playwright MCP** (deviceScaleFactor 지정 불가 → 1440×810 1x 산출. 최후 수단):
-1. `mcp__playwright__browser_resize` → 1440×810
-2. `mcp__playwright__browser_navigate` → `file:///tmp/blog-figure-{name}.html`
-3. `mcp__playwright__browser_take_screenshot` → `filename: {target}.png`
-
-**Playwright CLI** (`--scale`/`--device-scale-factor` 플래그 부재 → 1440×810 1x 산출. 최후 수단):
-```bash
-npx playwright screenshot --viewport-size="1440,810" file:///tmp/blog-figure-{name}.html {target}.png
-npx playwright screenshot --viewport-size="1600,4200" --wait-for-selector="body[data-gallery-ready='1']" --wait-for-timeout=3000 "http://127.0.0.1:8123/blog-figure-previews/index.html?density=detail" /tmp/blog-figure-previews/gallery-playwright.png
-```
-
-**캡처 실패 시 복구**:
-1. Chrome DevTools 연결 실패 → Chrome CLI(retina 2x) 시도 → Playwright MCP/CLI(1x, 최후 수단) 시도
-2. 빈 PNG / 흰 화면 → HTML 파일을 `Read`로 확인 후 `file://` 경로가 올바른지 점검. `{SKILL_DIR}` 경로가 실제 figure.css 위치와 일치하는지 확인
-3. 폰트 깨짐 → Canvas/D3 패턴에서 `document.fonts.ready.then()` 래핑 누락 여부 확인
-4. 모든 방법 실패 → HTML 파일 경로를 사용자에게 알려주고 수동 캡처 요청
+도구 우선순위: **Chrome DevTools MCP → Chrome CLI(retina 2x, 2880×1620) → Playwright MCP/CLI
+(1x, 최후 수단)**. retina 2x가 표준이고 Playwright는 deviceScaleFactor를 못 줘서 1x 폴백이다.
 
 ## Patterns
 
@@ -431,27 +385,8 @@ Full design constraints are in [references/design-rules.md](references/design-ru
 
 ### 컴포넌트 수량 제한 — 시원시원한 배치
 
-**적은 수의 큰 컴포넌트 > 많은 수의 작은 컴포넌트**
-
-| 패턴 | 최대 수량 | 이유 |
-|------|---------|------|
-| Flow | **3단계** | 3개면 비교 충분, 5개면 텍스트 덩어리 |
-| Timeline | **3블록** | 블록 크기↑, 라벨 가독성↑ |
-| Storyboard | **4패널 (2×2)** | 패널 크기 2배 확보 |
-| Bar chart | **4행** | 바 높이 충분히 확보 |
-| Architecture | **3레이어, 레이어당 3노드** (2노드면 너무 빈약) | 시스템 구조의 풍부함 |
-| Split 비교 | **양쪽 각 2~3카드** | 카드 크기 유지 |
-| Journey | **4단계** | dot 간 여백 확보 |
-| Schema | **3테이블, 테이블당 3~4필드** | 글자 크기 유지 |
-| Terminal | **3카드, 카드당 옵션 2개 (max 3)** | 질문 max 12자 1줄, `<br>` 금지 |
-| Matrix | **2×2. 코너 4자 이내 또는 빈칸** | 축 라벨이 의미 전달 |
-| Waffle | **1 grid (10x10), 2 카테고리** | 총 ~8단어 (범례 포함) |
-| Typographic | **1 primary text (max 8단어)** | attribution max 4단어 |
-| Slope | **max 5항목, 2시점** | 항목명 1단어 |
-| Treemap | **max 6~8 cells** | 라벨 1단어, 80px 미만 숨김 |
-| Radar | **max 5축, 1~2 series** | 축 라벨 1단어 |
-| Dumbbell | **max 5 rows** | 라벨 max 3단어 |
-| Heatmap | **max 7x5 grid (35 cells)** | 셀 ~110x90px |
-| Bullet | **max 3~4 charts** | 범위 3단계 + 타겟 마커 |
-| Sparkline Grid | **max 6 sparklines (3x2)** | 항목당 라벨 1단어 + 값 1개 |
-| Waterfall | **max 6~8 bars** | 라벨 1~2단어, 시작/합계 포함 |
+- **적은 수의 큰 컴포넌트 > 많은 수의 작은 컴포넌트** — 3개면 비교 충분, 많으면 텍스트 덩어리가 된다
+- 수량을 늘리는 대신 **크기·여백·라벨 가독성**을 키워라
+- 패턴별 절대 한도(Flow 3단계, Matrix 2×2, Waffle 2 카테고리 등)는
+  [references/design-rules.md](references/design-rules.md#컴포넌트-수량-제한)의 표가 SSoT다 —
+  HTML 작성 전에 그 표를 확인하라. `validate_figure.py`도 이 표를 기준으로 캡을 검사한다

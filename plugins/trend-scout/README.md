@@ -8,10 +8,14 @@
 
 ## Features
 
-- Adaptive 3-phase fallback chain (direct → TLS impersonation → alternate route)
+- 소스 병렬 수집 — 모든 fetcher를 동시에 돌리고(최대 8 workers) fetcher별 예외를 격리해 부분 실패가 전체 결과를 막지 않음. 네트워크 대기 지배 구간을 직렬에서 병렬로 접어 실행 시간 대폭 단축
+- 전역 데드라인 — `TREND_SCOUT_TIMEOUT_TOTAL`(기본 240s)을 파이프라인 예산으로 적용, 초과한 미완료 소스는 실패로 기록하고 수집된 것만 출력
+- HTTP 재시도 — 429/5xx/timeout에 1회 지수 백오프 재시도(per-request timeout은 `TREND_SCOUT_TIMEOUT_PER_SOURCE`, 기본 20s)
+- Adaptive 3-phase fallback chain (direct → TLS impersonation → alternate route), 실패 원인 분류(blocked_403·rate_limited_429·waf_challenge 등)
 - 20+ sources across 6 families (JSON API, HTML scraper, RSS, social, Naver, GitHub)
+- npm 실주간 다운로드 스코어링 — downloads point API 병렬 조회로 주간 다운로드를 확정(registry 검색 응답의 downloads.weekly와 근소 차이가 날 수 있어 point API 값을 기준으로 쓴다)
 - Universal metadata enrichment (og:description, ld+json)
-- Configurable source queue via `TREND_SCOUT_CONFIG` env var (`_add`/`_remove` semantics)
+- Configurable scoring via `TREND_SCOUT_CONFIG` env var — `source_weights`·`signal_keywords`·`spam_patterns`를 config에서 실제 소비(`_add`/`_remove` semantics)
 - Optional curl_cffi TLS impersonation for WAF-blocked sources
 
 ## Optional Dependencies

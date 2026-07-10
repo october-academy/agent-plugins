@@ -104,12 +104,15 @@ python3 -m http.server 8123 --directory /private/tmp
 - Detail QA URL: `http://127.0.0.1:8123/blog-figure-previews/index.html?density=detail`
 - Ready signal: 상단 counter가 `30 / 30 ready`
 
-### Workspace Review Site
+### Workspace Review Site (dev 전용)
 
 ```bash
 python3 plugins/blog-figure/skills/blog-figure/scripts/build_workspace_review_site.py
 ```
 
+- **dev 전용 도구**: 30개 eval 산출물이 담긴 `blog-figure-workspace`가 있을 때만 동작한다.
+  이 workspace는 배포 플러그인에 포함되지 않으므로 일반 사용에는 필요 없다 — workspace가 없으면
+  스크립트가 무엇이 없는지 안내하고 종료한다
 - Review entry: `plugins/blog-figure/skills/blog-figure-workspace/review/index.html`
 - 목적: `final-test` + `iteration-3`의 30개 eval 산출물을 HTTP-friendly review copy로 한 번에 검수
 - MCP 검수 시에는 `plugins/blog-figure/skills/blog-figure-workspace/review/` 상위를 HTTP로 서빙해서 연다
@@ -132,6 +135,14 @@ npx playwright screenshot --viewport-size="1600,4200" --wait-for-selector="body[
 
 ## Changelog
 
+- **2.4.0** — 품질 패스(감사 + 30패턴 시각 리뷰 + fresh-context 검증). ① SKILL.md의
+  AskUserQuestion `markdown` 필드(현행 스키마에 없음) 8곳을 `preview`로 교정, Capture 절차를
+  `references/capture.md`로 이관. ② `validate_figure.py`의 `<style>` 내 hex 미탐 수정,
+  `build_workspace_review_site.py` workspace 부재 시 안내 종료. ③ 패턴 레퍼런스 시각 결함
+  일괄 해소 — Waffle 100셀 완성 SVG(critical), Isometric 라벨 가림, Interaction 시퀀스 의미,
+  Typographic 중앙정렬, Funnel 폭 규칙 문서화, 수직 여백 과다 계열 정상화. ④ evals.json
+  보정 — Loop 노드 상한을 스킬 표준형(4+center)에 정합, Slope/Dumbbell 단어 예산 예외,
+  MDX 삽입·PNG 캡처 assertion 추가.
 - **2.3.0** — [html-effectiveness](https://thariqs.github.io/html-effectiveness/) 20개 데모
   벤치마킹 결과 반영. ① ASCII 프리뷰 전각(한글=2칸) 정렬 결함 수정 — SKILL.md 예제 4개와
   pattern-previews.md 템플릿 21개 교정, 전각 검산 규칙 명문화. ② 패턴 선택 시 요청하면

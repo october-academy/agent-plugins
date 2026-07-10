@@ -1,6 +1,6 @@
 ---
 name: vague
-description: This skill should be used when the user's request or requirement is ambiguous and needs iterative questioning to become actionable. Trigger on "clarify requirements", "refine requirements", "요구사항 명확히", "요구사항 정리", "make this clearer", "spec this out", "scope this", "/clarify". Turns vague inputs into concrete specs. For strategy blind spots use unknown; for content-vs-form reframing use metamedium.
+description: This skill should be used when the user's request or requirement is ambiguous and needs iterative questioning to become actionable. Trigger on "clarify requirements", "refine requirements", "요구사항 명확히", "요구사항 정리", "make this clearer", "spec this out", "scope this", "/clarify:vague". Turns vague inputs into concrete specs. For strategy blind spots use unknown; for content-vs-form reframing use metamedium.
 user-invocable: true
 argument-hint: [requirement]
 ---
@@ -34,15 +34,14 @@ Parse input:
 
 ## Initialization
 
-1. Create `.claude/clarify-vague.local.md`:
+1. Create `.claude/clarify-vague.local.md` at the project root (the current working directory). The Stop hook resolves the same path from the hook `cwd`.
 
 ```markdown
 ---
-active: true
 iteration: 1
 max_iterations: [MAX_ITERATIONS]
 original_requirement: "[REQUIREMENT]"
-started_at: "[ISO timestamp]"
+started_at: "[ISO 8601 timestamp, e.g. 2026-07-10T14:30:00+09:00]"
 ---
 
 ## Original Requirement
@@ -52,6 +51,8 @@ started_at: "[ISO timestamp]"
 (Decisions are appended as the loop progresses)
 ```
 
+`started_at` is required: the Stop hook has no session id at skill time, so it binds the loop to the current session on its first fire (adds `session_id` itself) and uses `started_at` for a 2-hour TTL. Do not add `session_id` yourself.
+
 2. Confirm activation:
 
 ```text
@@ -60,7 +61,7 @@ Vague clarification loop activated!
 Original Requirement: "[REQUIREMENT]"
 Max Iterations: [MAX_ITERATIONS]
 
-To cancel: /cancel
+Say "cancel" or "stop" anytime to end the loop.
 ```
 
 ## Protocol
@@ -76,20 +77,29 @@ Capture unknowns across categories:
 
 ### Phase 2: Iterative Clarification
 
-Use AskUserQuestion to resolve ambiguities.
+Use AskUserQuestion to resolve ambiguities. This section is the single source of
+truth for how questions are shaped — the Stop hook only re-injects a pointer back
+to these rules, it does not restate them.
 
 Rules:
-- Ask exactly **4 questions** per round
-- Use exactly **4 options** per question
-- Last question's last option must be: `Clarification complete - proceed with current understanding`
-- Batch all 4 questions in a single AskUserQuestion call
-- Cap total rounds by `--max-iterations`
+- Ask **only as many questions as there are material ambiguities**, up to a maximum of **4 per round**. Padding to a fixed count adds cognitive load without adding information.
+- Give each question **2–4 options**, each a plausible hypothesis of the user's intent — no filler options to reach a fixed count.
+- The **last question of each round** must offer a completion option: `Clarification complete - proceed with current understanding`.
+- Batch the round's questions in a single AskUserQuestion call.
+- Cap total rounds by `--max-iterations`.
 
 ### Phase 3: Completion Check
 
-Stop when either condition is met:
-- User selects clarification-complete option
+Stop when any condition is met:
+- User selects the clarification-complete option
+- User signals cancellation (see Cancellation below)
 - Max iterations reached
+
+### Cancellation
+
+If the user signals they want to cancel or stop the loop (e.g. "cancel", "stop",
+"그만", "중단"), delete `.claude/clarify-vague.local.md` and end the loop without a
+summary.
 
 ### Phase 4: Before/After Summary
 
@@ -128,4 +138,4 @@ Only output the promise when clarification is genuinely complete.
 4. Preserve user intent (refine, do not redirect)
 5. Keep language concrete and implementation-relevant
 
-Now begin by creating the state file, identifying four critical ambiguities, and asking the first AskUserQuestion batch.
+Now begin by creating the state file, identifying the material ambiguities (up to four), and asking the first AskUserQuestion batch.

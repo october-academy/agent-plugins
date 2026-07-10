@@ -1,4 +1,5 @@
 """Shared utilities for trend-scout pipeline."""
+import concurrent.futures
 import datetime as dt
 import email.utils
 import html
@@ -6,8 +7,11 @@ import json
 import math
 import os
 import re
+import socket
 import subprocess
 import sys
+import time
+import urllib.error
 import urllib.parse
 import urllib.request
 import xml.etree.ElementTree as ET
@@ -57,10 +61,11 @@ SOURCE_WEIGHTS = {
 }
 SPAM_PATTERNS = [
     r"\bhiring\b",
+    r"\bwe['’]?re hiring\b",
     r"\bfor hire\b",
-    r"\bcofounder\b",
-    r"\bjob\b",
-    r"\blooking for\b",
+    r"\bjob opening\b",
+    r"\bjob posting\b",
+    r"\blooking for (?:a |an )?(?:co-?founder|cofounder|developer to hire|contractor|freelancer)\b",
     r"\bnewsletter\b",
     r"^\s*공지",
     r"^\s*창당",
@@ -98,9 +103,109 @@ DEVTO_THEME_TAGS = {
     "typescript", "react", "nextjs", "startup", "saas", "devops",
 }
 
-TREND_SCOUT_TIMEOUT_PER_SOURCE = int(os.environ.get("TREND_SCOUT_TIMEOUT_PER_SOURCE", "30"))
+TREND_SCOUT_TIMEOUT_PER_SOURCE = int(os.environ.get("TREND_SCOUT_TIMEOUT_PER_SOURCE", "20"))
 TREND_SCOUT_TIMEOUT_TOTAL = int(os.environ.get("TREND_SCOUT_TIMEOUT_TOTAL", "240"))
 TREND_SCOUT_ENRICH = os.environ.get("TREND_SCOUT_ENRICH", "1") != "0"
+
+# Numbers only count as a "signal" when attached to a unit/percent/multiplier/currency —
+# a bare digit (e.g. "top 5 tips", "version 2") is not enough to be interesting.
+NUMERIC_SIGNAL_RE = re.compile(
+    r"""
+      [$₩€£]\s?\d                                  # currency prefix ($10, ₩5000)
+    | \d[\d,.]*\s?[%％]                             # percent (300%)
+    | \d[\d,.]*\s?x\b                               # multiplier (10x)
+    | \d[\d,.]*\s?배                                # multiplier (10배)
+    | \d[\d,.]*\s?[kmb]\b                           # magnitude (10k, 3m, 1b)
+    | \d[\d,.]*\s?(?:억|만|천)                       # korean magnitude (1억, 3만)
+    | \d[\d,.]*\s?(?:users?|stars?|downloads?|installs?|subscribers?
+                    |mrr|arr|원|달러|dollars?)      # count + unit word
+    """,
+    re.X,
+)
+
+# HTTP statuses worth one automatic retry (transient server / rate-limit errors).
+RETRY_STATUS_CODES = {429, 500, 502, 503, 504}
+
+# Runtime-tunable knobs. Seeded from the module constants above and overridden by
+# load_config() so config/default.json (and TREND_SCOUT_CONFIG) actually drive scoring.
+_RUNTIME = {
+    "source_weights": dict(SOURCE_WEIGHTS),
+    "signal_keywords": list(SIGNAL_KEYWORDS),
+    "spam_patterns": list(SPAM_PATTERNS),
+}
+
+
+def plugin_version():
+    """Read the plugin version from .claude-plugin/plugin.json (fallback constant)."""
+    fallback = "1.7.0"
+    manifest = os.path.join(
+        os.path.dirname(__file__), "..", "..", "..", ".claude-plugin", "plugin.json"
+    )
+    try:
+        with open(manifest, encoding="utf-8") as handle:
+            return json.load(handle).get("version", fallback) or fallback
+    except (OSError, ValueError):
+        return fallback
+
+
+USER_AGENT_VERSION = plugin_version()
+
+
+def apply_runtime_config(config):
+    """Thread config-loaded scoring inputs into the module runtime state.
+
+    Called once by load_config(); after this, trend_score/looks_spam/has_signal_text
+    consume config/default.json values instead of the hard-coded constants.
+    """
+    weights = config.get("source_weights")
+    if isinstance(weights, dict) and weights:
+        _RUNTIME["source_weights"] = dict(weights)
+    keywords = config.get("signal_keywords")
+    if isinstance(keywords, list) and keywords:
+        _RUNTIME["signal_keywords"] = [str(kw).lower() for kw in keywords]
+    patterns = config.get("spam_patterns")
+    if isinstance(patterns, list) and patterns:
+        _RUNTIME["spam_patterns"] = list(patterns)
+
+
+class FetchError(Exception):
+    """HTTP-layer error carrying the status code and (truncated) response body so
+    FallbackChain/classify_failure can tell a 403 block from a 429 or a WAF page."""
+
+    def __init__(self, message, status_code=None, response_body=""):
+        super().__init__(message)
+        self.status_code = status_code
+        self.response_body = response_body or ""
+
+
+def _is_retryable(exc):
+    code = getattr(exc, "status_code", None) or getattr(exc, "code", None)
+    if code in RETRY_STATUS_CODES:
+        return True
+    if isinstance(exc, (socket.timeout, TimeoutError)):
+        return True
+    if isinstance(exc, urllib.error.URLError):
+        reason = getattr(exc, "reason", None)
+        if isinstance(reason, (socket.timeout, TimeoutError)):
+            return True
+        if "timed out" in str(reason).lower():
+            return True
+    message = str(exc).lower()
+    return "timed out" in message or "timeout" in message
+
+
+def with_retry(operation, retries=1, base_delay=0.5):
+    """Run operation(), retrying once (default) with exponential backoff on transient
+    failures (429/5xx/timeout). Non-transient errors propagate immediately."""
+    attempt = 0
+    while True:
+        try:
+            return operation()
+        except Exception as exc:
+            if attempt >= retries or not _is_retryable(exc):
+                raise
+            time.sleep(base_delay * (2 ** attempt))
+            attempt += 1
 
 
 def has_curl_cffi():
@@ -127,6 +232,14 @@ def curl_cffi_request(url, headers, impersonate="safari"):
 
 
 def classify_failure(exc, response_body="", status_code=None):
+    # Pull status/body off the exception when the caller did not pass them explicitly,
+    # so FetchError (and urllib HTTPError) surface blocked_403 / rate_limited_429 / waf.
+    if status_code is None and exc is not None:
+        status_code = getattr(exc, "status_code", None)
+        if status_code is None:
+            status_code = getattr(exc, "code", None)
+    if not response_body and exc is not None:
+        response_body = getattr(exc, "response_body", "") or ""
     if status_code == 403:
         return "blocked_403"
     if status_code == 429:
@@ -218,26 +331,65 @@ def run_command(args):
     return subprocess.run(args, capture_output=True, text=True, check=False)
 
 
-def curl_json(url, headers=None):
-    headers = headers or {}
-    command = ["curl", "-sSL", "--compressed", "--max-time", "20"]
+def _curl_json_once(url, headers):
+    command = ["curl", "-sSL", "--compressed", "--max-time", str(TREND_SCOUT_TIMEOUT_PER_SOURCE),
+               "-w", "\\n%{http_code}"]
     for key, value in headers.items():
         command.extend(["-H", f"{key}: {value}"])
     command.append(url)
     completed = run_command(command)
     if completed.returncode != 0:
-        raise RuntimeError(completed.stderr.strip() or f"curl failed for {url}")
+        # Transport-level failure (DNS, connection, curl code 28 timeout, ...).
+        raise FetchError(completed.stderr.strip() or f"curl failed for {url}")
+    body, _, code_str = completed.stdout.rpartition("\n")
+    status_code = int(code_str) if code_str.strip().isdigit() else None
+    if status_code is not None and status_code >= 400:
+        raise FetchError(
+            f"HTTP {status_code} from {url}",
+            status_code=status_code,
+            response_body=body[:2000],
+        )
     try:
-        return json.loads(completed.stdout)
+        return json.loads(body)
     except json.JSONDecodeError as exc:
-        snippet = completed.stdout[:180].replace("\n", " ")
-        raise RuntimeError(f"non-json response from {url}: {snippet}") from exc
+        snippet = body[:180].replace("\n", " ")
+        raise FetchError(
+            f"non-json response from {url}: {snippet}",
+            status_code=status_code,
+            response_body=body[:2000],
+        ) from exc
+
+
+def curl_json(url, headers=None):
+    headers = headers or {}
+    return with_retry(lambda: _curl_json_once(url, headers))
+
+
+def _http_json_once(url, headers):
+    request = urllib.request.Request(url, headers=headers or {})
+    try:
+        with urllib.request.urlopen(request, timeout=TREND_SCOUT_TIMEOUT_PER_SOURCE) as response:
+            return json.load(response)
+    except urllib.error.HTTPError as exc:
+        raise FetchError(
+            f"HTTP {exc.code} from {url}",
+            status_code=exc.code,
+            response_body=_read_http_error_body(exc),
+        ) from exc
 
 
 def http_json(url, headers=None):
-    request = urllib.request.Request(url, headers=headers or {})
-    with urllib.request.urlopen(request, timeout=20) as response:
-        return json.load(response)
+    return with_retry(lambda: _http_json_once(url, headers))
+
+
+def _read_http_error_body(exc):
+    try:
+        raw = exc.read()
+    except Exception:
+        return ""
+    if isinstance(raw, bytes):
+        return raw[:2000].decode("utf-8", "ignore")
+    return str(raw)[:2000]
 
 
 def decode_body(raw, header_charset=None, fallback_encodings=None):
@@ -258,15 +410,26 @@ def decode_body(raw, header_charset=None, fallback_encodings=None):
     return raw.decode("utf-8", "ignore")
 
 
-def http_text(url, headers=None, fallback_encodings=None):
+def _http_text_once(url, headers, fallback_encodings):
     request = urllib.request.Request(url, headers=headers or {})
-    with urllib.request.urlopen(request, timeout=20) as response:
-        raw = response.read()
-        return decode_body(
-            raw,
-            header_charset=response.headers.get_content_charset(),
-            fallback_encodings=fallback_encodings,
-        )
+    try:
+        with urllib.request.urlopen(request, timeout=TREND_SCOUT_TIMEOUT_PER_SOURCE) as response:
+            raw = response.read()
+            return decode_body(
+                raw,
+                header_charset=response.headers.get_content_charset(),
+                fallback_encodings=fallback_encodings,
+            )
+    except urllib.error.HTTPError as exc:
+        raise FetchError(
+            f"HTTP {exc.code} from {url}",
+            status_code=exc.code,
+            response_body=_read_http_error_body(exc),
+        ) from exc
+
+
+def http_text(url, headers=None, fallback_encodings=None):
+    return with_retry(lambda: _http_text_once(url, headers, fallback_encodings))
 
 
 def clean_text(text):
@@ -414,12 +577,17 @@ def batch_enrich(items, cap=3):
 
     with concurrent.futures.ThreadPoolExecutor(max_workers=4) as executor:
         futures = {executor.submit(do_enrich, x): x for x in to_enrich}
-        for future in concurrent.futures.as_completed(futures, timeout=TREND_SCOUT_TIMEOUT_TOTAL):
-            try:
-                idx, enriched = future.result()
-                items[idx] = dict(items[idx], summary=enriched)
-            except Exception:
-                pass
+        try:
+            for future in concurrent.futures.as_completed(futures, timeout=TREND_SCOUT_TIMEOUT_PER_SOURCE):
+                try:
+                    idx, enriched = future.result()
+                    items[idx] = dict(items[idx], summary=enriched)
+                except Exception:
+                    pass
+        except concurrent.futures.TimeoutError:
+            # Enrichment is best-effort; keep whatever finished in time and move on
+            # rather than letting the deadline bubble out of the fetcher.
+            pass
     return items
 
 
@@ -432,7 +600,7 @@ def looks_spam(title, summary=""):
     blob = f"{title} {summary}".lower()
     if not title or title.lower() in {"[deleted]", "[removed]"}:
         return True
-    for pattern in SPAM_PATTERNS:
+    for pattern in _RUNTIME["spam_patterns"]:
         if re.search(pattern, blob):
             return True
     return False
@@ -440,9 +608,9 @@ def looks_spam(title, summary=""):
 
 def has_signal_text(title, summary=""):
     blob = f"{title} {summary}".lower()
-    if re.search(r"\d", blob):
+    if NUMERIC_SIGNAL_RE.search(blob):
         return True
-    return any(keyword in blob for keyword in SIGNAL_KEYWORDS)
+    return any(keyword in blob for keyword in _RUNTIME["signal_keywords"])
 
 
 def url_has_theme_signal(url):
@@ -475,7 +643,7 @@ def trend_score(source, score=0, comments=0, stars=0, reactions=0, created_at=No
         + math.log10(max(float(stars), 1.0)) * 18.0
         + freshness_bonus(created_at, now, days)
     )
-    return round(base * SOURCE_WEIGHTS.get(source, 1.0), 2)
+    return round(base * _RUNTIME["source_weights"].get(source, 1.0), 2)
 
 
 def normalized_item(
@@ -735,6 +903,7 @@ def load_config():
             overrides = json.load(f)
         config = _apply_overrides(config, overrides)
 
+    apply_runtime_config(config)
     return config
 
 

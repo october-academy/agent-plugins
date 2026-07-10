@@ -7,6 +7,7 @@ import argparse
 import json
 import re
 import shutil
+import sys
 from pathlib import Path
 
 
@@ -243,6 +244,21 @@ def main() -> None:
     args = parse_args()
     workspace = args.workspace.resolve()
     output = args.output.resolve()
+
+    # dev 전용 도구: blog-figure-workspace(30개 eval 산출물)는 배포 플러그인에 포함되지
+    # 않는다. workspace가 없으면 FileNotFoundError로 죽지 말고 무엇이 없는지 안내하고 종료.
+    if not workspace.exists() or not (workspace / "evals" / "evals.json").exists():
+        print(
+            "이 스크립트는 dev 전용 도구입니다 — 30개 eval 산출물이 담긴\n"
+            "blog-figure-workspace가 있을 때만 review 사이트를 만들 수 있습니다.\n"
+            "설치된 플러그인에는 workspace가 포함되지 않으므로 일반 사용에는 필요 없습니다.\n"
+            f"  찾은 경로: {workspace}\n"
+            "  (필요한 파일: evals/evals.json 와 final-test/… 또는 iteration-3/… 산출물)\n"
+            "workspace 위치가 다르면 --workspace 로 직접 지정하세요.",
+            file=sys.stderr,
+        )
+        raise SystemExit(1)
+
     skill_dir = Path(__file__).resolve().parent.parent
     css_text = (skill_dir / "assets" / "figure.css").read_text()
     evals = load_evals(workspace)
@@ -254,15 +270,15 @@ def main() -> None:
 
     entries: list[dict] = []
     for item in evals:
-        src = resolve_source_html(workspace, item["eval_name"])
-        slug = f"{item['id']:02d}-{item['eval_name']}"
+        src = resolve_source_html(workspace, item["name"])
+        slug = f"{item['id']:02d}-{item['name']}"
         html = src.read_text()
         review_html = inline_css(html, css_text)
         (figures_dir / f"{slug}.html").write_text(review_html)
         entries.append(
             {
                 "id": item["id"],
-                "name": item["eval_name"],
+                "name": item["name"],
                 "slug": slug,
                 "source": src.relative_to(workspace).as_posix(),
                 "original_href": "../" + src.relative_to(workspace).as_posix(),

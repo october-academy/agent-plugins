@@ -2,23 +2,43 @@
 Offline unit tests for trend-scout Phase 1 components.
 Run: python -m pytest test_lib.py -v
 """
+import datetime as dt
+import io
 import os
 import sys
 import unittest
+import urllib.error
 from unittest.mock import MagicMock, patch
 
 sys.path.insert(0, os.path.dirname(__file__))
 
+import lib
 from lib import (
+    apply_runtime_config,
     classify_failure,
     dedupe_items,
     enrich_summary,
     extract_ld_json,
     FallbackChain,
+    FetchError,
+    has_signal_text,
+    http_json,
     http_text,
+    looks_spam,
+    trend_score,
+    with_retry,
 )
 
 FALLBACK_EVENTS = []
+
+FIXED_NOW = dt.datetime(2026, 7, 10, 12, 0, 0, tzinfo=dt.timezone.utc)
+
+
+def _reset_runtime():
+    """Restore module runtime scoring inputs to the hard-coded defaults."""
+    lib._RUNTIME["source_weights"] = dict(lib.SOURCE_WEIGHTS)
+    lib._RUNTIME["signal_keywords"] = list(lib.SIGNAL_KEYWORDS)
+    lib._RUNTIME["spam_patterns"] = list(lib.SPAM_PATTERNS)
 
 
 # ---------------------------------------------------------------------------
@@ -217,6 +237,222 @@ class TestFallbackChain(unittest.TestCase):
         self.assertIn("reason", event)
         self.assertEqual(event["source"], "my_source")
         self.assertTrue(any(e["source"] == "my_source" for e in FALLBACK_EVENTS))
+
+    def test_fetch_error_surfaces_403(self):
+        # A phase raising FetchError(403) must classify as blocked_403 via the exception.
+        phase = MagicMock(side_effect=FetchError("blocked", status_code=403))
+        chain = FallbackChain([phase], "blocked_source")
+        result, event = chain.execute(fallback_events=FALLBACK_EVENTS)
+        self.assertIsNone(result)
+        self.assertEqual(event["reason"], "blocked_403")
+
+    def test_fetch_error_surfaces_429(self):
+        phase = MagicMock(side_effect=FetchError("slow down", status_code=429))
+        chain = FallbackChain([phase], "rate_source")
+        _, event = chain.execute(fallback_events=FALLBACK_EVENTS)
+        self.assertEqual(event["reason"], "rate_limited_429")
+
+    def test_fetch_error_surfaces_waf(self):
+        body = "<html>challenge-platform blah</html>"
+        phase = MagicMock(side_effect=FetchError("waf", status_code=200, response_body=body))
+        chain = FallbackChain([phase], "waf_source")
+        _, event = chain.execute(fallback_events=FALLBACK_EVENTS)
+        self.assertEqual(event["reason"], "waf_challenge")
+
+
+# ---------------------------------------------------------------------------
+# TestTrendScore
+# ---------------------------------------------------------------------------
+
+class TestTrendScore(unittest.TestCase):
+
+    def tearDown(self):
+        _reset_runtime()
+
+    def test_source_weight_applied(self):
+        # hackernews weight (1.25) > reddit weight (1.0) for identical raw inputs.
+        hn = trend_score("hackernews", score=100, now=FIXED_NOW)
+        reddit = trend_score("reddit", score=100, now=FIXED_NOW)
+        self.assertAlmostEqual(hn, round(reddit * 1.25, 2), places=2)
+
+    def test_unknown_source_weight_is_one(self):
+        # An unmapped source falls back to weight 1.0, matching a weight-1.0 source.
+        unknown = trend_score("does-not-exist", score=50, now=FIXED_NOW)
+        reddit = trend_score("reddit", score=50, now=FIXED_NOW)
+        self.assertEqual(unknown, reddit)
+
+    def test_freshness_bonus_rewards_recent(self):
+        recent = (FIXED_NOW - dt.timedelta(hours=1)).isoformat()
+        old = (FIXED_NOW - dt.timedelta(hours=20)).isoformat()
+        fresh_score = trend_score("reddit", score=10, created_at=recent, now=FIXED_NOW, days=1)
+        stale_score = trend_score("reddit", score=10, created_at=old, now=FIXED_NOW, days=1)
+        self.assertGreater(fresh_score, stale_score)
+
+    def test_freshness_zero_outside_window(self):
+        outside = (FIXED_NOW - dt.timedelta(hours=30)).isoformat()
+        with_created = trend_score("reddit", score=10, created_at=outside, now=FIXED_NOW, days=1)
+        without = trend_score("reddit", score=10, created_at=None, now=FIXED_NOW, days=1)
+        self.assertEqual(with_created, without)
+
+
+# ---------------------------------------------------------------------------
+# TestConfigConsumption — config/default.json actually drives scoring
+# ---------------------------------------------------------------------------
+
+class TestConfigConsumption(unittest.TestCase):
+
+    def tearDown(self):
+        _reset_runtime()
+
+    def test_source_weight_override_consumed(self):
+        apply_runtime_config({"source_weights": {"reddit": 3.0}})
+        self.assertEqual(lib._RUNTIME["source_weights"]["reddit"], 3.0)
+        boosted = trend_score("reddit", score=10, now=FIXED_NOW)
+        _reset_runtime()
+        base = trend_score("reddit", score=10, now=FIXED_NOW)
+        self.assertAlmostEqual(boosted, round(base * 3.0, 2), places=2)
+
+    def test_signal_keywords_override_consumed(self):
+        apply_runtime_config({"signal_keywords": ["zzunique"]})
+        self.assertTrue(has_signal_text("a post about zzunique widgets"))
+        # A former default keyword no longer counts once the list is replaced.
+        self.assertFalse(has_signal_text("a plain agent story"))
+
+    def test_spam_patterns_override_consumed(self):
+        apply_runtime_config({"spam_patterns": [r"\bbanana\b"]})
+        self.assertTrue(looks_spam("free banana giveaway"))
+        # Default spam trigger no longer fires under the replaced list.
+        self.assertFalse(looks_spam("we are hiring engineers"))
+
+    def test_load_config_applies_defaults(self):
+        config = lib.load_config()
+        self.assertEqual(lib._RUNTIME["source_weights"], config["source_weights"])
+        self.assertEqual(lib._RUNTIME["spam_patterns"], config["spam_patterns"])
+
+
+# ---------------------------------------------------------------------------
+# TestSpamGate — refined phrase-scoped spam patterns
+# ---------------------------------------------------------------------------
+
+class TestSpamGate(unittest.TestCase):
+
+    def tearDown(self):
+        _reset_runtime()
+
+    def test_broad_words_survive(self):
+        # These contain "job" / "looking for" but are legitimate technical topics.
+        for title in [
+            "background job runner for Python",
+            "a job queue built on Redis",
+            "looking for feedback on my open source CLI",
+        ]:
+            self.assertFalse(looks_spam(title), title)
+
+    def test_real_spam_caught(self):
+        for title in [
+            "We are hiring senior engineers",
+            "Looking for a co-founder for my SaaS",
+            "DevRel job opening at Vercel",
+            "Subscribe to my newsletter",
+        ]:
+            self.assertTrue(looks_spam(title), title)
+
+
+# ---------------------------------------------------------------------------
+# TestSignalGate — numeric signal requires a unit/percent/multiplier
+# ---------------------------------------------------------------------------
+
+class TestSignalGate(unittest.TestCase):
+
+    def tearDown(self):
+        _reset_runtime()
+
+    def test_numeric_with_unit_is_signal(self):
+        for title in [
+            "reached $10k MRR this month",
+            "300% growth in Q3",
+            "10x faster cold starts",
+            "5000 users in the first week",
+            "1억 매출 돌파",
+        ]:
+            self.assertTrue(has_signal_text(title), title)
+
+    def test_bare_number_is_not_signal(self):
+        # Numbers with no unit and no keyword must not pass the gate anymore.
+        for title in ["chapter 3 of my journey", "part 2 of the story", "top 5 breakfasts"]:
+            self.assertFalse(has_signal_text(title), title)
+
+    def test_keyword_still_signals(self):
+        self.assertTrue(has_signal_text("a new open source framework"))
+
+
+# ---------------------------------------------------------------------------
+# TestRetry — http-layer retry on 429/5xx/timeout
+# ---------------------------------------------------------------------------
+
+class _FakeResp:
+    def __init__(self, data):
+        self._data = data
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *args):
+        return False
+
+    def read(self):
+        return self._data
+
+
+def _http_error(code):
+    return urllib.error.HTTPError("http://x", code, "err", {}, io.BytesIO(b"boom"))
+
+
+class TestRetry(unittest.TestCase):
+
+    def test_is_retryable_status(self):
+        self.assertTrue(lib._is_retryable(FetchError("x", status_code=503)))
+        self.assertTrue(lib._is_retryable(FetchError("x", status_code=429)))
+        self.assertFalse(lib._is_retryable(FetchError("x", status_code=404)))
+
+    def test_is_retryable_timeout(self):
+        self.assertTrue(lib._is_retryable(TimeoutError("timed out")))
+
+    def test_with_retry_succeeds_after_one_retry(self):
+        op = MagicMock(side_effect=[FetchError("busy", status_code=503), "ok"])
+        with patch("lib.time.sleep"):
+            result = with_retry(op)
+        self.assertEqual(result, "ok")
+        self.assertEqual(op.call_count, 2)
+
+    def test_with_retry_gives_up_on_non_retryable(self):
+        op = MagicMock(side_effect=FetchError("nope", status_code=404))
+        with self.assertRaises(FetchError):
+            with_retry(op)
+        self.assertEqual(op.call_count, 1)
+
+    def test_with_retry_stops_after_retry_budget(self):
+        op = MagicMock(side_effect=FetchError("busy", status_code=500))
+        with patch("lib.time.sleep"):
+            with self.assertRaises(FetchError):
+                with_retry(op)
+        self.assertEqual(op.call_count, 2)
+
+    def test_http_json_wraps_http_error_and_retries(self):
+        # 503 then success — one retry, returns the parsed JSON.
+        with patch("lib.urllib.request.urlopen",
+                   side_effect=[_http_error(503), _FakeResp(b'{"ok": 1}')]) as urlopen, \
+             patch("lib.time.sleep"):
+            result = http_json("http://x")
+        self.assertEqual(result, {"ok": 1})
+        self.assertEqual(urlopen.call_count, 2)
+
+    def test_http_json_wraps_404_no_retry(self):
+        with patch("lib.urllib.request.urlopen", side_effect=_http_error(404)) as urlopen:
+            with self.assertRaises(FetchError) as ctx:
+                http_json("http://x")
+        self.assertEqual(ctx.exception.status_code, 404)
+        self.assertEqual(urlopen.call_count, 1)
 
 
 if __name__ == "__main__":

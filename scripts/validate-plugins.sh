@@ -25,13 +25,13 @@ echo ""
 # Function to print error
 error() {
     echo -e "${RED}ERROR:${NC} $1"
-    ((ERRORS++))
+    ERRORS=$((ERRORS+1))
 }
 
 # Function to print warning
 warning() {
     echo -e "${YELLOW}WARNING:${NC} $1"
-    ((WARNINGS++))
+    WARNINGS=$((WARNINGS+1))
 }
 
 # Function to print success
@@ -50,6 +50,16 @@ echo "=== Validating marketplace.json ==="
 if [ -f "$MARKETPLACE_FILE" ]; then
     if jq empty "$MARKETPLACE_FILE" 2>/dev/null; then
         success "marketplace.json is valid JSON"
+
+        # Check top-level required fields
+        for field in name version owner; do
+            value=$(jq -r ".${field} // empty" "$MARKETPLACE_FILE" 2>/dev/null)
+            if [ -z "$value" ]; then
+                error "marketplace.json missing top-level '$field' field"
+            else
+                success "marketplace.json has top-level '$field' field"
+            fi
+        done
     else
         error "marketplace.json has invalid JSON syntax"
     fi
@@ -79,6 +89,15 @@ for plugin_dir in "$PLUGINS_DIR"/*/; do
             [ -z "$name" ] && error "plugin.json missing 'name' field"
             [ -z "$version" ] && warning "plugin.json missing 'version' field"
             [ -z "$description" ] && warning "plugin.json missing 'description' field"
+
+            # Check plugin.json name matches directory name
+            if [ -n "$name" ]; then
+                if [ "$name" = "$plugin_name" ]; then
+                    success "plugin.json name matches directory name"
+                else
+                    error "plugin.json name '$name' does not match directory name '$plugin_name'"
+                fi
+            fi
         else
             error "plugin.json has invalid JSON syntax"
         fi
@@ -90,8 +109,8 @@ for plugin_dir in "$PLUGINS_DIR"/*/; do
     if [ -f "$plugin_dir/README.md" ]; then
         success "README.md exists"
 
-        # Check for Installation section
-        if grep -q "## Installation" "$plugin_dir/README.md"; then
+        # Check for Installation section (English or Korean heading)
+        if grep -qE "^## (Installation|설치)" "$plugin_dir/README.md"; then
             success "README.md has Installation section"
         else
             warning "README.md missing Installation section"
@@ -157,6 +176,19 @@ for plugin_dir in "$PLUGINS_DIR"/*/; do
     if [ -f "$hooks_json" ]; then
         if jq empty "$hooks_json" 2>/dev/null; then
             success "hooks/hooks.json is valid JSON"
+
+            # Check referenced hook scripts exist (resolve ${CLAUDE_PLUGIN_ROOT})
+            plugin_root="${plugin_dir%/}"
+            while IFS= read -r hook_command; do
+                [ -n "$hook_command" ] || continue
+                resolved="${hook_command//\$\{CLAUDE_PLUGIN_ROOT\}/$plugin_root}"
+                script_path="${resolved%% *}"
+                if [ -f "$script_path" ]; then
+                    success "hooks.json references existing script: ${script_path#"$plugin_root"/}"
+                else
+                    error "hooks.json references missing script: $script_path"
+                fi
+            done < <(jq -r '.. | .command? // empty' "$hooks_json")
         else
             error "hooks/hooks.json has invalid JSON syntax"
         fi
@@ -217,6 +249,28 @@ if [ -f "$MARKETPLACE_FILE" ]; then
                 success "$plugin_name version match: $pj_version"
             else
                 error "$plugin_name version mismatch: plugin.json=$pj_version, marketplace.json=$mp_version"
+            fi
+        fi
+    done
+fi
+
+# 5. Description consistency check
+echo ""
+echo "=== Description consistency ==="
+
+if [ -f "$MARKETPLACE_FILE" ]; then
+    for plugin_dir in "$PLUGINS_DIR"/*/; do
+        plugin_name=$(basename "$plugin_dir")
+        plugin_json="$plugin_dir/.claude-plugin/plugin.json"
+
+        if [ -f "$plugin_json" ]; then
+            pj_description=$(jq -r '.description // "not set"' "$plugin_json")
+            mp_description=$(jq -r ".plugins[] | select(.name==\"$plugin_name\") | .description // \"not set\"" "$MARKETPLACE_FILE")
+
+            if [ "$pj_description" = "$mp_description" ]; then
+                success "$plugin_name description match"
+            else
+                error "$plugin_name description mismatch: plugin.json=\"$pj_description\", marketplace.json=\"$mp_description\""
             fi
         fi
     done

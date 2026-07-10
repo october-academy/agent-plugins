@@ -1,11 +1,16 @@
 ---
 name: trend-scout
-description: "Reddit, HN, GitHub, RSS, npm, Bluesky, Mastodon, 한국 커뮤니티까지 어제~오늘 뜨는 빌더/AI/오픈소스 시그널을 수집하고 Threads 포스트용으로 큐레이션. GitHub는 gh CLI 우선, 없으면 공개 REST API로 폴백. 트리거: '트렌드', '인기글', 'trend scout', '쓰레드 리서치', 'threads 소재', '오늘 뭐 올리지', '콘텐츠 소재', 'reddit 인기글', 'HN 인기글', '깃허브 트렌드', '오픈소스 소재', '해커뉴스', '트렌드 스카우트', 'github trending', 'what is hot on hacker news', 'open source radar', 'reddit trending', 'trending packages', 'daily tech digest', 'tech news today', 'developer trends'. /trend-scout로 실행."
+description: "Reddit, HN, GitHub, RSS, npm, Bluesky, Mastodon, 한국 커뮤니티까지 어제~오늘 뜨는 빌더/AI/오픈소스 시그널을 수집하고 Threads 포스트용으로 큐레이션. GitHub는 gh CLI 우선, 없으면 공개 REST API로 폴백. '지금 뜨는 것'을 넓게 스캔해 후보를 뽑는 큐레이션 전용 스킬이다. 특정 주제를 다각도로 파고드는 심층 리서치는 이 스킬이 아니라 deep-research(다중 소스 fact-check 리포트)·last30days(한 주제의 최근 30일 여론) 영역이다. 트리거: '트렌드', '인기글', 'trend scout', '쓰레드 리서치', 'threads 소재', '오늘 뭐 올리지', '콘텐츠 소재', 'reddit 인기글', 'HN 인기글', '깃허브 트렌드', '오픈소스 소재', '해커뉴스', '트렌드 스카우트', 'github trending', 'what is hot on hacker news', 'open source radar', 'reddit trending', 'trending packages', 'daily tech digest', 'tech news today', 'developer trends'. /trend-scout로 실행."
+user-invocable: true
 ---
 
 # Trend Scout
 
 `insane-search`의 공개 소스 전략을 벤치마킹해서, "지금 뜨는 것"을 Threads 포스트 후보로 정리한다.
+
+이 스킬은 여러 소스를 넓게 스캔해 오늘의 소재 후보를 뽑는 **큐레이션 전용**이다. 특정
+주제 하나를 깊게 파고드는 리서치는 범위가 아니다 — 다중 소스 fact-check 리포트가
+필요하면 `deep-research`, 한 주제의 최근 30일 여론·반응이 필요하면 `last30days`로 라우팅한다.
 
 ## Workflow
 
