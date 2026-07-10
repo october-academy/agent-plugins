@@ -1,6 +1,6 @@
 ---
 name: metamedium
-description: This skill should be used when the key question is whether to optimize content (what) or redesign form (how/medium). Trigger on "내용 vs 형식", "content vs form", "metamedium", "형식을 바꿔볼까", "새로운 포맷", "perspective shift", "diminishing returns". For requirement clarification use vague; for strategy blind spots use unknown.
+description: This skill should be used when the key question is whether to optimize content (what) or redesign form (how/medium). Trigger on "내용 vs 형식", "content vs form", "metamedium", "형식을 바꿔볼까", "새로운 포맷", "perspective shift", "diminishing returns". For requirement clarification use interview; for strategy blind spots use unknown.
 user-invocable: true
 argument-hint: [work-or-plan]
 ---
@@ -15,7 +15,7 @@ Distinguish **content** (what is produced) from **form** (the medium/structure t
 - Repeatedly producing content inside the same format
 - Deciding between incremental optimization vs structural redesign
 
-For requirement clarification, use **vague**. For strategy blind spots, use **unknown**.
+For requirement clarification, use **interview**. For strategy blind spots, use **unknown**.
 
 ## Core Idea
 
@@ -36,7 +36,7 @@ Classify the user's current activities:
 
 ### Phase 2: Fork (AskUserQuestion required)
 
-Ask user to choose one path using options:
+Ask user to choose one path using options (on Codex use `request_user_input`; with no structured-question tool, offer the same options as a numbered plain-text list):
 - Proceed with content optimization
 - Explore form redesign
 - Content now, track form opportunity

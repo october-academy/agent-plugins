@@ -2,7 +2,7 @@
 
 모호함을 다루는 3가지 렌즈를 제공합니다.
 
-- `vague`: 모호한 요구사항을 실행 가능한 스펙으로 명확화
+- `interview`: 모호한 요구사항을 인터뷰로 실행 가능한 스펙까지 명확화
 - `unknown`: 전략/계획의 숨은 가정과 맹점을 4분면으로 점검
 - `metamedium`: 내용(content) 최적화 vs 형식(form) 전환 의사결정
 
@@ -21,22 +21,35 @@ claude plugin install clarify@agent-plugins
 # 4. Restart Claude Code
 ```
 
+Codex CLI(0.144+)에서도 같은 마켓플레이스로 설치합니다:
+
+```bash
+codex plugin marketplace add october-academy/agent-plugins
+codex plugin add clarify@agent-plugins
+```
+
 ## Commands
 
 ```bash
-/clarify:vague "Add a login feature"
+/clarify:interview "Add a login feature"
 /clarify:unknown "B2B growth strategy for next quarter"
 /clarify:metamedium "Our content output is high but outcomes are flat"
 ```
 
-## 1) `vague` - Requirement Clarification
+Codex에서는 스킬이 `clarify:interview` / `clarify:unknown` / `clarify:metamedium`
+이름으로 등록됩니다 — 프롬프트에서 스킬 이름을 지목해 호출하세요. interview의
+반복 루프(Stop 훅)와 옵션 질문은 Codex에서도 동일하게 동작합니다
+(`request_user_input` 폴백).
 
-요구사항이 애매할 때 가설 기반 옵션 질문으로 명세를 고도화합니다.
+## 1) `interview` - Requirement Clarification
 
-- AskUserQuestion 기반 배치 질문 (라운드당 남은 실질 모호성만, 최대 4문항)
-- 옵션 선택 중심으로 인지 부하 감소 (그럴듯한 가설 2~4개)
-- Before/After 요약 + 결정 로그 출력
-- 반복 루프 훅으로 조기 종료 방지 · 취소·중단 의사 표시 시 상태 파일 삭제로 종료
+요구사항이 애매할 때 가설 기반 옵션 인터뷰로 명세를 고도화합니다.
+
+- 질문 전에 코드베이스를 먼저 조사(영토 스윕) — 조사로 답할 수 있는 건 묻지 않음
+- 아키텍처를 바꾸는 질문 우선, 라운드당 최대 4문항 가설 옵션(추천 기본값 `(Recommended)` 표시)
+- 사용자가 생각 못 한 맹점(unknown unknowns)을 최소 1개 발굴해 결정/가정으로 착지
+- Before/After 요약이 결정·가정·잔존 unknown을 구분 기록
+- 라운드별 상태 파일 기록 + 반복 루프 훅으로 중단·컨텍스트 압축에도 재개
 
 ## 2) `unknown` - Strategy Blind Spot Analysis
 
@@ -60,7 +73,7 @@ Known/Unknown 4분면으로 전략 맹점을 찾아 실행 가능한 플레이�
 
 | Lens | Input | Output |
 |------|-------|--------|
-| `vague` | 기능/버그/작업 요구사항 | 실행 가능한 요구사항 스펙 |
+| `interview` | 기능/버그/작업 요구사항 | 실행 가능한 요구사항 스펙 |
 | `unknown` | 전략 문서/의사결정 초안 | 4분면 플레이북 + 실행 로드맵 |
 | `metamedium` | 결과 정체 문제/기획 작업 | content/form 의사결정 + 전환 실험 |
 

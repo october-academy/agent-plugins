@@ -1,0 +1,182 @@
+{
+  "skill_name": "interview",
+  "notes": "인터랙티브 인터뷰 스킬이므로 시뮬레이션 유저 프로토콜로 평가한다: 서브에이전트가 AskUserQuestion 페이로드를 questions_round_N.json으로 기록하고, briefs/의 히든 브리프에 따라 유저 역할로 답한 뒤 인터뷰를 계속한다.",
+  "evals": [
+    {
+      "id": 0,
+      "name": "payment-failure-notification-kr",
+      "prompt": "결제 실패하면 알림 보내줘",
+      "brief": "briefs/eval-0-user-brief.md",
+      "expected_output": "운영자 대상 이메일 알림으로 좁혀진 Before/After 스펙. 고객 알림 오해를 옵션 설계로 조기에 해소하고, 성공 기준(5분 내 수신, 중복 없음)이 요약에 포함됨.",
+      "files": [],
+      "assertions": [
+        {
+          "text": "State file created in project/.claude/ with iteration, max_iterations, original_requirement, and ISO-8601 started_at frontmatter",
+          "type": "check"
+        },
+        {
+          "text": "Every question round has at most 4 questions, batched as a single payload",
+          "type": "count"
+        },
+        {
+          "text": "Every question offers 2-4 concrete hypothesis options (no open-ended-only questions)",
+          "type": "count"
+        },
+        {
+          "text": "Exit/termination handling is honest and economical: the interview stops as soon as nothing material remains, never exceeds max rounds, and any exit option offered does not displace a needed hypothesis option",
+          "type": "qualitative"
+        },
+        {
+          "text": "Final output contains Before (verbatim original) and After sections with Goal/Scope/Constraints/Success Criteria and a decisions table",
+          "type": "check"
+        },
+        {
+          "text": "Promise tag <promise>CLARIFICATION COMPLETE</promise> emitted at the end",
+          "type": "check"
+        },
+        {
+          "text": "Interview resolves the recipient trap: final spec targets the operator, not the customer, traceable to an asked question",
+          "type": "qualitative"
+        },
+        {
+          "text": "No fabricated requirements: every decision in the summary traces to a brief answer or an explicitly recorded assumption",
+          "type": "qualitative"
+        },
+        {
+          "text": "Round-1 questions lead with architecture/design-changing decisions (who is it for, what triggers it, what is in scope) rather than administrative details",
+          "type": "qualitative",
+          "rubric": "D1"
+        },
+        {
+          "text": "Interview surfaces at least one material unknown-unknown the user never stated, and it lands in the final spec as a decision or explicit assumption",
+          "type": "qualitative",
+          "rubric": "D2"
+        },
+        {
+          "text": "Final spec separates user decisions, assistant assumptions (defaults), and residual unknowns",
+          "type": "qualitative",
+          "rubric": "D5"
+        }
+      ]
+    },
+    {
+      "id": 1,
+      "name": "make-app-faster-en",
+      "prompt": "make the app faster",
+      "brief": "briefs/eval-1-user-brief.md",
+      "expected_output": "cold-start 개선으로 좁혀진 스펙 (runtime 성능 아님). 측정 우선 옵션 제시, 성공 기준(M1 Air 5회 평균 3초 미만) 포함.",
+      "files": [],
+      "assertions": [
+        {
+          "text": "State file created in project/.claude/ with iteration, max_iterations, original_requirement, and ISO-8601 started_at frontmatter",
+          "type": "check"
+        },
+        {
+          "text": "Every question round has at most 4 questions, batched as a single payload",
+          "type": "count"
+        },
+        {
+          "text": "Every question offers 2-4 concrete hypothesis options (no open-ended-only questions)",
+          "type": "count"
+        },
+        {
+          "text": "Exit/termination handling is honest and economical: the interview stops as soon as nothing material remains, never exceeds max rounds, and any exit option offered does not displace a needed hypothesis option",
+          "type": "qualitative"
+        },
+        {
+          "text": "Final output contains Before (verbatim original) and After sections with Goal/Scope/Constraints/Success Criteria and a decisions table",
+          "type": "check"
+        },
+        {
+          "text": "Promise tag <promise>CLARIFICATION COMPLETE</promise> emitted at the end",
+          "type": "check"
+        },
+        {
+          "text": "Interview identifies cold-start (not runtime/bundle) as the target via hypothesis options",
+          "type": "qualitative"
+        },
+        {
+          "text": "No fabricated requirements: every decision in the summary traces to a brief answer or an explicitly recorded assumption",
+          "type": "qualitative"
+        },
+        {
+          "text": "Round-1 questions lead with architecture/design-changing decisions (who is it for, what triggers it, what is in scope) rather than administrative details",
+          "type": "qualitative",
+          "rubric": "D1"
+        },
+        {
+          "text": "Interview surfaces at least one material unknown-unknown the user never stated, and it lands in the final spec as a decision or explicit assumption",
+          "type": "qualitative",
+          "rubric": "D2"
+        },
+        {
+          "text": "Final spec separates user decisions, assistant assumptions (defaults), and residual unknowns",
+          "type": "qualitative",
+          "rubric": "D5"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "broken-export-bug-kr",
+      "prompt": "익스포트 기능이 깨졌어. 고쳐줘",
+      "brief": "briefs/eval-2-user-brief.md",
+      "expected_output": "증상(Excel에서만 한글 깨짐, 배포 이후 발생)이 재현 조건과 함께 정리된 버그 스펙. 성공 기준(Windows Excel 정상 표시) 포함. 사용자가 원인 용어를 모르는 상태에서 증상 기반 옵션으로 좁힘.",
+      "files": [],
+      "assertions": [
+        {
+          "text": "State file created in project/.claude/ with iteration, max_iterations, original_requirement, and ISO-8601 started_at frontmatter",
+          "type": "check"
+        },
+        {
+          "text": "Every question round has at most 4 questions, batched as a single payload",
+          "type": "count"
+        },
+        {
+          "text": "Every question offers 2-4 concrete hypothesis options (no open-ended-only questions)",
+          "type": "count"
+        },
+        {
+          "text": "Exit/termination handling is honest and economical: the interview stops as soon as nothing material remains, never exceeds max rounds, and any exit option offered does not displace a needed hypothesis option",
+          "type": "qualitative"
+        },
+        {
+          "text": "Final output contains Before (verbatim original) and After sections with Goal/Scope/Constraints/Success Criteria and a decisions table",
+          "type": "check"
+        },
+        {
+          "text": "Promise tag <promise>CLARIFICATION COMPLETE</promise> emitted at the end",
+          "type": "check"
+        },
+        {
+          "text": "Questions are symptom-based (openable? which app? since when?) rather than assuming a cause; spec captures Excel-only + post-deploy timing",
+          "type": "qualitative"
+        },
+        {
+          "text": "No fabricated requirements: every decision in the summary traces to a brief answer or an explicitly recorded assumption",
+          "type": "qualitative"
+        },
+        {
+          "text": "Round-1 questions lead with architecture/design-changing decisions (who is it for, what triggers it, what is in scope) rather than administrative details",
+          "type": "qualitative",
+          "rubric": "D1"
+        },
+        {
+          "text": "Interview surfaces at least one material unknown-unknown the user never stated, and it lands in the final spec as a decision or explicit assumption",
+          "type": "qualitative",
+          "rubric": "D2"
+        },
+        {
+          "text": "Final spec separates user decisions, assistant assumptions (defaults), and residual unknowns",
+          "type": "qualitative",
+          "rubric": "D5"
+        },
+        {
+          "text": "Interviewer inspects the actual codebase before asking; questions and spec reference the real export implementation, not generic templates",
+          "type": "qualitative",
+          "rubric": "D3"
+        }
+      ]
+    }
+  ]
+}

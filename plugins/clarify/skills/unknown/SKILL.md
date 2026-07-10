@@ -1,6 +1,6 @@
 ---
 name: unknown
-description: This skill should be used when the user provides a strategy, plan, or decision document and wants to surface hidden assumptions and blind spots using the Known/Unknown 4-quadrant framework. Trigger on "known unknown", "4분면 분석", "blind spots", "what am I missing", "뭘 놓치고 있지", "전략 점검", "가정 점검", "quadrant analysis". For requirement clarification use vague; for content-vs-form reframing use metamedium.
+description: This skill should be used when the user provides a strategy, plan, or decision document and wants to surface hidden assumptions and blind spots using the Known/Unknown 4-quadrant framework. Trigger on "known unknown", "4분면 분석", "blind spots", "what am I missing", "뭘 놓치고 있지", "전략 점검", "가정 점검", "quadrant analysis". For requirement clarification use interview; for content-vs-form reframing use metamedium.
 user-invocable: true
 argument-hint: [strategy-topic-or-doc]
 ---
@@ -15,7 +15,7 @@ Surface hidden assumptions and strategic blind spots using the Known/Unknown 4-q
 - Plans with unclear risk boundaries
 - Decision discussions where the team asks: "What are we missing?"
 
-For requirement clarification, use **vague**. For content/form leverage decisions, use **metamedium**.
+For requirement clarification, use **interview**. For content/form leverage decisions, use **metamedium**.
 
 ## Core Lens
 
@@ -34,7 +34,7 @@ Default resource split (adjustable):
 
 ## Non-Negotiable Interaction Rule
 
-Use **AskUserQuestion** for each round (R1/R2/R3). Ask with hypothesis options, not open free-text prompts.
+Use **AskUserQuestion** for each round (R1/R2/R3). Ask with hypothesis options, not open free-text prompts. On Codex the equivalent tool is `request_user_input`; with no structured-question tool, present the same options as a numbered plain-text list and wait for the reply.
 
 ## 3-Round Pattern
 
