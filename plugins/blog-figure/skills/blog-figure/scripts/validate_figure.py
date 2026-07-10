@@ -29,9 +29,22 @@ import sys
 WORD_BUDGET_DEFAULT = 20
 WORD_BUDGET_TERMINAL = 35
 
-# --- per-pattern component caps (SKILL.md "컴포넌트 수량 제한" table) ---
-# class substring -> (max count, human label). Heuristic: counts class occurrences
-# in the HTML. Only flags when clearly over the cap, so false positives stay rare.
+# --- per-pattern component caps (design-rules.md "컴포넌트 수량 제한" table) ---
+# class substring -> (max count, human label). Heuristic: counts occurrences of a
+# per-item class in the HTML. Keyed on the class that appears exactly once per
+# capped unit (e.g. slope-line = one <line> per item), so the count maps cleanly
+# to the documented cap and false positives stay rare.
+#
+# Intentionally omitted (documented caps with no reliable static selector — per
+# the SKILL guidance, don't force a count that's ambiguous):
+#   - Waffle: the 10×10 grid legitimately has 100 `.waffle-cell` rects; the "2
+#     카테고리" cap is on the legend, which has no class. Capping the cells would
+#     false-positive on every valid waffle.
+#   - Sparkline Grid: cards are generated in <script> from a JS array — no static
+#     class markup to count.
+#   - Waterfall: bars share a bare `.bar` class, and `\bbar\b` also matches the
+#     Data Viz `bar-fill`/`bar-row`/… tokens (hyphen is a word boundary), so a cap
+#     on `bar` would misfire on bar charts.
 COMPONENT_CAPS = {
     "flow-card": (3, "Flow 단계"),
     "tl-block": (3, "Timeline 블록"),
@@ -40,6 +53,10 @@ COMPONENT_CAPS = {
     "journey-step": (4, "Journey 단계"),
     "arch-layer": (3, "Architecture 레이어"),
     "terminal-card": (3, "Terminal 카드"),
+    "matrix-cell": (4, "Matrix 셀 (2×2)"),
+    "slope-line": (5, "Slope 항목"),
+    "db-line": (5, "Dumbbell 행"),
+    "actual": (4, "Bullet 차트"),
 }
 
 # Valid CSS hex color (3/4/6/8 digits). Skip HTML entities (&#10095;) via the
@@ -47,10 +64,18 @@ COMPONENT_CAPS = {
 HEX_RE = re.compile(r"(?<!&)#(?:[0-9a-fA-F]{8}|[0-9a-fA-F]{6}|[0-9a-fA-F]{4}|[0-9a-fA-F]{3})(?![0-9a-fA-F])")
 FONT_PX_RE = re.compile(r"font-size\s*:\s*([0-9.]+)px", re.I)
 FONT_REM_RE = re.compile(r"font-size\s*:\s*([0-9.]+)rem", re.I)
-SVG_FONT_RE = re.compile(r'font-size\s*=\s*["\']?([0-9.]+)(px)?["\']?', re.I)
+# SVG font-size attribute (font-size="24" | "24px" | "1.5rem"). Captures the unit
+# so rem/em can be converted to px (×16) before the <20px comparison; unitless == px.
+SVG_FONT_RE = re.compile(r'font-size\s*=\s*["\']?\s*([0-9.]+)\s*(px|rem|em)?', re.I)
 SCRIPT_RE = re.compile(r"<script\b[^>]*>.*?</script>", re.I | re.S)
 STYLE_BLOCK_RE = re.compile(r"<style\b[^>]*>.*?</style>", re.I | re.S)
 SVG_BLOCK_RE = re.compile(r"<svg\b.*?</svg>", re.I | re.S)
+SVG_TAG_RE = re.compile(r"<svg\b", re.I)
+CANVAS_TAG_RE = re.compile(r"<canvas\b", re.I)
+# CSS custom-property definition (`--token: #hex`). The one place a hex literal
+# legitimately lives when figure.css var(--*) is the rule, so it's exempt from the
+# hex check even in a plain <style> block.
+CUSTOM_PROP_DECL_RE = re.compile(r"--[\w-]+\s*:\s*[^;{}]*")
 TAG_RE = re.compile(r"<[^>]+>")
 WORD_RE = re.compile(r"[A-Za-z0-9]+|[가-힣]+")  # latin runs + hangul runs
 
@@ -73,12 +98,24 @@ def check_hex_colors(html: str, findings: list) -> None:
 
     Generative graphics legitimately use hex — the reference patterns set hex
     fills inside <svg>, <canvas>/<script>, and the <style> blocks that drive
-    them. So blank those out and only flag hex in plain inline styles / markup,
-    which is where a layout pattern should be using figure.css variables.
+    them. Scripts and <svg> blocks are always blanked out. The <style> block is
+    where it gets nuanced:
+
+    - If the figure has any <svg>/<canvas>, its <style> may be setting fills that
+      drive that generative graphic, so skip the whole <style> (avoids false
+      positives on generative patterns) — the original behavior.
+    - If there is NO <svg>/<canvas>, it's a pure layout figure: a <style> block
+      must use figure.css var(--*), so scan it too. Only CSS custom-property
+      definitions (`:root { --token: #hex }`) legitimately hold a hex literal, so
+      blank just those and flag every other hardcoded hex.
     """
-    scannable = html
-    for rx in (SCRIPT_RE, STYLE_BLOCK_RE, SVG_BLOCK_RE):
-        scannable = _blank_block(rx, scannable)
+    has_graphics = bool(SVG_TAG_RE.search(html) or CANVAS_TAG_RE.search(html))
+    scannable = _blank_block(SCRIPT_RE, html)
+    scannable = _blank_block(SVG_BLOCK_RE, scannable)
+    if has_graphics:
+        scannable = _blank_block(STYLE_BLOCK_RE, scannable)
+    else:
+        scannable = _blank_block(CUSTOM_PROP_DECL_RE, scannable)
     for m in HEX_RE.finditer(scannable):
         ln = line_of(scannable, m.start())
         findings.append((
@@ -169,17 +206,20 @@ def check_fonts(html_no_script: str, findings: list) -> None:
                 "ERROR", "small-font", ln,
                 f"font-size:{rem:g}rem < 1.25rem(20px) — 최소 폰트 위반.",
             ))
-    # SVG font-size="N" (unitless == px). Only inside <svg>...</svg> blocks.
+    # SVG font-size="N" (unitless == px; rem/em == 16px). Only inside <svg> blocks.
     for svg in re.finditer(r"<svg\b.*?</svg>", html_no_script, re.I | re.S):
         block = svg.group(0)
         base = svg.start()
         for m in SVG_FONT_RE.finditer(block):
-            size = float(m.group(1))
-            if size < 20:
+            raw = float(m.group(1))
+            unit = (m.group(2) or "").lower()
+            px = raw * 16 if unit in ("rem", "em") else raw
+            if px < 20:
                 ln = line_of(html_no_script, base + m.start())
+                shown = f"{m.group(1)}{unit}" if unit else m.group(1)
                 findings.append((
                     "ERROR", "small-font", ln,
-                    f"SVG font-size={size:g} < 20 — 18px 이하 금지.",
+                    f"SVG font-size={shown} ({px:g}px) < 20 — 18px 이하 금지.",
                 ))
 
 
@@ -197,7 +237,7 @@ def check_word_count(html: str, budget: int, findings: list) -> None:
         findings.append((
             "WARNING", "word-count", 0,
             f"본문 텍스트 약 {n}단어 > {budget}단어 한도 — Figure는 글 요약이 아니라 "
-            f"시각 앵커. 명사구로 줄이세요. (SVG/Canvas 라벨 포함 근사치)",
+            f"시각 앵커. 명사구로 줄이세요. (SVG 텍스트 포함, Canvas/D3 라벨 제외 근사치)",
         ))
 
 

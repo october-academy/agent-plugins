@@ -104,12 +104,15 @@ python3 -m http.server 8123 --directory /private/tmp
 - Detail QA URL: `http://127.0.0.1:8123/blog-figure-previews/index.html?density=detail`
 - Ready signal: 상단 counter가 `30 / 30 ready`
 
-### Workspace Review Site
+### Workspace Review Site (dev 전용)
 
 ```bash
 python3 plugins/blog-figure/skills/blog-figure/scripts/build_workspace_review_site.py
 ```
 
+- **dev 전용 도구**: 30개 eval 산출물이 담긴 `blog-figure-workspace`가 있을 때만 동작한다.
+  이 workspace는 배포 플러그인에 포함되지 않으므로 일반 사용에는 필요 없다 — workspace가 없으면
+  스크립트가 무엇이 없는지 안내하고 종료한다
 - Review entry: `plugins/blog-figure/skills/blog-figure-workspace/review/index.html`
 - 목적: `final-test` + `iteration-3`의 30개 eval 산출물을 HTTP-friendly review copy로 한 번에 검수
 - MCP 검수 시에는 `plugins/blog-figure/skills/blog-figure-workspace/review/` 상위를 HTTP로 서빙해서 연다

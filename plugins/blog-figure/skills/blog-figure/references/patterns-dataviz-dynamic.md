@@ -135,8 +135,8 @@ Max: **5축**, 1~2 data series, 축 라벨 1단어
   <defs>
     <style>
       text { font-family: 'Noto Sans KR', sans-serif; fill: #0a0a0a; }
-      .guide { fill: none; stroke: #e5e5e5; stroke-width: 1.5; }
-      .axis { stroke: #d4d4d4; stroke-width: 1.5; }
+      .guide { fill: none; stroke: #a3a3a3; stroke-width: 1.5; }
+      .axis { stroke: #a3a3a3; stroke-width: 1.5; }
       .data-poly { stroke-width: 3; }
       .data-dot { stroke: #0a0a0a; stroke-width: 2.5; }
       .benchmark { fill: none; stroke-width: 3; stroke-dasharray: 10 8; }
@@ -175,9 +175,9 @@ function polyPoints(values, radius) {
   svg.appendChild(poly);
 
   const ringLabel = document.createElementNS(ns, 'text');
-  ringLabel.setAttribute('x', cx + 12);
-  ringLabel.setAttribute('y', cy - pct * R + 6);
-  ringLabel.setAttribute('font-size', '18');
+  ringLabel.setAttribute('x', cx + 14);
+  ringLabel.setAttribute('y', cy - pct * R + 7);
+  ringLabel.setAttribute('font-size', '22');
   ringLabel.setAttribute('font-weight', '700');
   ringLabel.setAttribute('fill', '#737373');
   ringLabel.textContent = Math.round(pct * 100);
@@ -230,21 +230,21 @@ focus.values.forEach((v, i) => {
   svg.appendChild(dot);
 });
 
-// Legend (bottom right)
+// Legend (bottom center, grouped directly under the chart)
+const legendY = 748;
 [
-  { name: focus.name, color: focus.color, dashed: false },
-  { name: benchmark.name, color: benchmark.color, dashed: true },
-].forEach((s, i) => {
-  const lx = 1080, ly = 650 + i * 42;
+  { name: focus.name, color: focus.color, dashed: false, x: 565 },
+  { name: benchmark.name, color: benchmark.color, dashed: true, x: 721 },
+].forEach(s => {
   const line = document.createElementNS(ns, 'line');
-  line.setAttribute('x1', lx); line.setAttribute('y1', ly);
-  line.setAttribute('x2', lx + 24); line.setAttribute('y2', ly);
+  line.setAttribute('x1', s.x); line.setAttribute('y1', legendY);
+  line.setAttribute('x2', s.x + 30); line.setAttribute('y2', legendY);
   line.setAttribute('stroke', s.color);
   line.setAttribute('stroke-width', '4');
   if (s.dashed) line.setAttribute('stroke-dasharray', '10 8');
   svg.appendChild(line);
   const txt = document.createElementNS(ns, 'text');
-  txt.setAttribute('x', lx + 36); txt.setAttribute('y', ly + 6);
+  txt.setAttribute('x', s.x + 42); txt.setAttribute('y', legendY + 7);
   txt.setAttribute('font-size', '22'); txt.setAttribute('font-weight', '700');
   txt.textContent = s.name;
   svg.appendChild(txt);

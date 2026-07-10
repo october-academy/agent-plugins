@@ -30,28 +30,28 @@ Max: **4행**
 
 ```html
 <body>
-  <div class="bar-chart">
+  <div class="bar-chart" style="gap:2.5rem">
     <div class="bar-row">
       <div class="bar-label">React</div>
-      <div class="bar-track"><div class="bar-fill" style="width:85%;background:var(--tl-blue)">85%</div></div>
+      <div class="bar-track" style="height:104px"><div class="bar-fill" style="width:85%;background:var(--tl-blue)">85%</div></div>
     </div>
     <div class="bar-row">
       <div class="bar-label">Vue</div>
-      <div class="bar-track"><div class="bar-fill" style="width:78%;background:var(--tl-lime)">78%</div></div>
+      <div class="bar-track" style="height:104px"><div class="bar-fill" style="width:78%;background:var(--tl-lime)">78%</div></div>
     </div>
     <div class="bar-row">
       <div class="bar-label">Svelte</div>
-      <div class="bar-track"><div class="bar-fill" style="width:92%;background:var(--tl-orange)">92%</div></div>
+      <div class="bar-track" style="height:104px"><div class="bar-fill" style="width:92%;background:var(--tl-orange)">92%</div></div>
     </div>
     <div class="bar-row">
       <div class="bar-label">Angular</div>
-      <div class="bar-track"><div class="bar-fill" style="width:54%;background:var(--tl-purple)">54%</div></div>
+      <div class="bar-track" style="height:104px"><div class="bar-fill" style="width:54%;background:var(--tl-purple)">54%</div></div>
     </div>
   </div>
 </body>
 ```
 
-Notes: `width` 퍼센트로 바 길이 설정. 라벨은 단어 1~2개.
+Notes: `width` 퍼센트로 바 길이 설정. 라벨은 단어 1~2개. `body`가 세로 중앙 정렬하므로, 4행이 810 캔버스를 균형 있게 채우도록 `bar-track` 높이(104px)와 `bar-chart` gap(2.5rem)을 인라인으로 키웠다 — 적은 수의 큰 바가 25% 축소에서도 잘 읽힌다.
 
 ---
 
@@ -78,43 +78,141 @@ Max: **2 카테고리**, 총 ~8단어 (범례 포함)
   </defs>
   <rect width="1440" height="810" fill="url(#dots)"/>
 
-  <!-- Scale ticks -->
-  <text class="mono" x="350" y="112" text-anchor="middle" font-size="20" font-weight="700" fill="#737373">0</text>
-  <text class="mono" x="825" y="112" text-anchor="middle" font-size="20" font-weight="700" fill="#737373">50</text>
-  <text class="mono" x="1300" y="112" text-anchor="middle" font-size="20" font-weight="700" fill="#737373">100</text>
-  <line x1="350" y1="120" x2="1300" y2="120" stroke="#d4d4d4" stroke-width="2"/>
-
   <!-- Waffle grid: 10x10 = 100 cells, 72 filled (#3B82F6), 28 empty (#e5e5e5) -->
-  <!-- Grid generation rule:
+  <!-- Grid generation rule (전체 100칸을 실제로 렌더):
        - 10 rows (row 0-9), 10 cols (col 0-9)
-       - Cell origin: x = 280 + col * 56, y = 85 + row * 56
-       - Cell size: width="52" height="52", class="waffle-cell"
+       - Cell origin: x = 280 + col * 56, y = 127 + row * 56
+       - Cell size: width="52" height="52", class="waffle-cell" (gap 4px)
        - Fill order: left-to-right, top-to-bottom (cell index = row*10 + col)
        - Cells 0-71 (first 72): fill="#3B82F6" (filled/active)
        - Cells 72-99 (remaining 28): fill="#e5e5e5" (empty/inactive)
-       - So rows 0-6 col 0-9 are all #3B82F6
-       - Row 7 (y=477): cols 0-1 are #3B82F6 (last 2 filled), cols 2-9 are #e5e5e5
+       - So rows 0-6 are all #3B82F6 (70 cells)
+       - Row 7 (y=519): cols 0-1 #3B82F6 (last 2 filled), cols 2-9 #e5e5e5
        - Rows 8-9: all #e5e5e5
-  -->
-  <!-- Example cells showing the pattern: -->
-  <rect class="waffle-cell" x="280" y="85" width="52" height="52" fill="#3B82F6"/>  <!-- row 0, col 0 (filled) -->
-  <rect class="waffle-cell" x="336" y="85" width="52" height="52" fill="#3B82F6"/>  <!-- row 0, col 1 (filled) -->
-  <rect class="waffle-cell" x="784" y="421" width="52" height="52" fill="#e5e5e5"/> <!-- row 6, col 9 (transition row) -->
-  <!-- Generate remaining 97 cells following the rule above -->
+       - Grid spans x 280-836, y 127-683 (810 캔버스에 수직 중앙) -->
+  <rect class="waffle-cell" x="280" y="127" width="52" height="52" fill="#3B82F6"/>
+  <rect class="waffle-cell" x="336" y="127" width="52" height="52" fill="#3B82F6"/>
+  <rect class="waffle-cell" x="392" y="127" width="52" height="52" fill="#3B82F6"/>
+  <rect class="waffle-cell" x="448" y="127" width="52" height="52" fill="#3B82F6"/>
+  <rect class="waffle-cell" x="504" y="127" width="52" height="52" fill="#3B82F6"/>
+  <rect class="waffle-cell" x="560" y="127" width="52" height="52" fill="#3B82F6"/>
+  <rect class="waffle-cell" x="616" y="127" width="52" height="52" fill="#3B82F6"/>
+  <rect class="waffle-cell" x="672" y="127" width="52" height="52" fill="#3B82F6"/>
+  <rect class="waffle-cell" x="728" y="127" width="52" height="52" fill="#3B82F6"/>
+  <rect class="waffle-cell" x="784" y="127" width="52" height="52" fill="#3B82F6"/>
 
-  <!-- Legend (right side) -->
-  <rect x="900" y="260" width="28" height="28" fill="#3B82F6" stroke="#0a0a0a" stroke-width="2.5"/>
-  <text x="940" y="282" font-size="28" font-weight="900">72%</text>
-  <text x="940" y="316" font-size="24" font-weight="700" fill="#737373">채택</text>
+  <rect class="waffle-cell" x="280" y="183" width="52" height="52" fill="#3B82F6"/>
+  <rect class="waffle-cell" x="336" y="183" width="52" height="52" fill="#3B82F6"/>
+  <rect class="waffle-cell" x="392" y="183" width="52" height="52" fill="#3B82F6"/>
+  <rect class="waffle-cell" x="448" y="183" width="52" height="52" fill="#3B82F6"/>
+  <rect class="waffle-cell" x="504" y="183" width="52" height="52" fill="#3B82F6"/>
+  <rect class="waffle-cell" x="560" y="183" width="52" height="52" fill="#3B82F6"/>
+  <rect class="waffle-cell" x="616" y="183" width="52" height="52" fill="#3B82F6"/>
+  <rect class="waffle-cell" x="672" y="183" width="52" height="52" fill="#3B82F6"/>
+  <rect class="waffle-cell" x="728" y="183" width="52" height="52" fill="#3B82F6"/>
+  <rect class="waffle-cell" x="784" y="183" width="52" height="52" fill="#3B82F6"/>
 
-  <rect x="900" y="370" width="28" height="28" fill="#e5e5e5" stroke="#0a0a0a" stroke-width="2.5"/>
-  <text x="940" y="392" font-size="28" font-weight="900">28%</text>
-  <text x="940" y="426" font-size="24" font-weight="700" fill="#737373">미채택</text>
+  <rect class="waffle-cell" x="280" y="239" width="52" height="52" fill="#3B82F6"/>
+  <rect class="waffle-cell" x="336" y="239" width="52" height="52" fill="#3B82F6"/>
+  <rect class="waffle-cell" x="392" y="239" width="52" height="52" fill="#3B82F6"/>
+  <rect class="waffle-cell" x="448" y="239" width="52" height="52" fill="#3B82F6"/>
+  <rect class="waffle-cell" x="504" y="239" width="52" height="52" fill="#3B82F6"/>
+  <rect class="waffle-cell" x="560" y="239" width="52" height="52" fill="#3B82F6"/>
+  <rect class="waffle-cell" x="616" y="239" width="52" height="52" fill="#3B82F6"/>
+  <rect class="waffle-cell" x="672" y="239" width="52" height="52" fill="#3B82F6"/>
+  <rect class="waffle-cell" x="728" y="239" width="52" height="52" fill="#3B82F6"/>
+  <rect class="waffle-cell" x="784" y="239" width="52" height="52" fill="#3B82F6"/>
+
+  <rect class="waffle-cell" x="280" y="295" width="52" height="52" fill="#3B82F6"/>
+  <rect class="waffle-cell" x="336" y="295" width="52" height="52" fill="#3B82F6"/>
+  <rect class="waffle-cell" x="392" y="295" width="52" height="52" fill="#3B82F6"/>
+  <rect class="waffle-cell" x="448" y="295" width="52" height="52" fill="#3B82F6"/>
+  <rect class="waffle-cell" x="504" y="295" width="52" height="52" fill="#3B82F6"/>
+  <rect class="waffle-cell" x="560" y="295" width="52" height="52" fill="#3B82F6"/>
+  <rect class="waffle-cell" x="616" y="295" width="52" height="52" fill="#3B82F6"/>
+  <rect class="waffle-cell" x="672" y="295" width="52" height="52" fill="#3B82F6"/>
+  <rect class="waffle-cell" x="728" y="295" width="52" height="52" fill="#3B82F6"/>
+  <rect class="waffle-cell" x="784" y="295" width="52" height="52" fill="#3B82F6"/>
+
+  <rect class="waffle-cell" x="280" y="351" width="52" height="52" fill="#3B82F6"/>
+  <rect class="waffle-cell" x="336" y="351" width="52" height="52" fill="#3B82F6"/>
+  <rect class="waffle-cell" x="392" y="351" width="52" height="52" fill="#3B82F6"/>
+  <rect class="waffle-cell" x="448" y="351" width="52" height="52" fill="#3B82F6"/>
+  <rect class="waffle-cell" x="504" y="351" width="52" height="52" fill="#3B82F6"/>
+  <rect class="waffle-cell" x="560" y="351" width="52" height="52" fill="#3B82F6"/>
+  <rect class="waffle-cell" x="616" y="351" width="52" height="52" fill="#3B82F6"/>
+  <rect class="waffle-cell" x="672" y="351" width="52" height="52" fill="#3B82F6"/>
+  <rect class="waffle-cell" x="728" y="351" width="52" height="52" fill="#3B82F6"/>
+  <rect class="waffle-cell" x="784" y="351" width="52" height="52" fill="#3B82F6"/>
+
+  <rect class="waffle-cell" x="280" y="407" width="52" height="52" fill="#3B82F6"/>
+  <rect class="waffle-cell" x="336" y="407" width="52" height="52" fill="#3B82F6"/>
+  <rect class="waffle-cell" x="392" y="407" width="52" height="52" fill="#3B82F6"/>
+  <rect class="waffle-cell" x="448" y="407" width="52" height="52" fill="#3B82F6"/>
+  <rect class="waffle-cell" x="504" y="407" width="52" height="52" fill="#3B82F6"/>
+  <rect class="waffle-cell" x="560" y="407" width="52" height="52" fill="#3B82F6"/>
+  <rect class="waffle-cell" x="616" y="407" width="52" height="52" fill="#3B82F6"/>
+  <rect class="waffle-cell" x="672" y="407" width="52" height="52" fill="#3B82F6"/>
+  <rect class="waffle-cell" x="728" y="407" width="52" height="52" fill="#3B82F6"/>
+  <rect class="waffle-cell" x="784" y="407" width="52" height="52" fill="#3B82F6"/>
+
+  <rect class="waffle-cell" x="280" y="463" width="52" height="52" fill="#3B82F6"/>
+  <rect class="waffle-cell" x="336" y="463" width="52" height="52" fill="#3B82F6"/>
+  <rect class="waffle-cell" x="392" y="463" width="52" height="52" fill="#3B82F6"/>
+  <rect class="waffle-cell" x="448" y="463" width="52" height="52" fill="#3B82F6"/>
+  <rect class="waffle-cell" x="504" y="463" width="52" height="52" fill="#3B82F6"/>
+  <rect class="waffle-cell" x="560" y="463" width="52" height="52" fill="#3B82F6"/>
+  <rect class="waffle-cell" x="616" y="463" width="52" height="52" fill="#3B82F6"/>
+  <rect class="waffle-cell" x="672" y="463" width="52" height="52" fill="#3B82F6"/>
+  <rect class="waffle-cell" x="728" y="463" width="52" height="52" fill="#3B82F6"/>
+  <rect class="waffle-cell" x="784" y="463" width="52" height="52" fill="#3B82F6"/>
+
+  <rect class="waffle-cell" x="280" y="519" width="52" height="52" fill="#3B82F6"/>
+  <rect class="waffle-cell" x="336" y="519" width="52" height="52" fill="#3B82F6"/>
+  <rect class="waffle-cell" x="392" y="519" width="52" height="52" fill="#e5e5e5"/>
+  <rect class="waffle-cell" x="448" y="519" width="52" height="52" fill="#e5e5e5"/>
+  <rect class="waffle-cell" x="504" y="519" width="52" height="52" fill="#e5e5e5"/>
+  <rect class="waffle-cell" x="560" y="519" width="52" height="52" fill="#e5e5e5"/>
+  <rect class="waffle-cell" x="616" y="519" width="52" height="52" fill="#e5e5e5"/>
+  <rect class="waffle-cell" x="672" y="519" width="52" height="52" fill="#e5e5e5"/>
+  <rect class="waffle-cell" x="728" y="519" width="52" height="52" fill="#e5e5e5"/>
+  <rect class="waffle-cell" x="784" y="519" width="52" height="52" fill="#e5e5e5"/>
+
+  <rect class="waffle-cell" x="280" y="575" width="52" height="52" fill="#e5e5e5"/>
+  <rect class="waffle-cell" x="336" y="575" width="52" height="52" fill="#e5e5e5"/>
+  <rect class="waffle-cell" x="392" y="575" width="52" height="52" fill="#e5e5e5"/>
+  <rect class="waffle-cell" x="448" y="575" width="52" height="52" fill="#e5e5e5"/>
+  <rect class="waffle-cell" x="504" y="575" width="52" height="52" fill="#e5e5e5"/>
+  <rect class="waffle-cell" x="560" y="575" width="52" height="52" fill="#e5e5e5"/>
+  <rect class="waffle-cell" x="616" y="575" width="52" height="52" fill="#e5e5e5"/>
+  <rect class="waffle-cell" x="672" y="575" width="52" height="52" fill="#e5e5e5"/>
+  <rect class="waffle-cell" x="728" y="575" width="52" height="52" fill="#e5e5e5"/>
+  <rect class="waffle-cell" x="784" y="575" width="52" height="52" fill="#e5e5e5"/>
+
+  <rect class="waffle-cell" x="280" y="631" width="52" height="52" fill="#e5e5e5"/>
+  <rect class="waffle-cell" x="336" y="631" width="52" height="52" fill="#e5e5e5"/>
+  <rect class="waffle-cell" x="392" y="631" width="52" height="52" fill="#e5e5e5"/>
+  <rect class="waffle-cell" x="448" y="631" width="52" height="52" fill="#e5e5e5"/>
+  <rect class="waffle-cell" x="504" y="631" width="52" height="52" fill="#e5e5e5"/>
+  <rect class="waffle-cell" x="560" y="631" width="52" height="52" fill="#e5e5e5"/>
+  <rect class="waffle-cell" x="616" y="631" width="52" height="52" fill="#e5e5e5"/>
+  <rect class="waffle-cell" x="672" y="631" width="52" height="52" fill="#e5e5e5"/>
+  <rect class="waffle-cell" x="728" y="631" width="52" height="52" fill="#e5e5e5"/>
+  <rect class="waffle-cell" x="784" y="631" width="52" height="52" fill="#e5e5e5"/>
+
+  <!-- Legend (그리드 오른쪽, 수직 중앙) -->
+  <rect x="1000" y="300" width="44" height="44" fill="#3B82F6" stroke="#0a0a0a" stroke-width="2.5"/>
+  <text x="1064" y="336" font-size="40" font-weight="900">72%</text>
+  <text x="1064" y="374" font-size="24" font-weight="700" fill="#737373">채택</text>
+
+  <rect x="1000" y="434" width="44" height="44" fill="#e5e5e5" stroke="#0a0a0a" stroke-width="2.5"/>
+  <text x="1064" y="470" font-size="40" font-weight="900">28%</text>
+  <text x="1064" y="508" font-size="24" font-weight="700" fill="#737373">미채택</text>
 </svg>
 </body>
 ```
 
-Notes: 10x10 그리드로 100% 비율 표현. 좌상단부터 채워나감. 셀 크기 52x52, gap 4px (총 560x560). 2 카테고리만 사용 (채운 셀 vs 빈 셀). fill 색상으로 카테고리 구분 (#3B82F6 = 활성, #e5e5e5 = 비활성). 퍼센트를 바꾸려면 채운 셀 수만 조정.
+Notes: 10x10 그리드로 100% 비율 표현. 좌상단부터 채워나감. 셀 크기 52x52, pitch 56 (gap 4px, 총 556x556). 그리드는 810 캔버스에 수직 중앙(y 127-683), 범례는 그리드 오른쪽에 수직 중앙 배치. 예제는 100칸 `<rect>`를 전부 포함한 완성 SVG다 — 그대로 렌더된다. 2 카테고리만 사용 (채운 셀 vs 빈 셀). fill 색상으로 카테고리 구분 (#3B82F6 = 활성, #e5e5e5 = 비활성). 퍼센트를 바꾸려면 채운 셀 수만 조정(index = row*10 + col).
 
 ---
 
@@ -145,61 +243,61 @@ Max: **5항목**, 2시점 (좌/우 칼럼)
   <rect width="1440" height="810" fill="url(#dots)"/>
 
   <!-- Column headers -->
-  <rect class="header-box" x="240" y="60" width="180" height="56" rx="0"/>
-  <text x="330" y="97" text-anchor="middle" font-size="28" font-weight="900">2023</text>
-  <rect class="header-box" x="1020" y="60" width="180" height="56" rx="0"/>
-  <text x="1110" y="97" text-anchor="middle" font-size="28" font-weight="900">2024</text>
+  <rect class="header-box" x="240" y="90" width="180" height="56" rx="0"/>
+  <text x="330" y="127" text-anchor="middle" font-size="28" font-weight="900">2023</text>
+  <rect class="header-box" x="1020" y="90" width="180" height="56" rx="0"/>
+  <text x="1110" y="127" text-anchor="middle" font-size="28" font-weight="900">2024</text>
 
-  <!-- Y positions: 5 items, y = 180 + (rank-1) * 110 -->
-  <!-- Item 1: React — rank 1→3 (y: 180→400) -->
-  <line class="slope-line" x1="380" y1="180" x2="1060" y2="400" stroke="#3B82F6"/>
-  <circle class="slope-dot" cx="380" cy="180" r="10" fill="#3B82F6"/>
-  <circle class="slope-dot" cx="1060" cy="400" r="10" fill="#3B82F6"/>
-  <text x="360" y="186" text-anchor="end" font-size="24" font-weight="700">React</text>
-  <text x="220" y="186" text-anchor="end" font-size="20" font-weight="700" class="mono" fill="#737373">1</text>
-  <text x="1080" y="406" font-size="24" font-weight="700">React</text>
-  <text x="1220" y="406" font-size="20" font-weight="700" class="mono" fill="#737373">3</text>
+  <!-- Y positions: 5 items, y = 210 + (rank-1) * 118 (810 캔버스 세로 중앙) -->
+  <!-- Item 1: React — rank 1→3 (y: 210→446) -->
+  <line class="slope-line" x1="380" y1="210" x2="1060" y2="446" stroke="#3B82F6"/>
+  <circle class="slope-dot" cx="380" cy="210" r="10" fill="#3B82F6"/>
+  <circle class="slope-dot" cx="1060" cy="446" r="10" fill="#3B82F6"/>
+  <text x="360" y="216" text-anchor="end" font-size="24" font-weight="700">React</text>
+  <text x="220" y="216" text-anchor="end" font-size="20" font-weight="700" class="mono" fill="#737373">1</text>
+  <text x="1080" y="452" font-size="24" font-weight="700">React</text>
+  <text x="1220" y="452" font-size="20" font-weight="700" class="mono" fill="#737373">3</text>
 
-  <!-- Item 2: Svelte — rank 2→1 (y: 290→180) -->
-  <line class="slope-line" x1="380" y1="290" x2="1060" y2="180" stroke="#a3e635"/>
-  <circle class="slope-dot" cx="380" cy="290" r="10" fill="#a3e635"/>
-  <circle class="slope-dot" cx="1060" cy="180" r="10" fill="#a3e635"/>
-  <text x="360" y="296" text-anchor="end" font-size="24" font-weight="700">Svelte</text>
-  <text x="220" y="296" text-anchor="end" font-size="20" font-weight="700" class="mono" fill="#737373">2</text>
-  <text x="1080" y="186" font-size="24" font-weight="700">Svelte</text>
-  <text x="1220" y="186" font-size="20" font-weight="700" class="mono" fill="#737373">1</text>
+  <!-- Item 2: Svelte — rank 2→1 (y: 328→210) -->
+  <line class="slope-line" x1="380" y1="328" x2="1060" y2="210" stroke="#a3e635"/>
+  <circle class="slope-dot" cx="380" cy="328" r="10" fill="#a3e635"/>
+  <circle class="slope-dot" cx="1060" cy="210" r="10" fill="#a3e635"/>
+  <text x="360" y="334" text-anchor="end" font-size="24" font-weight="700">Svelte</text>
+  <text x="220" y="334" text-anchor="end" font-size="20" font-weight="700" class="mono" fill="#737373">2</text>
+  <text x="1080" y="216" font-size="24" font-weight="700">Svelte</text>
+  <text x="1220" y="216" font-size="20" font-weight="700" class="mono" fill="#737373">1</text>
 
-  <!-- Item 3: Vue — rank 3→2 (y: 400→290) -->
-  <line class="slope-line" x1="380" y1="400" x2="1060" y2="290" stroke="#FF6B35"/>
-  <circle class="slope-dot" cx="380" cy="400" r="10" fill="#FF6B35"/>
-  <circle class="slope-dot" cx="1060" cy="290" r="10" fill="#FF6B35"/>
-  <text x="360" y="406" text-anchor="end" font-size="24" font-weight="700">Vue</text>
-  <text x="220" y="406" text-anchor="end" font-size="20" font-weight="700" class="mono" fill="#737373">3</text>
-  <text x="1080" y="296" font-size="24" font-weight="700">Vue</text>
-  <text x="1220" y="296" font-size="20" font-weight="700" class="mono" fill="#737373">2</text>
+  <!-- Item 3: Vue — rank 3→2 (y: 446→328) -->
+  <line class="slope-line" x1="380" y1="446" x2="1060" y2="328" stroke="#FF6B35"/>
+  <circle class="slope-dot" cx="380" cy="446" r="10" fill="#FF6B35"/>
+  <circle class="slope-dot" cx="1060" cy="328" r="10" fill="#FF6B35"/>
+  <text x="360" y="452" text-anchor="end" font-size="24" font-weight="700">Vue</text>
+  <text x="220" y="452" text-anchor="end" font-size="20" font-weight="700" class="mono" fill="#737373">3</text>
+  <text x="1080" y="334" font-size="24" font-weight="700">Vue</text>
+  <text x="1220" y="334" font-size="20" font-weight="700" class="mono" fill="#737373">2</text>
 
-  <!-- Item 4: Angular — rank 4→5 (y: 510→620) -->
-  <line class="slope-line" x1="380" y1="510" x2="1060" y2="620" stroke="#ff5c8d"/>
-  <circle class="slope-dot" cx="380" cy="510" r="10" fill="#ff5c8d"/>
-  <circle class="slope-dot" cx="1060" cy="620" r="10" fill="#ff5c8d"/>
-  <text x="360" y="516" text-anchor="end" font-size="24" font-weight="700">Angular</text>
-  <text x="220" y="516" text-anchor="end" font-size="20" font-weight="700" class="mono" fill="#737373">4</text>
-  <text x="1080" y="626" font-size="24" font-weight="700">Angular</text>
-  <text x="1220" y="626" font-size="20" font-weight="700" class="mono" fill="#737373">5</text>
+  <!-- Item 4: Angular — rank 4→5 (y: 564→682) -->
+  <line class="slope-line" x1="380" y1="564" x2="1060" y2="682" stroke="#ff5c8d"/>
+  <circle class="slope-dot" cx="380" cy="564" r="10" fill="#ff5c8d"/>
+  <circle class="slope-dot" cx="1060" cy="682" r="10" fill="#ff5c8d"/>
+  <text x="360" y="570" text-anchor="end" font-size="24" font-weight="700">Angular</text>
+  <text x="220" y="570" text-anchor="end" font-size="20" font-weight="700" class="mono" fill="#737373">4</text>
+  <text x="1080" y="688" font-size="24" font-weight="700">Angular</text>
+  <text x="1220" y="688" font-size="20" font-weight="700" class="mono" fill="#737373">5</text>
 
-  <!-- Item 5: Solid — rank 5→4 (y: 620→510) -->
-  <line class="slope-line" x1="380" y1="620" x2="1060" y2="510" stroke="#8B5CF6"/>
-  <circle class="slope-dot" cx="380" cy="620" r="10" fill="#8B5CF6"/>
-  <circle class="slope-dot" cx="1060" cy="510" r="10" fill="#8B5CF6"/>
-  <text x="360" y="626" text-anchor="end" font-size="24" font-weight="700">Solid</text>
-  <text x="220" y="626" text-anchor="end" font-size="20" font-weight="700" class="mono" fill="#737373">5</text>
-  <text x="1080" y="516" font-size="24" font-weight="700">Solid</text>
-  <text x="1220" y="516" font-size="20" font-weight="700" class="mono" fill="#737373">4</text>
+  <!-- Item 5: Solid — rank 5→4 (y: 682→564) -->
+  <line class="slope-line" x1="380" y1="682" x2="1060" y2="564" stroke="#8B5CF6"/>
+  <circle class="slope-dot" cx="380" cy="682" r="10" fill="#8B5CF6"/>
+  <circle class="slope-dot" cx="1060" cy="564" r="10" fill="#8B5CF6"/>
+  <text x="360" y="688" text-anchor="end" font-size="24" font-weight="700">Solid</text>
+  <text x="220" y="688" text-anchor="end" font-size="20" font-weight="700" class="mono" fill="#737373">5</text>
+  <text x="1080" y="570" font-size="24" font-weight="700">Solid</text>
+  <text x="1220" y="570" font-size="20" font-weight="700" class="mono" fill="#737373">4</text>
 </svg>
 </body>
 ```
 
-Notes: Y좌표 = `180 + (rank-1) * 110` (5항목 기준). JS 불필요 — 순수 SVG. `--tl-*` 팔레트에서 항목별 색상 배정. 좌 칼럼 = 이전 시점, 우 칼럼 = 이후 시점. **축보다 endpoint 직접 라벨**을 우선하고, 5개 이내만 남겨 선 교차를 통제한다. 가능하면 **오른쪽 결과값 기준으로 정렬**해 읽는 부담을 줄인다.
+Notes: Y좌표 = `210 + (rank-1) * 118` (5항목 기준, 810 캔버스에 세로 중앙 정렬 — 헤더 y=90, 마지막 행 ~688). JS 불필요 — 순수 SVG. `--tl-*` 팔레트에서 항목별 색상 배정. 좌 칼럼 = 이전 시점, 우 칼럼 = 이후 시점. **축보다 endpoint 직접 라벨**을 우선하고, 5개 이내만 남겨 선 교차를 통제한다. 가능하면 **오른쪽 결과값 기준으로 정렬**해 읽는 부담을 줄인다.
 
 ---
 
@@ -330,8 +428,8 @@ Max: **3~4 charts** 수직 배치
   <rect class="range" x="350" y="150" width="950" height="60" fill="#e5e5e5"/>
   <rect class="range" x="350" y="150" width="713" height="60" fill="#d4d4d4"/>
   <rect class="range" x="350" y="150" width="380" height="60" fill="#a3a3a3"/>
-  <!-- Actual bar (narrower: 60% height = 36px, centered) -->
-  <rect class="actual" x="350" y="162" width="779" height="36" fill="#3B82F6"/>
+  <!-- Actual bar (범위 밴드 60px보다 얇은 44px, 밴드 안 수직 중앙 = y+8) -->
+  <rect class="actual" x="350" y="158" width="779" height="44" fill="#3B82F6"/>
   <!-- Target marker -->
   <line class="target" x1="1205" y1="145" x2="1205" y2="215"/>
   <text class="mono" x="1205" y="238" text-anchor="middle" font-size="20" font-weight="700" fill="#737373">90</text>
@@ -342,7 +440,7 @@ Max: **3~4 charts** 수직 배치
   <rect class="range" x="350" y="340" width="950" height="60" fill="#e5e5e5"/>
   <rect class="range" x="350" y="340" width="570" height="60" fill="#d4d4d4"/>
   <rect class="range" x="350" y="340" width="285" height="60" fill="#a3a3a3"/>
-  <rect class="actual" x="350" y="352" width="646" height="36" fill="#3B82F6"/>
+  <rect class="actual" x="350" y="348" width="646" height="44" fill="#3B82F6"/>
   <line class="target" x1="825" y1="335" x2="825" y2="405"/>
   <text class="mono" x="825" y="428" text-anchor="middle" font-size="20" font-weight="700" fill="#737373">50</text>
   <text class="mono" x="1012" y="377" font-size="20" font-weight="700" fill="#3B82F6">68</text>
@@ -352,7 +450,7 @@ Max: **3~4 charts** 수직 배치
   <rect class="range" x="350" y="530" width="950" height="60" fill="#e5e5e5"/>
   <rect class="range" x="350" y="530" width="665" height="60" fill="#d4d4d4"/>
   <rect class="range" x="350" y="530" width="285" height="60" fill="#a3a3a3"/>
-  <rect class="actual" x="350" y="542" width="523" height="36" fill="#3B82F6"/>
+  <rect class="actual" x="350" y="538" width="523" height="44" fill="#3B82F6"/>
   <line class="target" x1="1015" y1="525" x2="1015" y2="595"/>
   <text class="mono" x="1015" y="618" text-anchor="middle" font-size="20" font-weight="700" fill="#737373">70</text>
   <text class="mono" x="889" y="567" font-size="20" font-weight="700" fill="#3B82F6">55</text>
@@ -371,7 +469,7 @@ Max: **3~4 charts** 수직 배치
 </body>
 ```
 
-Notes: Back-to-front 레이어링으로 3단계 범위 표현 (가장 넓은 rect = lightest, 점점 좁고 진함). Actual 바는 전체 높이의 60% (36px/60px)로 범위 배경 위에 겹침. Target marker는 `<line>` (stroke-width: 4). x축 스케일: `x = 350 + (value/100) * 950`. **정성 구간은 muted, actual은 일관된 단일 색상, 값은 바 끝에 직접 표기**하는 편이 가장 읽기 쉽다.
+Notes: Back-to-front 레이어링으로 3단계 범위 표현 (가장 넓은 rect = lightest, 점점 좁고 진함). Actual 바는 범위 밴드(60px)보다 얇은 44px로, 밴드 안에 수직 중앙(band_y + (60-44)/2 = band_y + 8) 정렬해 위·아래 여백을 각 8px로 맞춘다. Target marker는 `<line>` (stroke-width: 4). x축 스케일: `x = 350 + (value/100) * 950`. **정성 구간은 muted, actual은 일관된 단일 색상, 값은 바 끝에 직접 표기**하는 편이 가장 읽기 쉽다.
 
 ---
 

@@ -41,42 +41,42 @@ Max: **4 블록**. 블록당 라벨 1단어.
   <!-- Isometric cube: top=light, left=mid, right=dark of same hue
        Position with translate(cx, cy). cy = bottom center of cube. -->
 
-  <!-- Layer 1: Data platform (bottom, largest) -->
-  <g transform="translate(360, 610)">
+  <!-- Layer 1: Data platform (bottom, largest). Label on front-left face. -->
+  <g transform="translate(360, 570)">
     <polygon class="iso" fill="#BFDBFE" points="0,-70 360,-170 720,-70 360,30"/>
     <polygon class="iso" fill="#93C5FD" points="0,-70 0,70 360,170 360,30"/>
     <polygon class="iso" fill="#60A5FA" points="360,30 360,170 720,70 720,-70"/>
-    <text x="360" y="-15" text-anchor="middle" font-size="34" font-weight="900">데이터</text>
+    <text x="180" y="50" text-anchor="middle" dominant-baseline="central" font-size="34" font-weight="900">데이터</text>
   </g>
 
   <!-- Layer 2: Backend -->
-  <g transform="translate(450, 470)">
+  <g transform="translate(470, 430)">
     <polygon class="iso" fill="#D9F99D" points="0,-60 250,-125 500,-60 250,5"/>
     <polygon class="iso" fill="#BEF264" points="0,-60 0,50 250,115 250,5"/>
     <polygon class="iso" fill="#A3E635" points="250,5 250,115 500,50 500,-60"/>
-    <text x="250" y="-18" text-anchor="middle" font-size="30" font-weight="900">백엔드</text>
+    <text x="125" y="28" text-anchor="middle" dominant-baseline="central" font-size="30" font-weight="900">백엔드</text>
   </g>
 
   <!-- Layer 3: API -->
-  <g transform="translate(540, 340)">
+  <g transform="translate(550, 300)">
     <polygon class="iso" fill="#FFE7A3" points="0,-48 170,-100 340,-48 170,4"/>
     <polygon class="iso" fill="#FDE047" points="0,-48 0,35 170,87 170,4"/>
     <polygon class="iso" fill="#FACC15" points="170,4 170,87 340,35 340,-48"/>
-    <text x="170" y="-16" text-anchor="middle" font-size="28" font-weight="900">API</text>
+    <text x="85" y="20" text-anchor="middle" dominant-baseline="central" font-size="28" font-weight="900">API</text>
   </g>
 
   <!-- Layer 4: UI -->
-  <g transform="translate(600, 235)">
+  <g transform="translate(600, 195)">
     <polygon class="iso" fill="#FFD5E0" points="0,-42 120,-82 240,-42 120,-2"/>
     <polygon class="iso" fill="#FCA5B8" points="0,-42 0,24 120,64 120,-2"/>
     <polygon class="iso" fill="#FF5C8D" points="120,-2 120,64 240,24 240,-42"/>
-    <text x="120" y="-18" text-anchor="middle" font-size="24" font-weight="900">UI</text>
+    <text x="60" y="11" text-anchor="middle" dominant-baseline="central" font-size="24" font-weight="900">UI</text>
   </g>
 </svg>
 </body>
 ```
 
-Notes: 각 면에 같은 색조의 3단계 명도를 적용(top=light, left=mid, right=dark). `translate(cx, cy)`로 블록 위치 조정. **최하단 블록 폭을 크게 잡고 4단 적층**으로 만들면 아이소메트릭 패턴의 under-fill이 크게 줄어든다. 텍스트는 block top face 중앙에 배치한다.
+Notes: 각 면에 같은 색조의 3단계 명도를 적용(top=light, left=mid, right=dark). `translate(cx, cy)`로 블록 위치 조정 — 각 블록의 top face 중심을 **x=720에 맞춰 수평 중앙 정렬**한다. **최하단 블록 폭을 크게 잡고 4단 적층**으로 만들면 아이소메트릭 패턴의 under-fill이 크게 줄어든다. 라벨은 top face에 두면 위 블록에 가려 잘리므로 각 블록의 **front-left face 중앙**(`text-anchor="middle"` + `dominant-baseline="central"`)에 배치한다.
 
 ---
 
@@ -86,7 +86,7 @@ Best for: 시스템 다이어그램, 기술 구성도, 아이콘 기반 노드�
 
 Approach: **SVG inline** — 노드(아이콘 + 라벨 박스) + 커넥터(화살표 `<marker>`) 조합.
 
-Max: **4 노드**, **3 커넥터**. 아이콘은 기본 SVG 도형으로 구성 (circle, rect, path).
+Max: **4 노드**, **4 커넥터**. 아이콘은 기본 SVG 도형으로 구성 (circle, rect, path).
 
 ```html
 <body>
@@ -110,7 +110,7 @@ Max: **4 노드**, **3 커넥터**. 아이콘은 기본 SVG 도형으로 구성 
   <rect width="1440" height="810" fill="url(#dots)"/>
 
   <!-- Node: User -->
-  <g transform="translate(110, 250)">
+  <g transform="translate(160, 294)">
     <rect class="box-sh" x="4" y="4" width="210" height="160" rx="12"/>
     <rect class="box" width="210" height="160" rx="12"/>
     <!-- Person icon: head + shoulders -->
@@ -120,7 +120,7 @@ Max: **4 노드**, **3 커넥터**. 아이콘은 기본 SVG 도형으로 구성 
   </g>
 
   <!-- Node: Gateway -->
-  <g transform="translate(470, 130)">
+  <g transform="translate(520, 174)">
     <rect class="box-sh" x="4" y="4" width="220" height="170" rx="12"/>
     <rect class="box" width="220" height="170" rx="12"/>
     <!-- Gear icon: circle + center dot -->
@@ -130,7 +130,7 @@ Max: **4 노드**, **3 커넥터**. 아이콘은 기본 SVG 도형으로 구성 
   </g>
 
   <!-- Node: Queue -->
-  <g transform="translate(470, 430)">
+  <g transform="translate(520, 474)">
     <rect class="box-sh" x="4" y="4" width="220" height="160" rx="12"/>
     <rect class="box" width="220" height="160" rx="12"/>
     <rect x="70" y="34" width="80" height="52" rx="8" fill="none" stroke="#8B5CF6" stroke-width="3"/>
@@ -139,7 +139,7 @@ Max: **4 노드**, **3 커넥터**. 아이콘은 기본 SVG 도형으로 구성 
   </g>
 
   <!-- Node: DB -->
-  <g transform="translate(1020, 285)">
+  <g transform="translate(1070, 329)">
     <rect class="box-sh" x="4" y="4" width="210" height="170" rx="12"/>
     <rect class="box" width="210" height="170" rx="12"/>
     <!-- Cylinder icon: ellipse + body -->
@@ -149,22 +149,22 @@ Max: **4 노드**, **3 커넥터**. 아이콘은 기본 SVG 도형으로 구성 
   </g>
 
   <!-- Connectors with arrow markers -->
-  <line class="conn" x1="320" y1="330" x2="470" y2="215" marker-end="url(#arr)"/>
-  <text x="395" y="245" text-anchor="middle" font-size="20" font-weight="700" fill="#737373">요청</text>
+  <line class="conn" x1="370" y1="374" x2="520" y2="259" marker-end="url(#arr)"/>
+  <text x="445" y="289" text-anchor="middle" font-size="20" font-weight="700" fill="#737373">요청</text>
 
-  <line class="conn" x1="690" y1="215" x2="1020" y2="350" marker-end="url(#arr)"/>
-  <text x="865" y="255" text-anchor="middle" font-size="20" font-weight="700" fill="#737373">쿼리</text>
+  <line class="conn" x1="740" y1="259" x2="1070" y2="394" marker-end="url(#arr)"/>
+  <text x="915" y="299" text-anchor="middle" font-size="20" font-weight="700" fill="#737373">쿼리</text>
 
-  <line class="conn" x1="690" y1="510" x2="1020" y2="390" marker-end="url(#arr)"/>
-  <text x="865" y="470" text-anchor="middle" font-size="20" font-weight="700" fill="#737373">이벤트</text>
+  <line class="conn" x1="740" y1="554" x2="1070" y2="434" marker-end="url(#arr)"/>
+  <text x="915" y="514" text-anchor="middle" font-size="20" font-weight="700" fill="#737373">이벤트</text>
 
-  <line class="conn" x1="580" y1="300" x2="580" y2="430" marker-end="url(#arr)"/>
-  <text x="610" y="372" font-size="20" font-weight="700" fill="#737373">비동기 처리</text>
+  <line class="conn" x1="630" y1="344" x2="630" y2="474" marker-end="url(#arr)"/>
+  <text x="660" y="416" font-size="20" font-weight="700" fill="#737373">비동기 처리</text>
 </svg>
 </body>
 ```
 
-Notes: 아이콘은 기본 SVG 도형(circle, ellipse, path, rect)으로 구성. 외부 아이콘 라이브러리 불필요. `<marker>` 로 화살표 정의하고 `marker-end="url(#arr)"`으로 적용. **4노드 + 3방향 흐름** 정도가 가장 완성도가 높고, 수평/수직 연결을 섞으면 캔버스 활용도가 훨씬 좋아진다.
+Notes: 아이콘은 기본 SVG 도형(circle, ellipse, path, rect)으로 구성. 외부 아이콘 라이브러리 불필요. `<marker>` 로 화살표 정의하고 `marker-end="url(#arr)"`으로 적용. **4노드 + 4커넥터**(수평 3 + 수직 1) 정도가 가장 완성도가 높고, 수평/수직 연결을 섞으면 캔버스 활용도가 훨씬 좋아진다. 노드 bounding box의 중심을 캔버스 중앙(720, 405)에 맞춰 배치해야 특정 모서리로 쏠리지 않는다.
 
 ---
 
@@ -238,7 +238,7 @@ const sOff = gridNodes.length;
 for (let i = sOff; i < all.length; i++)
   for (let j = i + 1; j < all.length; j++) {
     const d = Math.hypot(all[i].x - all[j].x, all[i].y - all[j].y);
-    if (d < 220) edges.push([i, j, 0.06 + Math.random() * 0.12]);
+    if (d < 220) edges.push([i, j, 0.25 + Math.random() * 0.1]);
   }
 
 // === RENDER ===
@@ -300,7 +300,7 @@ ctx.fillText('\uC720\uB3D9\uC801, \uD655\uB960\uC801 \uD0D0\uC0C9', 1060 * S, 69
 </body>
 ```
 
-Notes: `document.fonts.ready.then()`으로 감싸야 Canvas에서 Google Fonts가 정상 렌더링됨. `S = 2`로 retina 해상도 출력 (canvas 2880×1620 → CSS 1440×810). 노드 `opacity`로 확률적 느낌 표현. 그리드 노드는 균일 크기/색상, 스캐터 노드는 다양한 크기/색상/투명도. edges는 가까운 노드 자동 연결. 하단 캡션은 **100px safety gutter** 안에 두고 inline font를 **20px 이상** 유지한다. `\u` 이스케이프는 "규칙 기반, 예측 가능한 결과" / "유동적, 확률적 탐색" — 한글 텍스트를 Canvas에 직접 쓸 때 사용.
+Notes: `document.fonts.ready.then()`으로 감싸야 Canvas에서 Google Fonts가 정상 렌더링됨. `S = 2`로 retina 해상도 출력 (canvas 2880×1620 → CSS 1440×810). 노드 `opacity`로 확률적 느낌 표현. 그리드 노드는 균일 크기/색상, 스캐터 노드는 다양한 크기/색상/투명도. edges는 가까운 노드 자동 연결 — alpha를 **0.25~0.35**로 둬 25% 축소에서도 엣지가 보이게 한다(더 연하면 노드만 떠 보인다). 하단 캡션은 **100px safety gutter** 안에 두고 inline font를 **20px 이상** 유지한다. `\u` 이스케이프는 "규칙 기반, 예측 가능한 결과" / "유동적, 확률적 탐색" — 한글 텍스트를 Canvas에 직접 쓸 때 사용.
 
 ---
 
@@ -322,7 +322,7 @@ Config: `nodes`와 `links` 배열만 수정하면 내용 변경 가능.
   <script src="https://d3js.org/d3.v7.min.js"></script>
   <style>
     body { width:1440px;height:810px;margin:0;overflow:hidden;background:#f5f5f5; }
-    .link { stroke:#e5e5e5; stroke-width:2.5; }
+    .link { stroke:#404040; stroke-width:3; }
     .node { stroke:#0a0a0a; stroke-width:3; }
     .label { font-family:'Noto Sans KR',sans-serif; font-weight:700; font-size:20px;
              fill:#0a0a0a; text-anchor:middle; dominant-baseline:central; }
@@ -368,6 +368,14 @@ const groupColor = { 1: '#3B82F6', 2: '#a3e635', 3: '#FF6B35' };
 
 const svg = d3.select('svg');
 const W = 1440, H = 810;
+
+// Deterministic initial placement on a centered ellipse so the settled
+// layout is reproducible run-to-run and the cluster lands center-canvas.
+nodes.forEach((d, i) => {
+  const a = (i / nodes.length) * Math.PI * 2 - Math.PI / 2;
+  d.x = W / 2 + Math.cos(a) * 240;
+  d.y = H / 2 + Math.sin(a) * 170;
+});
 
 // Force simulation
 const sim = d3.forceSimulation(nodes)
@@ -423,7 +431,7 @@ svg.selectAll('.label').data(nodes).join('text')
 </body>
 ```
 
-Notes: D3 v7을 CDN에서 로드. `for (let i=0; i<300; i++) sim.tick(); sim.stop();`으로 시뮬레이션을 동기 실행 — 스크린샷 캡처 시 레이아웃이 안정된 상태 보장. 그 다음 **scale-to-fit pass**로 bounds를 다시 계산해 그래프를 composition box에 채운다. 정사각형 그래프가 16:9 캔버스에서 작아 보이면 `scaleX`와 `scaleY`를 **독립적으로** 계산해 가로와 세로를 각각 채우는 편이 낫다. `nodes`의 `group`으로 색상 분류, `r`로 노드 크기 (중요도). `links`의 `source`/`target`은 노드 `id` 참조. Hard shadow는 동일 좌표에 offset된 검정 원으로 구현.
+Notes: D3 v7을 CDN에서 로드. 시뮬레이션 **전에** 노드를 중앙 타원에 결정론적으로 초기 배치해 매 렌더의 레이아웃을 재현 가능하게 하고 클러스터가 캔버스 중앙에 오게 한다(랜덤 초기화는 우하단이 비는 배치를 낳는다). `for (let i=0; i<300; i++) sim.tick(); sim.stop();`으로 시뮬레이션을 동기 실행 — 스크린샷 캡처 시 레이아웃이 안정된 상태 보장. 그 다음 **scale-to-fit pass**로 bounds를 다시 계산해 그래프를 composition box에 채운다. 정사각형 그래프가 16:9 캔버스에서 작아 보이면 `scaleX`와 `scaleY`를 **독립적으로** 계산해 가로와 세로를 각각 채우는 편이 낫다. 링크는 연회색이면 25% 축소에서 노드만 떠 보이므로 **짙은 회색(`#404040`) + `stroke-width:3`**으로 그린다. `nodes`의 `group`으로 색상 분류, `r`로 노드 크기 (중요도). `links`의 `source`/`target`은 노드 `id` 참조. Hard shadow는 동일 좌표에 offset된 검정 원으로 구현.
 
 ---
 
@@ -450,18 +458,18 @@ Max: **primary text max 8단어**, attribution max 4단어. 총 ~12단어.
   </defs>
   <rect width="1440" height="810" fill="url(#dots)"/>
 
-  <!-- Decorative quote mark (background) -->
-  <text x="240" y="400" font-family="Georgia, serif" font-size="300" fill="#0a0a0a" opacity="0.06">"</text>
-
   <!-- Card: white rect + 3px border + hard shadow -->
   <rect x="274" y="194" width="900" height="380" rx="0" fill="#0a0a0a" opacity="0.08"/>
   <rect x="270" y="190" width="900" height="380" rx="0" fill="white" stroke="#0a0a0a" stroke-width="3"/>
 
-  <!-- Highlight bar under key phrase -->
-  <rect x="340" y="370" width="420" height="16" fill="#fde047" opacity="0.7"/>
+  <!-- Decorative quote mark: on TOP of card, top-left corner, inside the border -->
+  <text x="312" y="452" font-family="Georgia, serif" font-size="240" font-weight="700" fill="#0a0a0a" opacity="0.07">&#8220;</text>
 
-  <!-- Primary text (multi-line with tspan) -->
-  <text x="720" y="320" text-anchor="middle" font-size="56" font-weight="900">
+  <!-- Highlight bar: background BEHIND key line, aligned to its glyph body -->
+  <rect x="502" y="392" width="436" height="46" fill="#fde047" opacity="0.7"/>
+
+  <!-- Primary text (multi-line with tspan), vertically centered in card -->
+  <text x="720" y="360" text-anchor="middle" font-size="56" font-weight="900">
     <tspan x="720" dy="0">사용자가 말하는 것과</tspan>
     <tspan x="720" dy="72">실제 행동은 다르다</tspan>
   </text>
@@ -472,6 +480,6 @@ Max: **primary text max 8단어**, attribution max 4단어. 총 ~12단어.
 </body>
 ```
 
-Notes: 장식적 큰따옴표 (font-size: 300, opacity 0.06)로 인용 느낌 연출. Neo-Brutalism 카드: white rect + 3px border + 4px offset hard shadow. 강조 바(highlight bar)를 핵심 구절 아래에 배치 (`#fde047` yellow). `<tspan>`으로 multi-line 텍스트 구현. Attribution은 JetBrains Mono. 텍스트 길이에 따라 short (1줄, 120px) vs medium (2줄, 56px) 선택.
+Notes: 장식적 큰따옴표(Georgia, opacity 0.07)는 카드 **위에** 그려 top-left corner 워터마크로 두되 카드 보더 안쪽에 배치한다 — 보더에 걸치면 흰 카드에 잘려 흐릿해진다. Neo-Brutalism 카드: white rect + 3px border + 4px offset hard shadow. 인용문은 카드의 **수직·수평 정중앙**에 배치한다. 강조 바(highlight bar)는 텍스트를 **가로지르는 취소선이 아니라** 핵심 라인 뒤 배경으로, 텍스트보다 먼저 그리고 해당 라인의 glyph body(폭·높이)에 맞춘다 (`#fde047` yellow). `<tspan>`으로 multi-line 텍스트 구현. Attribution은 JetBrains Mono. 텍스트 길이에 따라 short (1줄, 120px) vs medium (2줄, 56px) 선택.
 
 ---
