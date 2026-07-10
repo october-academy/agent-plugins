@@ -135,6 +135,21 @@ npx playwright screenshot --viewport-size="1600,4200" --wait-for-selector="body[
 
 ## Changelog
 
+- **2.5.0** — 30패턴 갤러리 apple-design 평가에서 실측된 시스템 결함 해소(WCAG 대비율 기준).
+  ① **유색 면 위 저대비 텍스트**: Hierarchy 부제의 `--muted-fg`(blue 위 1.29:1) → `--dark`,
+  `.arch-label` 기본색 white → `--dark`(lime 위 1.5:1 방지), design-rules에 "유색 면 위
+  muted-fg 금지 + accent 텍스트는 연한 배경 전용" 규칙 신설. ② **강조 역전 수정**: Comparison
+  "0건"(`--bad-card` 위 `--bad-accent` 1.58:1) → 카드 최대 요소(3.5rem `--dark` 900), Journey %
+  수치(muted 20px) → 카드 하단 앵커 3rem 900 — "핵심 수치는 가장 큰 시각 무게" 규칙 명문화.
+  ③ **lime/yellow 선·글자색 금지**(bg 위 1.2~1.4:1, 채움면+black 전용): Slope·Sparkline 선을
+  dark green #4d7c0f 등 선 팔레트(blue/orange/pink/purple/dark green)로 교체. ④ **커넥터 두께
+  시스템**: figure.css 화살표 샤프트 3→6px + 화살촉 ≥20px(`.arrow-*`, `.journey-line`,
+  `.tree-*line`, `.seq-msg-*`), IconDiagram stroke 6 + marker 24px(userSpaceOnUse), Waterfall
+  connector 1.5→5px, Interaction 메시지 화살표 6px. Loop는 직선 4개 → **링 + 코너 화살촉**으로
+  재설계(순환 시인성). Journey 카드 min-height 540px(캔버스 채움). ⑤ 자잘한 정합: Treemap
+  잔여 항목 "기타" 병합(무라벨 색면 방지), Heatmap 범례 핫스팟 원형 → 셀과 같은 사각형,
+  Data Viz Angular=pink 통일, Concept 중앙 블록 z-order 최상위, Network 최대 노드 라벨
+  '0'→'1.0'.
 - **2.4.0** — 품질 패스(감사 + 30패턴 시각 리뷰 + fresh-context 검증). ① SKILL.md의
   AskUserQuestion `markdown` 필드(현행 스키마에 없음) 8곳을 `preview`로 교정, Capture 절차를
   `references/capture.md`로 이관. ② `validate_figure.py`의 `<style>` 내 hex 미탐 수정,

@@ -22,6 +22,11 @@ Generate Neo-Brutalism styled figure images for blog posts: HTML → browser →
 토큰)은 블로그 전용이며, PPT 지향의 구세대 neo-brutalism 문서(1920×1080, Black Han Sans,
 `image-design-system.md`)와는 다른 세대다 — 그 문서를 이 스킬 수정의 참고 자료로 쓰지 마라.
 
+런타임 노트: 이 문서의 `AskUserQuestion`은 Claude Code 도구명이다. Codex에서는 같은
+질문·옵션 구조로 `request_user_input`을 쓰되, `preview` 필드가 없는 런타임에서는 ASCII
+프리뷰를 질문 본문에 코드펜스로 넣는다. 구조화 질문 도구가 아예 없으면 같은 옵션을 번호
+목록 텍스트로 제시하고 답을 기다린다.
+
 ## Workflow
 
 **기존 figure 수정 요청 시**: 대상 PNG 옆 `{filename}.src.html`을 먼저 찾아라. 있으면 신규
@@ -341,7 +346,7 @@ python3 {SKILL_DIR}/scripts/validate_figure.py /tmp/blog-figure-{name}.html --pa
 | **Matrix** | 2x2 분석, 비교표 | `.matrix`, `.matrix-cell` |
 | **Journey** | 사용자 여정, 터치포인트 | `.journey`, `.journey-step` |
 | **Funnel** | 전환율, 단계별 감소 | `.funnel`, `.funnel-stage` |
-| **Loop** | 순환 프로세스, 피드백 | `.loop`, `.loop-node` |
+| **Loop** | 순환 프로세스, 피드백 | `.loop-node`, `.loop-center`, 링 + 코너 화살촉 |
 | **Data Viz** | 수치 비교, 바 차트 | `.bar-chart`, `.bar-row` |
 | **Storyboard** | 시나리오, 단계별 장면 | `.storyboard`, `.story-panel` |
 | **Terminal** | CLI 시각화, 터미널 UI | `.terminal`, `.terminal-card`, `.terminal-option` |

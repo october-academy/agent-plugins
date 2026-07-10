@@ -24,7 +24,7 @@ Best for: 면적 비례 구성비, 카테고리별 비중, 2D 면적으로 비�
 
 Approach: **D3 v7 CDN** — `d3.treemap().tile(d3.treemapSquarify)`. flat data `{children: [{name, value, color}]}`.
 
-Max: **6~8 leaf nodes**, 라벨 1단어. 셀 폭 80px 미만이면 라벨 숨김.
+Max: **6~8 leaf nodes**, 라벨 1단어. 라벨이 안 들어갈 만큼 작은 항목은 **"기타"로 병합** — 모든 셀이 라벨을 가져야 한다. threshold 숨김은 최후 방어선이지, 무라벨 색면을 정당화하지 않는다.
 
 ```html
 <!DOCTYPE html>
@@ -54,14 +54,14 @@ Max: **6~8 leaf nodes**, 라벨 1단어. 셀 폭 80px 미만이면 라벨 숨김
 </svg>
 <script>
 // === CONFIG: Modify for your content ===
+// 작은 잔여 항목(Solid 5 + Qwik 2)은 '기타'로 병합 — 라벨 없는 정체불명 색면을 남기지 않는다
 const data = {
   children: [
     { name: 'React', value: 40, color: '#3B82F6' },
     { name: 'Vue',   value: 25, color: '#a3e635' },
     { name: 'Svelte',value: 18, color: '#FF6B35' },
     { name: 'Angular',value:10, color: '#ff5c8d' },
-    { name: 'Solid', value: 5,  color: '#8B5CF6' },
-    { name: 'Qwik',  value: 2,  color: '#fde047' },
+    { name: '기타',  value: 7,  color: '#a3a3a3' },
   ]
 };
 
@@ -109,7 +109,7 @@ cells.append('text')
 </body>
 ```
 
-Notes: D3 treemap은 `d3.treemapSquarify` 타일링으로 정사각형에 가까운 셀을 생성. `data.children` 배열만 수정하면 내용 변경 가능. Hard shadow는 offset된 검정 rect (opacity 0.08). **중앙 정렬보다 좌상단 직접 라벨**이 면적 비교에 더 자연스럽고, 작은 셀은 과감히 숨긴다. 면적 비교는 정밀 수치보다 구성을 읽는 용도이므로 **라벨 threshold를 보수적으로** 잡는 편이 낫다.
+Notes: D3 treemap은 `d3.treemapSquarify` 타일링으로 정사각형에 가까운 셀을 생성. `data.children` 배열만 수정하면 내용 변경 가능. Hard shadow는 offset된 검정 rect (opacity 0.08). **중앙 정렬보다 좌상단 직접 라벨**이 면적 비교에 더 자연스럽다. **라벨이 숨겨질 크기의 항목은 데이터 단계에서 "기타"(#a3a3a3 gray)로 병합**하라 — threshold 숨김 규칙에 기대면 독자가 해석할 수 없는 무라벨 색면이 남는다. threshold는 병합 실수를 잡는 최후 방어선일 뿐이다. lime #a3e635은 여기서 채움면 + `--dark` 라벨(13:1)이라 허용된다.
 
 ---
 
@@ -377,22 +377,24 @@ document.fonts.ready.then(() => {
   ctx.textAlign = 'right';
   ctx.fillText('높음', lx + 5 * (sw + sg) - sg, ly + sh + 30 * S);
 
-  ctx.textAlign = 'left';
-  ctx.fillText('핫스팟', lx + 390 * S, ly + sh + 4 * S);
-  ctx.beginPath();
-  ctx.arc(lx + 344 * S, ly + sh - 8 * S, 12 * S, 0, Math.PI * 2);
+  // Hotspot legend: 그리드 셀과 같은 "사각형" 미니 셀 — 심볼과 실제 셀의 형태를 일치시킨다
   ctx.fillStyle = '#2563EB';
-  ctx.fill();
+  ctx.fillRect(lx + 326 * S, ly - 3 * S, 36 * S, 30 * S);
+  ctx.strokeRect(lx + 326 * S, ly - 3 * S, 36 * S, 30 * S);
   ctx.fillStyle = '#ffffff';
   ctx.font = `900 ${20 * S}px 'JetBrains Mono', monospace`;
   ctx.textAlign = 'center';
-  ctx.fillText('95', lx + 344 * S, ly + sh - 2 * S);
+  ctx.fillText('95', lx + 344 * S, ly + 19 * S);
+  ctx.fillStyle = '#737373';
+  ctx.font = `700 ${20 * S}px 'Noto Sans KR', sans-serif`;
+  ctx.textAlign = 'left';
+  ctx.fillText('핫스팟', lx + 376 * S, ly + 19 * S);
 });
 </script>
 </body>
 ```
 
-Notes: `document.fonts.ready.then()` 래핑 필수 (Canvas에서 Google Fonts 렌더링). retina 2x (canvas 2880×1620 → CSS 1440×810). Heatmap은 연속 그라디언트도 가능하지만, **업무용 비교 패턴은 5단계 discrete palette + hotspot 직접 라벨**이 훨씬 빨리 읽힌다. 강한 셀만 숫자를 찍고 나머지는 색으로만 읽게 두는 편이 가장 안정적이다.
+Notes: `document.fonts.ready.then()` 래핑 필수 (Canvas에서 Google Fonts 렌더링). retina 2x (canvas 2880×1620 → CSS 1440×810). Heatmap은 연속 그라디언트도 가능하지만, **업무용 비교 패턴은 5단계 discrete palette + hotspot 직접 라벨**이 훨씬 빨리 읽힌다. 강한 셀만 숫자를 찍고 나머지는 색으로만 읽게 두는 편이 가장 안정적이다. **범례의 hotspot 심볼은 그리드 셀과 같은 사각형** — 그리드가 사각 셀인데 범례만 원형이면 다른 마크로 오독된다.
 
 ---
 
@@ -431,13 +433,15 @@ Max: **6 sparklines** (3x2 grid), 항목당 라벨 1단어 + 값 1개
 </svg>
 <script>
 // === CONFIG ===
+// 선 색은 선 팔레트만 (blue/orange/pink/purple/dark green + dark).
+// lime #a3e635·yellow #fde047은 흰 카드 위 1.3~1.5:1이라 선(stroke) 금지 — lime 슬롯은 dark green으로.
 const items = [
   { name: 'React',   values: [60,65,70,68,75,80,82,85], color: '#3B82F6' },
-  { name: 'Vue',     values: [40,42,45,50,52,55,58,62], color: '#a3e635' },
+  { name: 'Vue',     values: [40,42,45,50,52,55,58,62], color: '#4d7c0f' },
   { name: 'Svelte',  values: [15,20,28,35,40,45,50,55], color: '#FF6B35' },
   { name: 'Angular', values: [70,68,65,60,55,50,48,42], color: '#ff5c8d' },
   { name: 'Solid',   values: [5,8,12,18,22,28,32,35],   color: '#8B5CF6' },
-  { name: 'Qwik',    values: [2,3,5,8,10,12,15,18],     color: '#fde047' },
+  { name: 'Qwik',    values: [2,3,5,8,10,12,15,18],     color: '#0a0a0a' },
 ];
 const cols = 3, rows = 2;
 const margin = { left: 80, top: 60, right: 80, bottom: 60 };
@@ -532,6 +536,6 @@ items.forEach((item, idx) => {
 </html>
 ```
 
-Notes: 3x2 그리드로 6개 sparkline 배치. 각 셀은 white 카드 + hard shadow. `<polygon>`으로 area fill (opacity 0.15) + `<polyline>`으로 트렌드 선. 마지막 데이터 포인트에 큰 dot (r=8)을 배치하여 모바일 25% 축소에서도 인식 가능. **비교 목적의 small multiple은 shared scale**을 써야 카드 간 높이 차이가 의미를 가진다. 변화량은 작은 delta 라벨로 직접 붙이고, 축은 카드 안 baseline 정도로만 남긴다.
+Notes: 3x2 그리드로 6개 sparkline 배치. 각 셀은 white 카드 + hard shadow. `<polygon>`으로 area fill (opacity 0.15) + `<polyline>`으로 트렌드 선. 마지막 데이터 포인트에 큰 dot (r=8)을 배치하여 모바일 25% 축소에서도 인식 가능. **선 색은 선 팔레트만** — lime/yellow는 흰 카드 위에서 선이 사라진다(1.3~1.5:1). 6번째 시리즈가 필요하면 `--dark`(#0a0a0a)를 쓴다. **비교 목적의 small multiple은 shared scale**을 써야 카드 간 높이 차이가 의미를 가진다. 변화량은 작은 delta 라벨로 직접 붙이고, 축은 카드 안 baseline 정도로만 남긴다.
 
 ---

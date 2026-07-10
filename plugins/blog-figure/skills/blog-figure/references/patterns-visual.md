@@ -97,10 +97,11 @@ Max: **4 노드**, **4 커넥터**. 아이콘은 기본 SVG 도형으로 구성 
       text { font-family: 'Noto Sans KR', sans-serif; fill: #0a0a0a; }
       .box { fill: white; stroke: #0a0a0a; stroke-width: 3; }
       .box-sh { fill: #0a0a0a; }
-      .conn { stroke: #0a0a0a; stroke-width: 2.5; fill: none; }
+      .conn { stroke: #0a0a0a; stroke-width: 6; fill: none; }
     </style>
-    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5"
-            markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+    <!-- markerUnits="userSpaceOnUse": 화살촉을 stroke 굵기와 무관하게 24px로 고정 -->
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse"
+            markerWidth="24" markerHeight="24" orient="auto-start-reverse">
       <path d="M0 0L10 5L0 10z" fill="#0a0a0a"/>
     </marker>
     <pattern id="dots" width="16" height="16" patternUnits="userSpaceOnUse">
@@ -123,9 +124,9 @@ Max: **4 노드**, **4 커넥터**. 아이콘은 기본 SVG 도형으로 구성 
   <g transform="translate(520, 174)">
     <rect class="box-sh" x="4" y="4" width="220" height="170" rx="12"/>
     <rect class="box" width="220" height="170" rx="12"/>
-    <!-- Gear icon: circle + center dot -->
-    <circle cx="110" cy="52" r="26" fill="none" stroke="#a3e635" stroke-width="3"/>
-    <circle cx="110" cy="52" r="8" fill="#a3e635"/>
+    <!-- Gear icon: circle + center dot — 아이콘 선도 선 팔레트(lime 금지 → dark green) -->
+    <circle cx="110" cy="52" r="26" fill="none" stroke="#4d7c0f" stroke-width="3"/>
+    <circle cx="110" cy="52" r="8" fill="#4d7c0f"/>
     <text x="110" y="144" text-anchor="middle" font-size="28" font-weight="900">Gateway</text>
   </g>
 
@@ -164,7 +165,7 @@ Max: **4 노드**, **4 커넥터**. 아이콘은 기본 SVG 도형으로 구성 
 </body>
 ```
 
-Notes: 아이콘은 기본 SVG 도형(circle, ellipse, path, rect)으로 구성. 외부 아이콘 라이브러리 불필요. `<marker>` 로 화살표 정의하고 `marker-end="url(#arr)"`으로 적용. **4노드 + 4커넥터**(수평 3 + 수직 1) 정도가 가장 완성도가 높고, 수평/수직 연결을 섞으면 캔버스 활용도가 훨씬 좋아진다. 노드 bounding box의 중심을 캔버스 중앙(720, 405)에 맞춰 배치해야 특정 모서리로 쏠리지 않는다.
+Notes: 아이콘은 기본 SVG 도형(circle, ellipse, path, rect)으로 구성. 외부 아이콘 라이브러리 불필요. `<marker>` 로 화살표 정의하고 `marker-end="url(#arr)"`으로 적용. 커넥터는 **stroke-width 6 + 화살촉 24px** — 2~3px 선은 25% 축소에서 소멸한다. `markerUnits="userSpaceOnUse"`를 줘야 화살촉 크기가 stroke 굵기에 비례해 커지지 않고 고정된다. **4노드 + 4커넥터**(수평 3 + 수직 1) 정도가 가장 완성도가 높고, 수평/수직 연결을 섞으면 캔버스 활용도가 훨씬 좋아진다. 노드 bounding box의 중심을 캔버스 중앙(720, 405)에 맞춰 배치해야 특정 모서리로 쏠리지 않는다.
 
 ---
 
@@ -219,7 +220,7 @@ const scatterNodes = [
   { x:1195, y:160, r:20, color:P.purple, label:'0.4', opacity:0.45 },
   { x:1290, y:235, r:32, color:P.pink,   label:'0.7', opacity:0.75 },
   { x:885,  y:340, r:18, color:P.yellow, label:'0.1', opacity:0.4 },
-  { x:1015, y:395, r:50, color:P.blue,   label:'0',   opacity:0.6 },
+  { x:1015, y:395, r:50, color:P.blue,   label:'1.0', opacity:0.75 },
   { x:1150, y:345, r:26, color:P.lime,   label:'0.5', opacity:0.55 },
   { x:1265, y:390, r:35, color:P.orange, label:'0.2', opacity:0.5 },
   { x:885,  y:485, r:24, color:P.purple, label:'0.6', opacity:0.6 },

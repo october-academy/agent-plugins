@@ -45,13 +45,13 @@ Max: **4행**
     </div>
     <div class="bar-row">
       <div class="bar-label">Angular</div>
-      <div class="bar-track" style="height:104px"><div class="bar-fill" style="width:54%;background:var(--tl-purple)">54%</div></div>
+      <div class="bar-track" style="height:104px"><div class="bar-fill" style="width:54%;background:var(--tl-pink)">54%</div></div>
     </div>
   </div>
 </body>
 ```
 
-Notes: `width` 퍼센트로 바 길이 설정. 라벨은 단어 1~2개. `body`가 세로 중앙 정렬하므로, 4행이 810 캔버스를 균형 있게 채우도록 `bar-track` 높이(104px)와 `bar-chart` gap(2.5rem)을 인라인으로 키웠다 — 적은 수의 큰 바가 25% 축소에서도 잘 읽힌다.
+Notes: `width` 퍼센트로 바 길이 설정. 라벨은 단어 1~2개. `body`가 세로 중앙 정렬하므로, 4행이 810 캔버스를 균형 있게 채우도록 `bar-track` 높이(104px)와 `bar-chart` gap(2.5rem)을 인라인으로 키웠다 — 적은 수의 큰 바가 25% 축소에서도 잘 읽힌다. **같은 항목은 패턴을 넘어 같은 색**을 쓴다(예: Angular = pink — Slope/Treemap/Sparkline과 동일). 한 블로그에서 여러 figure를 만들 때 항목-색 매핑이 흔들리면 독자가 혼란스럽다.
 
 ---
 
@@ -259,18 +259,18 @@ Max: **5항목**, 2시점 (좌/우 칼럼)
   <text x="1220" y="452" font-size="20" font-weight="700" class="mono" fill="#737373">3</text>
 
   <!-- Item 2: Svelte — rank 2→1 (y: 328→210) -->
-  <line class="slope-line" x1="380" y1="328" x2="1060" y2="210" stroke="#a3e635"/>
-  <circle class="slope-dot" cx="380" cy="328" r="10" fill="#a3e635"/>
-  <circle class="slope-dot" cx="1060" cy="210" r="10" fill="#a3e635"/>
+  <line class="slope-line" x1="380" y1="328" x2="1060" y2="210" stroke="#FF6B35"/>
+  <circle class="slope-dot" cx="380" cy="328" r="10" fill="#FF6B35"/>
+  <circle class="slope-dot" cx="1060" cy="210" r="10" fill="#FF6B35"/>
   <text x="360" y="334" text-anchor="end" font-size="24" font-weight="700">Svelte</text>
   <text x="220" y="334" text-anchor="end" font-size="20" font-weight="700" class="mono" fill="#737373">2</text>
   <text x="1080" y="216" font-size="24" font-weight="700">Svelte</text>
   <text x="1220" y="216" font-size="20" font-weight="700" class="mono" fill="#737373">1</text>
 
   <!-- Item 3: Vue — rank 3→2 (y: 446→328) -->
-  <line class="slope-line" x1="380" y1="446" x2="1060" y2="328" stroke="#FF6B35"/>
-  <circle class="slope-dot" cx="380" cy="446" r="10" fill="#FF6B35"/>
-  <circle class="slope-dot" cx="1060" cy="328" r="10" fill="#FF6B35"/>
+  <line class="slope-line" x1="380" y1="446" x2="1060" y2="328" stroke="#4d7c0f"/>
+  <circle class="slope-dot" cx="380" cy="446" r="10" fill="#4d7c0f"/>
+  <circle class="slope-dot" cx="1060" cy="328" r="10" fill="#4d7c0f"/>
   <text x="360" y="452" text-anchor="end" font-size="24" font-weight="700">Vue</text>
   <text x="220" y="452" text-anchor="end" font-size="20" font-weight="700" class="mono" fill="#737373">3</text>
   <text x="1080" y="334" font-size="24" font-weight="700">Vue</text>
@@ -297,7 +297,7 @@ Max: **5항목**, 2시점 (좌/우 칼럼)
 </body>
 ```
 
-Notes: Y좌표 = `210 + (rank-1) * 118` (5항목 기준, 810 캔버스에 세로 중앙 정렬 — 헤더 y=90, 마지막 행 ~688). JS 불필요 — 순수 SVG. `--tl-*` 팔레트에서 항목별 색상 배정. 좌 칼럼 = 이전 시점, 우 칼럼 = 이후 시점. **축보다 endpoint 직접 라벨**을 우선하고, 5개 이내만 남겨 선 교차를 통제한다. 가능하면 **오른쪽 결과값 기준으로 정렬**해 읽는 부담을 줄인다.
+Notes: Y좌표 = `210 + (rank-1) * 118` (5항목 기준, 810 캔버스에 세로 중앙 정렬 — 헤더 y=90, 마지막 행 ~688). JS 불필요 — 순수 SVG. **선 색은 선 팔레트에서만**: blue #3B82F6 · orange #FF6B35 · pink #ff5c8d · purple #8B5CF6 · dark green #4d7c0f. lime #a3e635·yellow #fde047은 연회색 배경 위 1.2~1.4:1이라 **선으로 금지**(채움면 전용) — lime 슬롯이 필요하면 dark green을 쓴다. 좌 칼럼 = 이전 시점, 우 칼럼 = 이후 시점. **축보다 endpoint 직접 라벨**을 우선하고, 5개 이내만 남겨 선 교차를 통제한다. 가능하면 **오른쪽 결과값 기준으로 정렬**해 읽는 부담을 줄인다.
 
 ---
 
@@ -490,7 +490,7 @@ Max: **6~8 bars**, 라벨 1~2단어
       text { font-family: 'Noto Sans KR', sans-serif; fill: #0a0a0a; }
       .bar { stroke: #0a0a0a; stroke-width: 3; }
       .bar-sh { fill: #0a0a0a; opacity: 0.08; stroke: none; }
-      .connector { stroke: #a3a3a3; stroke-width: 1.5; stroke-dasharray: 6 4; }
+      .connector { stroke: #737373; stroke-width: 5; stroke-dasharray: 12 8; }
       .mono { font-family: 'JetBrains Mono', monospace; }
       .pos { fill: #a3e635; }
       .neg { fill: #ff5c8d; }
@@ -571,6 +571,6 @@ Max: **6~8 bars**, 라벨 1~2단어
 </body>
 ```
 
-Notes: Floating rect로 증감 표현 — 증가 바는 이전 누적값 위에 쌓이고, 감소 바는 이전 누적값에서 아래로 내려감. Grounded bar (시작/합계)는 baseline(y=650)에서 시작. Connector (dashed line)가 이전 바의 끝점과 다음 바의 시작점을 연결. 값 라벨: 증가는 바 위 (#4d7c0f), 감소는 바 아래 (#d6336c). `y(v) = 650 - (v/180) * 530` 스케일. JS 불필요.
+Notes: Floating rect로 증감 표현 — 증가 바는 이전 누적값 위에 쌓이고, 감소 바는 이전 누적값에서 아래로 내려감. Grounded bar (시작/합계)는 baseline(y=650)에서 시작. Connector (dashed line, **5px #737373**)가 이전 바의 끝점과 다음 바의 시작점을 연결 — 1.5px 연회색은 25% 축소에서 소멸해 바들이 공중에 떠 보인다. 값 라벨: 증가는 바 위 (#4d7c0f), 감소는 바 아래 (#d6336c). lime/pink은 여기서 **채움면**(검정 3px 보더 + 외부 라벨)이라 허용된다. `y(v) = 650 - (v/180) * 530` 스케일. JS 불필요.
 
 ---

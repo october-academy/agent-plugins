@@ -13,6 +13,8 @@ HTML 구현 시 반드시 참고할 디자인 제약 모음. SKILL.md Workflow 4
 - **Body font**: Noto Sans KR, weight 700 (bold default). Use 400 only for minor annotations
 - **Code/number font**: JetBrains Mono (`.mono`, `.code`, `.tag`)
 - **Colors**: CSS variables only — never hardcode hex in HTML (Canvas/D3 패턴은 JS 내 hex 허용)
+- **Contrast**: 유색 면 위 텍스트는 `--dark` 기본 (white는 진한 accent 위만). `--muted-fg`는 흰·연회색 배경 전용 — [색상 대비](#색상-대비--유색-면-위-텍스트) 참조
+- **Connectors**: 화살표·연결선 샤프트 ≥6px + 화살촉 ≥20px — [커넥터](#커넥터--화살표연결선-두께) 참조
 - **No**: gradients, blur shadows, soft edges
 
 ## 시각 패턴 (Isometric, IconDiagram, Network, Graph) 참고
@@ -69,7 +71,7 @@ HTML 구현 시 반드시 참고할 디자인 제약 모음. SKILL.md Workflow 4
 | Waffle | **1 grid (10x10), 2 카테고리 (범례 2)** | 총 ~8단어 (범례 포함) |
 | Typographic | **1 primary text (max 8단어)** | attribution max 4단어 |
 | Slope | **max 5항목, 2시점** | 항목명 1단어 |
-| Treemap | **max 6~8 cells** | 라벨 1단어, 80px 미만 숨김 |
+| Treemap | **max 6~8 cells** | 라벨 1단어. 작은 잔여 항목은 "기타"로 병합 — 무라벨 색면 금지 |
 | Radar | **max 5축, 1~2 series** | 축 라벨 1단어 |
 | Dumbbell | **max 5 rows** | 라벨 max 3단어 |
 | Heatmap | **max 7x5 grid (35 cells)** | 셀 ~110x90px |
@@ -100,6 +102,39 @@ HTML 구현 시 반드시 참고할 디자인 제약 모음. SKILL.md Workflow 4
 | 모든 텍스트 기본값 | 700 | body default, `.flow-card`, `.journey-desc` |
 | 부연/보조 (드물게 사용) | 400 | 긴 설명이 불가피할 때만 |
 | Display titles | Noto Sans KR 900 | `.figure-title`, `.section-label` |
+
+## 색상 대비 — 유색 면 위 텍스트
+
+25% 축소에서 살아남는 것은 대비뿐이다. WCAG 실측 기준으로 지킬 것:
+
+- **유색 면 위 `--muted-fg` 금지.** `--muted-fg`(#737373)는 `--white`/`--card`/`--muted` 같은
+  흰·연회색 배경 전용이다. 유색 카드·노드 위 보조 텍스트는 `--dark`가 기본이고, 배경이 진한
+  accent(`--info-accent`, `--bad-accent`, `--good-accent`, `--dark`)일 때만 `--white`를 쓴다.
+  실측: blue #3B82F6 위 muted-fg = **1.29:1** — 사실상 안 보인다.
+- **accent 텍스트 색(`.text-bad`/`.text-good`/`.text-info`)은 흰색·tint 배경 전용.** 같은 계열
+  카드 색 위에 올리면 무너진다 — `--bad-card` 위 `--bad-accent` = **1.58:1**.
+- **lime(#a3e635)·yellow(#fde047)는 선(stroke)·글자색 금지.** 연회색 배경(#f5f5f5) 위
+  1.38:1/1.21:1이라 선이 통째로 사라진다. 이 둘은 **채움면 + `--dark` 텍스트** 조합
+  전용(13~15:1). **선 팔레트**: blue #3B82F6 · orange #FF6B35 · pink #ff5c8d · purple #8B5CF6 ·
+  dark green #4d7c0f — lime 슬롯의 선 버전이 dark green이다(6번째가 필요하면 `--dark`).
+- **핵심 수치는 가장 큰 시각 무게.** Content Brief의 강조점(예: "0건", 전환 %)은 figure에서
+  가장 크고 진해야 한다 — 크게 + `--dark` 900 (어두운 면 위면 `--white` 900). 핵심 수치가
+  라벨보다 작거나 muted로 들어가는 **강조 역전 금지** — Journey의 %, Comparison의 대비 수치가
+  대표 사례다.
+
+## 커넥터 — 화살표·연결선 두께
+
+3px 보더 시스템과 균형을 맞춘다: 정보를 나르는 커넥터는 25% 축소 후에도 1.5px 이상 남아야 한다.
+
+- **샤프트 최소 6px, 화살촉 최소 20px.** figure.css의 `.arrow-*`, `.journey-line`,
+  `.tree-vline`/`.tree-hline`, `.seq-msg-line`이 이 기본값이다 — 인라인 스타일로 얇게 덮어쓰지 마라.
+- **SVG 커넥터도 동일**: `stroke-width` ≥ 6(점선 보조 커넥터는 ≥5), 화살촉 `<marker>`는
+  `markerUnits="userSpaceOnUse"` + 20px 이상. 기본 markerUnits는 stroke 굵기에 비례해
+  화살촉이 왜곡된다.
+- **보조 가이드선은 예외**: 축·눈금·베이스라인·라이프라인처럼 구조 배경인 선은 1.5~3px를
+  유지한다 — 커넥터와의 두께 위계가 오히려 정보를 만든다.
+- **순환(Loop)은 직선 4개 금지에 준한다**: 링(6px 보더 + 큰 corner radius) 또는 코너 곡선 +
+  방향 화살촉으로 회전이 형태 자체로 보이게 하라 (patterns-layout.md §13).
 
 ## Composition — 정형화 피하기
 
