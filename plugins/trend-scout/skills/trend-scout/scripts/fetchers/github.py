@@ -4,7 +4,7 @@ import json
 import urllib.parse
 
 from lib import (
-    BROWSER_UA,
+    BROWSER_UA, USER_AGENT_VERSION,
     curl_json, run_command, write_json, eprint,
     looks_spam, normalized_item, parse_iso,
 )
@@ -13,10 +13,15 @@ from lib import (
 def fetch_github(config, period, limit, outdir, errors, fallback_events):
     eprint("Fetching GitHub launch radar...")
     gh = run_command(["gh", "auth", "status"])
-    try:
-        if gh.returncode == 0:
+    if gh.returncode == 0:
+        try:
             return _fetch_github_with_gh(config, period, limit, outdir)
+        except Exception as exc:
+            # gh authed but the search itself failed — fall through to the public REST API
+            errors.append(f"github: gh search failed ({exc}), using REST fallback")
+    else:
         errors.append("github: gh auth unavailable, using REST fallback")
+    try:
         return _fetch_github_with_rest(config, period, limit, outdir)
     except Exception as exc:
         errors.append(f"github: {exc}")
@@ -96,7 +101,7 @@ def _fetch_github_with_rest(config, period, limit, outdir):
         payload = curl_json(
             url,
             headers={
-                "User-Agent": "trend-scout/1.4.0",
+                "User-Agent": f"trend-scout/{USER_AGENT_VERSION}",
                 "Accept": "application/vnd.github+json",
             },
         )

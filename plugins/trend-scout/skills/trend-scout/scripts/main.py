@@ -2,12 +2,65 @@
 import datetime as dt
 import json
 import os
+import queue
 import sys
+import threading
+import time
 
 sys.path.insert(0, os.path.dirname(__file__))
 
-from lib import dedupe_items, write_json, load_config
+from lib import dedupe_items, write_json, load_config, TREND_SCOUT_TIMEOUT_TOTAL
 from fetchers import ALL_FETCHERS
+
+MAX_WORKERS = 8
+
+
+def _run_fetchers_parallel(config, period, limit, outdir, errors, fallback_events):
+    """Run every fetcher concurrently (capped at MAX_WORKERS) under a global deadline.
+
+    Each fetcher is isolated: an exception is recorded in errors[] and the rest keep
+    going. TREND_SCOUT_TIMEOUT_TOTAL bounds the whole pipeline — sources that have not
+    reported by the deadline are recorded as failed and whatever finished is returned.
+    Worker threads are daemons so an unfinished straggler cannot block process exit.
+    """
+    results = queue.Queue()
+    gate = threading.Semaphore(MAX_WORKERS)
+
+    def worker(fetcher_fn):
+        with gate:
+            try:
+                items = fetcher_fn(config, period, limit, outdir, errors, fallback_events)
+                results.put((fetcher_fn.__name__, items, None))
+            except Exception as exc:  # isolate: one bad fetcher must not sink the run
+                results.put((fetcher_fn.__name__, None, exc))
+
+    for fetcher_fn in ALL_FETCHERS:
+        threading.Thread(target=worker, args=(fetcher_fn,), daemon=True).start()
+
+    all_items = []
+    reported = set()
+    deadline = time.monotonic() + TREND_SCOUT_TIMEOUT_TOTAL
+    for _ in ALL_FETCHERS:
+        remaining = deadline - time.monotonic()
+        if remaining <= 0:
+            break
+        try:
+            name, items, exc = results.get(timeout=remaining)
+        except queue.Empty:
+            break
+        reported.add(name)
+        if exc is not None:
+            errors.append(f"{name}: {exc}")
+        elif items:
+            all_items.extend(items)
+
+    for fetcher_fn in ALL_FETCHERS:
+        if fetcher_fn.__name__ not in reported:
+            errors.append(
+                f"{fetcher_fn.__name__}: exceeded total deadline "
+                f"{TREND_SCOUT_TIMEOUT_TOTAL}s (source incomplete)"
+            )
+    return all_items
 
 
 def main():
@@ -20,11 +73,8 @@ def main():
 
     errors = []
     fallback_events = []
-    all_items = []
 
-    for fetcher_fn in ALL_FETCHERS:
-        items = fetcher_fn(config, period, limit, outdir, errors, fallback_events)
-        all_items.extend(items)
+    all_items = _run_fetchers_parallel(config, period, limit, outdir, errors, fallback_events)
 
     deduped = dedupe_items(all_items)
 

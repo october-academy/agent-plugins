@@ -1,5 +1,7 @@
 """JSON API fetchers: Reddit, HN, Lobsters, dev.to, StackOverflow, npm, V2EX."""
+import concurrent.futures
 import datetime as dt
+import json
 import time
 import urllib.parse
 
@@ -8,8 +10,24 @@ from lib import (
     curl_json, http_json, write_json, eprint,
     clean_title, looks_spam, has_signal_text, matches_theme_signal,
     normalized_item, parse_iso, iso_from_epoch, position_score,
-    run_command,
+    has_curl_cffi, curl_cffi_request,
 )
+
+
+def _reddit_payload(url, headers):
+    """Reddit blocks plain requests with an HTML interstitial. Try curl first, then
+    curl_cffi TLS impersonation (same escalation the FallbackChain uses elsewhere).
+    If both are blocked, re-raise the descriptive curl error for the errors[] log."""
+    try:
+        return curl_json(url, headers=headers)
+    except Exception as first_exc:
+        if not has_curl_cffi():
+            raise
+        try:
+            text = curl_cffi_request(url, headers=headers)
+            return json.loads(text)
+        except Exception:
+            raise first_exc
 
 
 def fetch_reddit(config, period, limit, outdir, errors, fallback_events):
@@ -27,7 +45,7 @@ def fetch_reddit(config, period, limit, outdir, errors, fallback_events):
     for subreddit in subreddits:
         url = f"https://www.reddit.com/r/{subreddit}/top.json?t={period}&limit={limit}"
         try:
-            payload = curl_json(url, headers=headers)
+            payload = _reddit_payload(url, headers)
             raw[subreddit] = payload
         except Exception as exc:
             errors.append(f"reddit:{subreddit}: {exc}")
@@ -109,12 +127,24 @@ def fetch_hackernews(config, period, limit, outdir, errors, fallback_events):
             continue
         seen.add(story_id)
         ordered_ids.append(story_id)
-    for story_id in ordered_ids[: limit * 2]:
-        try:
-            data = http_json(f"https://hacker-news.firebaseio.com/v0/item/{story_id}.json")
-        except Exception as exc:
-            errors.append(f"hackernews:item:{story_id}: {exc}")
-            continue
+
+    def _fetch_story(story_id):
+        return story_id, http_json(f"https://hacker-news.firebaseio.com/v0/item/{story_id}.json")
+
+    target_ids = ordered_ids[: limit * 2]
+    stories_by_id = {}
+    with concurrent.futures.ThreadPoolExecutor(max_workers=8) as executor:
+        for future in concurrent.futures.as_completed(
+            {executor.submit(_fetch_story, sid) for sid in target_ids}
+        ):
+            try:
+                story_id, data = future.result()
+                stories_by_id[story_id] = data
+            except Exception as exc:
+                errors.append(f"hackernews:item: {exc}")
+
+    for story_id in target_ids:  # preserve rank order for scoring/dedupe stability
+        data = stories_by_id.get(story_id)
         if not data or data.get("type") != "story":
             continue
         raw["stories"].append(data)
@@ -288,6 +318,16 @@ def fetch_stackoverflow(config, period, limit, outdir, errors, fallback_events):
     return items
 
 
+def _npm_weekly_downloads(package_name):
+    """Real last-week download count from the npm downloads point API (authoritative; the registry search response also carries downloads.weekly, which may lag slightly)."""
+    url = f"https://api.npmjs.org/downloads/point/last-week/{package_name}"
+    try:
+        payload = http_json(url, headers={"User-Agent": BROWSER_UA})
+    except Exception:
+        return 0
+    return int(payload.get("downloads", 0) or 0)
+
+
 def fetch_npm(config, period, limit, outdir, errors, fallback_events):
     eprint("Fetching npm package radar...")
     now = dt.datetime.now(dt.timezone.utc)
@@ -295,7 +335,7 @@ def fetch_npm(config, period, limit, outdir, errors, fallback_events):
     cutoff = now - dt.timedelta(days=days)
     queries = config.get("npm_queries", [])
     raw = {}
-    items = []
+    candidates = []
     for query in queries:
         url = (
             "https://registry.npmjs.org/-/v1/search?"
@@ -312,8 +352,6 @@ def fetch_npm(config, period, limit, outdir, errors, fallback_events):
             package = entry.get("package") or {}
             title = clean_title(package.get("name", ""))
             summary = package.get("description", "") or ""
-            weekly_downloads = int((entry.get("downloads") or {}).get("weekly", 0) or 0)
-            pseudo_stars = max(1, weekly_downloads // 5000)
             updated_at = parse_iso(entry.get("updated"))
             if looks_spam(title, summary):
                 continue
@@ -321,27 +359,42 @@ def fetch_npm(config, period, limit, outdir, errors, fallback_events):
                 continue
             if updated_at and updated_at < cutoff:
                 continue
-            items.append(
-                normalized_item(
-                    source="npm",
-                    channel=f"npm/{query}",
-                    title=title,
-                    url=(package.get("links") or {}).get("npm", ""),
-                    author=(package.get("publisher") or {}).get("username", ""),
-                    comments=min(20, int(str(entry.get("dependents", "0")).replace(",", "") or 0)),
-                    stars=pseudo_stars,
-                    created_at=updated_at.isoformat() if updated_at else package.get("date"),
-                    summary=summary,
-                    extra={
-                        "version": package.get("version"),
-                        "repository": (package.get("links") or {}).get("repository", ""),
-                        "weekly_downloads": weekly_downloads,
-                        "search_score": round(float(entry.get("searchScore", 0)), 2),
-                    },
-                    now=now,
-                    days=days,
-                )
+            candidates.append((query, entry, package, title, summary, updated_at))
+
+    # Real weekly downloads drive scoring — fetch them in parallel from the point API
+    # (authoritative; the search response's downloads.weekly can lag slightly).
+    names = {package.get("name", "") for _, _, package, _, _, _ in candidates if package.get("name")}
+    downloads_by_name = {}
+    if names:
+        with concurrent.futures.ThreadPoolExecutor(max_workers=8) as executor:
+            future_map = {executor.submit(_npm_weekly_downloads, name): name for name in names}
+            for future in concurrent.futures.as_completed(future_map):
+                downloads_by_name[future_map[future]] = future.result()
+
+    items = []
+    for query, entry, package, title, summary, updated_at in candidates:
+        weekly_downloads = downloads_by_name.get(package.get("name", ""), 0)
+        pseudo_stars = max(1, weekly_downloads // 5000)
+        items.append(
+            normalized_item(
+                source="npm",
+                channel=f"npm/{query}",
+                title=title,
+                url=(package.get("links") or {}).get("npm", ""),
+                author=(package.get("publisher") or {}).get("username", ""),
+                stars=pseudo_stars,
+                created_at=updated_at.isoformat() if updated_at else package.get("date"),
+                summary=summary,
+                extra={
+                    "version": package.get("version"),
+                    "repository": (package.get("links") or {}).get("repository", ""),
+                    "weekly_downloads": weekly_downloads,
+                    "search_score": round(float(entry.get("searchScore", 0)), 2),
+                },
+                now=now,
+                days=days,
             )
+        )
     write_json(outdir, "npm.json", raw)
     return items
 

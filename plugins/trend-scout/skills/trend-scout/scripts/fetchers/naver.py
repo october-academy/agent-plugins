@@ -1,4 +1,5 @@
 """Naver fetchers: Naver Blog, FMKorea (via Naver search)."""
+import concurrent.futures
 import datetime as dt
 import re
 import urllib.parse
@@ -48,27 +49,40 @@ def fetch_naver_blog(config, period, limit, outdir, errors, fallback_events):
             seen.add(key)
             ordered.append(link)
         raw[query] = ordered[: limit]
-        for index, link in enumerate(ordered[: min(limit, 3)]):
-            summary = ""
+        selected = ordered[: min(limit, 3)]
+
+        def _mobile_meta(link):
             mobile_url = naver_blog_to_mobile(link["url"])
-            final_title = link["title"]
-            if mobile_url:
-                try:
-                    mobile_html = http_text(
-                        mobile_url,
-                        headers={
-                            "User-Agent": MOBILE_UA,
-                            "Accept-Language": "ko-KR,ko;q=0.9",
-                            "Referer": "https://m.naver.com/",
-                        },
-                    )
-                    final_title = extract_meta_content(mobile_html, "og:title") or final_title
-                    summary = (
-                        extract_meta_content(mobile_html, "og:description")
-                        or extract_meta_content(mobile_html, "description")
-                    )
-                except Exception as exc:
-                    errors.append(f"naver_blog:post:{link['url']}: {exc}")
+            if not mobile_url:
+                return link["title"], "", None
+            try:
+                mobile_html = http_text(
+                    mobile_url,
+                    headers={
+                        "User-Agent": MOBILE_UA,
+                        "Accept-Language": "ko-KR,ko;q=0.9",
+                        "Referer": "https://m.naver.com/",
+                    },
+                )
+            except Exception as exc:
+                return link["title"], "", f"naver_blog:post:{link['url']}: {exc}"
+            final_title = extract_meta_content(mobile_html, "og:title") or link["title"]
+            summary = (
+                extract_meta_content(mobile_html, "og:description")
+                or extract_meta_content(mobile_html, "description")
+            )
+            return final_title, summary, None
+
+        meta_by_index = {}
+        with concurrent.futures.ThreadPoolExecutor(max_workers=min(3, len(selected)) or 1) as executor:
+            future_map = {executor.submit(_mobile_meta, link): idx for idx, link in enumerate(selected)}
+            for future in concurrent.futures.as_completed(future_map):
+                meta_by_index[future_map[future]] = future.result()
+
+        for index, link in enumerate(selected):
+            final_title, summary, err = meta_by_index.get(index, (link["title"], "", None))
+            if err:
+                errors.append(err)
             if not matches_theme_signal(final_title, summary, link["url"]):
                 continue
             items.append(
