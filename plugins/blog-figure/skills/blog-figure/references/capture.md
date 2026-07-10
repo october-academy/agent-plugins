@@ -46,6 +46,24 @@ google-chrome --headless --disable-gpu --hide-scrollbars --force-device-scale-fa
 google-chrome --headless --disable-gpu --hide-scrollbars --virtual-time-budget=5000 --window-size=1600,4200 --screenshot=/tmp/blog-figure-previews/gallery-chrome.png "file:///tmp/blog-figure-previews/index.html?density=detail"
 ```
 
+**hang 주의 — blocking 실행 금지**: headless Chrome이 스크린샷을 저장한 뒤에도 프로세스가
+종료되지 않는 경우가 있다(연속 캡처 중 실측 — 2번째 호출에서 2분 타임아웃). 셸에서 순차
+blocking으로 돌리지 말고, 백그라운드로 띄운 뒤 **PNG 파일 생성(>5KB)을 폴링하고 terminate**하라:
+
+```python
+import subprocess, time
+from pathlib import Path
+out = Path("{target}.png")
+p = subprocess.Popen([CHROME, ...flags..., f"--screenshot={out}", f"file://{html}"])
+t0 = time.time()
+while time.time() - t0 < 35:
+    if out.exists() and out.stat().st_size > 5000: time.sleep(1.2); break
+    time.sleep(0.3)
+if p.poll() is None: p.terminate()
+```
+
+연속 캡처 시 `--user-data-dir`도 figure마다 분리하면 프로필 락 간섭까지 차단된다.
+
 ## Playwright MCP (deviceScaleFactor 지정 불가 → 1440×810 1x 산출. 최후 수단)
 
 1. `mcp__playwright__browser_resize` → 1440×810
