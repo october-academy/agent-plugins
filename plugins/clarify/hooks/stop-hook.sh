@@ -1,119 +1,159 @@
 #!/bin/bash
 
 # Clarify(Vague) Stop Hook
-# Prevents session exit when vague clarification loop is active
-# Continues clarification until completion or max iterations
+# Prevents session exit while a vague clarification loop is active.
+# Re-injects the loop until one of: completion promise, cancellation,
+# max iterations, TTL expiry (>2h), or a session-id mismatch.
+#
+# State is preserved (retry on the next Stop) for transient conditions —
+# transcript momentarily absent, no assistant text yet, jq hiccup.
+# The state file is removed only on: corruption, completion, max iterations,
+# TTL expiry, or session mismatch.
 
 set -euo pipefail
 
-# Read hook input from stdin
+# Read hook input (JSON) from stdin
 HOOK_INPUT=$(cat)
 
-# Check if vague loop is active
-STATE_FILE=".claude/clarify-vague.local.md"
+# Resolve state file path from the hook's cwd (fall back to a relative path)
+CWD=$(printf '%s' "$HOOK_INPUT" | jq -r '.cwd // empty' 2>/dev/null || true)
+if [[ -n "$CWD" ]]; then
+  STATE_FILE="$CWD/.claude/clarify-vague.local.md"
+else
+  STATE_FILE=".claude/clarify-vague.local.md"
+fi
 
+# No active loop -> allow exit
 if [[ ! -f "$STATE_FILE" ]]; then
-  # No active loop - allow exit
   exit 0
 fi
 
-# Parse frontmatter (YAML between --- markers)
-FRONTMATTER=$(sed -n '/^---$/,/^---$/{ /^---$/d; p; }' "$STATE_FILE")
-ITERATION=$(echo "$FRONTMATTER" | grep '^iteration:' | sed 's/iteration: *//')
-MAX_ITERATIONS=$(echo "$FRONTMATTER" | grep '^max_iterations:' | sed 's/max_iterations: *//')
-ORIGINAL_REQUIREMENT=$(echo "$FRONTMATTER" | grep '^original_requirement:' | sed 's/original_requirement: *//' | sed 's/^"\(.*\)"$/\1/')
+SESSION_ID=$(printf '%s' "$HOOK_INPUT" | jq -r '.session_id // empty' 2>/dev/null || true)
 
-# Validate numeric fields
-if [[ ! "$ITERATION" =~ ^[0-9]+$ ]]; then
-  echo "Clarify(vague): State file corrupted (iteration field invalid)" >&2
-  rm "$STATE_FILE"
+# --- Parse frontmatter defensively (a missing field must never abort the script) ---
+FRONTMATTER=$(sed -n '/^---$/,/^---$/{ /^---$/d; p; }' "$STATE_FILE" 2>/dev/null || true)
+
+field() {
+  # field <key>: value after "<key>:" with surrounding double quotes stripped.
+  # Wrapped so a missing field yields "" instead of a pipefail abort.
+  printf '%s\n' "$FRONTMATTER" | grep "^$1:" 2>/dev/null | head -1 \
+    | sed "s/^$1: *//; s/^\"\(.*\)\"\$/\1/" || true
+}
+
+ITERATION=$(field iteration)
+MAX_ITERATIONS=$(field max_iterations)
+ORIGINAL_REQUIREMENT=$(field original_requirement)
+STARTED_AT=$(field started_at)
+RECORDED_SESSION=$(field session_id)
+
+# --- Corruption: required numeric fields must be present and valid ---
+if ! [[ "$ITERATION" =~ ^[0-9]+$ ]]; then
+  echo "Clarify(vague): state file corrupted (iteration invalid: '${ITERATION}'). Cleaning up." >&2
+  rm -f "$STATE_FILE"
   exit 0
 fi
 
-if [[ ! "$MAX_ITERATIONS" =~ ^[0-9]+$ ]]; then
-  echo "Clarify(vague): State file corrupted (max_iterations field invalid)" >&2
-  rm "$STATE_FILE"
+if ! [[ "$MAX_ITERATIONS" =~ ^[0-9]+$ ]]; then
+  echo "Clarify(vague): state file corrupted (max_iterations invalid: '${MAX_ITERATIONS}'). Cleaning up." >&2
+  rm -f "$STATE_FILE"
   exit 0
 fi
 
-# Check if max iterations reached
+# --- Session binding: record on first fire, reject on mismatch (anti-hijack) ---
+if [[ -n "$SESSION_ID" ]]; then
+  if [[ -z "$RECORDED_SESSION" ]]; then
+    # First hook fire for this state: bind it to the current session.
+    TMP="${STATE_FILE}.tmp.$$"
+    awk -v sid="$SESSION_ID" '
+      !bound && /^---$/ { print; print "session_id: \"" sid "\""; bound=1; next }
+      { print }
+    ' "$STATE_FILE" > "$TMP" && mv "$TMP" "$STATE_FILE"
+    RECORDED_SESSION="$SESSION_ID"
+  elif [[ "$RECORDED_SESSION" != "$SESSION_ID" ]]; then
+    echo "Clarify(vague): state belongs to a different session. Cleaning up (no re-injection)." >&2
+    rm -f "$STATE_FILE"
+    exit 0
+  fi
+fi
+
+# --- TTL: expire loops older than 2 hours (started_at basis) ---
+epoch_from_iso() {
+  local iso="$1" e trimmed
+  # GNU date understands ISO 8601 with offset directly.
+  e=$(date -d "$iso" +%s 2>/dev/null || true)
+  if [[ -n "$e" ]]; then printf '%s' "$e"; return 0; fi
+  # BSD/macOS date: try with explicit offset, then without.
+  e=$(date -j -f "%Y-%m-%dT%H:%M:%S%z" "$iso" +%s 2>/dev/null || true)
+  if [[ -n "$e" ]]; then printf '%s' "$e"; return 0; fi
+  trimmed="${iso%%[+Z]*}"; trimmed="${trimmed%.*}"
+  e=$(date -j -f "%Y-%m-%dT%H:%M:%S" "$trimmed" +%s 2>/dev/null || true)
+  if [[ -n "$e" ]]; then printf '%s' "$e"; return 0; fi
+  return 1
+}
+
+if [[ -n "$STARTED_AT" ]]; then
+  if STARTED_EPOCH=$(epoch_from_iso "$STARTED_AT"); then
+    NOW=$(date +%s)
+    if [[ $(( NOW - STARTED_EPOCH )) -gt 7200 ]]; then
+      echo "Clarify(vague): TTL expired (>2h). Cleaning up (no re-injection)." >&2
+      rm -f "$STATE_FILE"
+      exit 0
+    fi
+  fi
+fi
+
+# --- Max iterations reached: stop and ask for the final summary ---
 if [[ $MAX_ITERATIONS -gt 0 ]] && [[ $ITERATION -ge $MAX_ITERATIONS ]]; then
-  echo "Clarify(vague): Max iterations ($MAX_ITERATIONS) reached."
-  echo "Please output the final clarified requirement summary now."
-  rm "$STATE_FILE"
+  echo "Clarify(vague): max iterations ($MAX_ITERATIONS) reached. Please output the final clarified requirement summary now."
+  rm -f "$STATE_FILE"
   exit 0
 fi
 
-# Get transcript path from hook input
-TRANSCRIPT_PATH=$(echo "$HOOK_INPUT" | jq -r '.transcript_path')
-
-if [[ ! -f "$TRANSCRIPT_PATH" ]]; then
-  echo "Clarify(vague): Transcript file not found" >&2
-  rm "$STATE_FILE"
+# --- Transcript checks: transient conditions preserve state and retry ---
+TRANSCRIPT_PATH=$(printf '%s' "$HOOK_INPUT" | jq -r '.transcript_path // empty' 2>/dev/null || true)
+if [[ -z "$TRANSCRIPT_PATH" ]] || [[ ! -f "$TRANSCRIPT_PATH" ]]; then
+  # Transcript momentarily absent -> keep state, retry on next Stop.
   exit 0
 fi
 
-# Check for assistant messages in transcript
-if ! grep -q '"role":"assistant"' "$TRANSCRIPT_PATH"; then
-  echo "Clarify(vague): No assistant messages found in transcript" >&2
-  rm "$STATE_FILE"
-  exit 0
-fi
-
-# Extract last assistant message (JSONL format)
-LAST_LINE=$(grep '"role":"assistant"' "$TRANSCRIPT_PATH" | tail -1)
+LAST_LINE=$(grep '"role":"assistant"' "$TRANSCRIPT_PATH" 2>/dev/null | tail -1 || true)
 if [[ -z "$LAST_LINE" ]]; then
-  rm "$STATE_FILE"
+  # No assistant message yet -> transient, keep state.
   exit 0
 fi
 
-LAST_OUTPUT=$(echo "$LAST_LINE" | jq -r '
-  .message.content |
-  map(select(.type == "text")) |
-  map(.text) |
-  join("\n")
-' 2>/dev/null || echo "")
+LAST_OUTPUT=$(printf '%s' "$LAST_LINE" | jq -r '
+  .message.content
+  | map(select(.type == "text"))
+  | map(.text)
+  | join("\n")
+' 2>/dev/null || true)
 
 if [[ -z "$LAST_OUTPUT" ]]; then
-  rm "$STATE_FILE"
+  # No readable assistant text (tool-only turn or jq hiccup) -> transient, keep state.
   exit 0
 fi
 
-# Check for completion promise
-COMPLETION_PROMISE="CLARIFICATION COMPLETE"
-PROMISE_TEXT=$(echo "$LAST_OUTPUT" | perl -0777 -pe 's/.*?<promise>(.*?)<\/promise>.*/$1/s; s/^\s+|\s+$//g; s/\s+/ /g' 2>/dev/null || echo "")
-
-if [[ -n "$PROMISE_TEXT" ]] && [[ "$PROMISE_TEXT" = "$COMPLETION_PROMISE" ]]; then
-  echo "Clarify(vague): Clarification completed successfully!"
-  rm "$STATE_FILE"
+# --- Completion promise -> done ---
+if printf '%s' "$LAST_OUTPUT" | grep -qF '<promise>CLARIFICATION COMPLETE</promise>'; then
+  echo "Clarify(vague): clarification completed."
+  rm -f "$STATE_FILE"
   exit 0
 fi
 
-# Not complete - continue loop with same prompt
+# --- Not complete: increment iteration and block exit ---
 NEXT_ITERATION=$((ITERATION + 1))
 
-# Update iteration count in state file
-TEMP_FILE="${STATE_FILE}.tmp.$$"
-sed "s/^iteration: .*/iteration: $NEXT_ITERATION/" "$STATE_FILE" > "$TEMP_FILE"
-mv "$TEMP_FILE" "$STATE_FILE"
+TMP="${STATE_FILE}.tmp.$$"
+sed "s/^iteration: .*/iteration: $NEXT_ITERATION/" "$STATE_FILE" > "$TMP"
+mv "$TMP" "$STATE_FILE"
 
-# Build prompt for next iteration
-PROMPT="Continue clarifying the requirement: \"$ORIGINAL_REQUIREMENT\"
+PROMPT="Continue clarifying: \"$ORIGINAL_REQUIREMENT\" (iteration $NEXT_ITERATION/$MAX_ITERATIONS).
 
-This is iteration $NEXT_ITERATION of $MAX_ITERATIONS.
+Reflecting on the previous questions and answers, ask only the ambiguities that still remain, following the clarify:vague SKILL.md rules for how many questions to ask and how to design the options. When no material ambiguity is left, output the Before/After summary and <promise>CLARIFICATION COMPLETE</promise> to finish. If the user has signaled they want to cancel or stop, delete the state file at $STATE_FILE and end the loop."
 
-Review the conversation history to see previous questions and answers, then:
+SYSTEM_MSG="clarify:vague $NEXT_ITERATION/$MAX_ITERATIONS · finish with <promise>CLARIFICATION COMPLETE</promise>"
 
-1. Identify ambiguities that haven't been addressed yet
-2. Ask exactly 4 questions using AskUserQuestion tool, each with exactly 4 options
-3. The 4th question's 4th option should be \"Clarification complete - proceed with current understanding\"
-4. When user confirms completion, output the Before/After summary and <promise>CLARIFICATION COMPLETE</promise>
-
-Remember: Only output the promise when clarification is GENUINELY complete. Do not lie to exit."
-
-SYSTEM_MSG="Clarify:vague iteration $NEXT_ITERATION/$MAX_ITERATIONS | Complete: <promise>CLARIFICATION COMPLETE</promise>"
-
-# Block exit and feed prompt back to Claude
 jq -n \
   --arg prompt "$PROMPT" \
   --arg msg "$SYSTEM_MSG" \

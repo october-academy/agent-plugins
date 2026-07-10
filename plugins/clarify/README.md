@@ -33,10 +33,10 @@ claude plugin install clarify@agent-plugins
 
 요구사항이 애매할 때 가설 기반 옵션 질문으로 명세를 고도화합니다.
 
-- AskUserQuestion 기반 배치 질문 (라운드당 4문항)
-- 옵션 선택 중심으로 인지 부하 감소
+- AskUserQuestion 기반 배치 질문 (라운드당 남은 실질 모호성만, 최대 4문항)
+- 옵션 선택 중심으로 인지 부하 감소 (그럴듯한 가설 2~4개)
 - Before/After 요약 + 결정 로그 출력
-- 반복 루프 훅으로 조기 종료 방지
+- 반복 루프 훅으로 조기 종료 방지 · 취소·중단 의사 표시 시 상태 파일 삭제로 종료
 
 ## 2) `unknown` - Strategy Blind Spot Analysis
 
