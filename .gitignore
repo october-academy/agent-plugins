@@ -22,6 +22,7 @@ npm-debug.log*
 __pycache__/
 *.pyc
 *.pyo
+.pytest_cache/
 
 # Skill workspaces (local test/eval artifacts)
 **/skills/*-workspace/
@@ -31,3 +32,6 @@ __pycache__/
 
 # oh-my-claudecode
 .omc/
+
+# Claude Code local settings
+**/.claude/settings.local.json
