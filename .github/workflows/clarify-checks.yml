@@ -1,0 +1,56 @@
+name: clarify checks
+
+# Guards the clarify plugin's hook + eval harness. Runs on any change to the
+# plugin, the shared scripts, or this workflow. All four checks are the exact
+# commands documented in the eval harness, so a green run == the same battery
+# a maintainer runs locally.
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'plugins/clarify/**'
+      - 'scripts/**'
+      - '.claude-plugin/marketplace.json'
+      - '.github/workflows/clarify-checks.yml'
+  pull_request:
+    paths:
+      - 'plugins/clarify/**'
+      - 'scripts/**'
+      - '.claude-plugin/marketplace.json'
+      - '.github/workflows/clarify-checks.yml'
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Verify prerequisites (bash, jq, python3)
+        run: |
+          jq --version
+          python3 --version
+          bash --version | head -1
+
+      - name: Validate marketplace + plugin structure
+        run: bash scripts/validate-plugins.sh
+
+      - name: Stop-hook integration tests
+        run: bash plugins/clarify/hooks/test-stop-hook.sh
+
+      - name: mech_grade adversarial tests
+        run: python3 plugins/clarify/skills/interview/evals/test_mech_grade.py
+
+      - name: Benchmark ↔ gradings consistency (archived iteration-5)
+        run: |
+          python3 plugins/clarify/skills/interview/evals/rebuild_benchmark.py \
+            plugins/clarify/skills/interview/evals/results/iteration-5 --check
+
+      - name: Trigger benchmark ↔ routes consistency
+        run: |
+          python3 plugins/clarify/skills/interview/evals/score_trigger.py \
+            plugins/clarify/skills/interview/evals/trigger-benchmark.json --check

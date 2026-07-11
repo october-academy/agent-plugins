@@ -105,8 +105,17 @@ def dscores(rs: dict) -> str:
     return "/".join(str(rs[k]["score"]) for k in sorted(k for k in rs if k != "total"))
 
 
-def derived_timestamp(ws: Path) -> str:
-    """Newest grading.json mtime, UTC ISO — the observed measurement-complete time."""
+def derived_timestamp(ws: Path, labels: dict | None = None) -> str:
+    """The observed measurement-complete time, UTC ISO.
+
+    Live workspace: the newest grading.json mtime. Archived snapshot: git
+    checkout rewrites mtimes to checkout time, so the real completion time is
+    frozen once into run_labels.json as `measurement_timestamp` and used from
+    there. The anti-future-date guard in check() still applies to the pin, so a
+    fabricated future timestamp cannot slip through.
+    """
+    if labels and labels.get("measurement_timestamp"):
+        return labels["measurement_timestamp"]
     import datetime
     latest = max(p.stat().st_mtime for p in ws.glob("eval-*/*/run-*/grading.json"))
     return datetime.datetime.fromtimestamp(latest, datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
@@ -190,7 +199,7 @@ def build(ws: Path) -> tuple[dict, list[str]]:
     # hand-maintained (a hand-pinned future timestamp once shipped as
     # "measurement complete"; the newest grading mtime is the observed truth)
     metadata["evals_run"] = sorted({r["eval_id"] for r in runs})
-    metadata["timestamp"] = derived_timestamp(ws)
+    metadata["timestamp"] = derived_timestamp(ws, labels)
     b = {
         "metadata": metadata,
         "notes": notes,
@@ -258,7 +267,7 @@ def check(ws: Path) -> list[str]:
     # in the future
     import datetime
     ts = pub.get("metadata", {}).get("timestamp", "")
-    want_ts = derived_timestamp(ws)
+    want_ts = derived_timestamp(ws, labels)
     if ts != want_ts:
         problems.append(f"timestamp drift: published {ts!r} != newest grading mtime {want_ts!r}")
     try:
