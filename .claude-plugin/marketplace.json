@@ -11,7 +11,7 @@
     {
       "name": "clarify",
       "description": "세 가지 렌즈(interview/unknown/metamedium)로 요구사항, 전략 맹점, content-vs-form 의사결정을 명확화",
-      "version": "3.0.1",
+      "version": "3.1.1",
       "author": {
         "name": "Yu Ho Gyun"
       },
